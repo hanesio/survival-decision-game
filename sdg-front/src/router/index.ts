@@ -4,6 +4,7 @@ import NewSession from '@/views/admin/NewSession.vue'
 import ActiveStage from '@/views/ActiveStage.vue'
 import AdminHome from '../views/admin/AdminHome.vue'
 import AboutView from '../views/AboutView.vue'
+import SessionDetail from '@/views/admin/SessionDetail.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -35,6 +36,11 @@ const router = createRouter({
       path: '/admin/new-session',
       name: 'new-session',
       component: NewSession,
+    },
+    {
+      path: '/admin/sessions/:id',
+      name: 'sessions',
+      component: SessionDetail,
     },
   ],
 })

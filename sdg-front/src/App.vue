@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
 </script>
 
 <template>
 
-  <header class="flex justify-between items-center px-6 py-4  fixed">
+  <header class="flex justify-between items-center px-6 py-4 fixed top-0 w-screen">
 
       <nav class="flex gap-2">
         <RouterLink to="/">Home</RouterLink>
@@ -13,7 +12,7 @@ import HelloWorld from './components/HelloWorld.vue'
       </nav>
 
   </header>
-<div class="w-full px-40 "><RouterView /></div>
+<div class="w-full lg:px-40 h-full mt-20 px-6 "><RouterView /></div>
   
 </template>
 

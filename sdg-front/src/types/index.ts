@@ -11,13 +11,11 @@ export interface Session {
   title: string
   description: string
   items: RankItem[]
-  stage: number // enum wäre sprechender
 }
 
 export interface Group {
   id: number
-  name: string
-  password: string
+  groupname: string
   items: RankItem[]
   sessionId: number
   members: number[]
@@ -26,16 +24,30 @@ export interface Group {
 
 export interface Single {
   id: number
-  name: string
+  username: string
   password: string
   items: RankItem[] // TODO shorthand oder id für bessere iteration, Lösungsbemerkung
   sessionId: number
-  groupId: number
+  groupId?: number
   result: number
 }
 
 export interface RankItem {
   description: string
   explanation: string
-  rank?: number
+  rank: number
+}
+export interface Setting {
+  name: string
+  value: any
+}
+export interface Active {
+  stage: 'single' | 'group' | 'results'
+  sessionId: number | null
+}
+
+export enum Stages {
+  'Einzel' = 'single',
+  'Gruppe' = 'group',
+  'Reflektion' = 'results',
 }
