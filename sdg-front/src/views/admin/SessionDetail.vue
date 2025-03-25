@@ -78,7 +78,7 @@ function setStage(){
       </div>
       <div class="shadow rounded-t-md">
         <h4 class="py-2 px-4 text-lg">Ergebnisunterschied zur Gruppe</h4>
-        <div class="w-full h-64 p-4"><BarChartDifference :groupData :singleData/></div>
+        <div class="w-full p-4"><BarChartDifference :groupData :singleData/></div>
         
         <div class="flex flex-col">
           <label for="comment">Kommentar:</label>
