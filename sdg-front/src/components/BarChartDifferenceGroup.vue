@@ -93,7 +93,7 @@ const groupLine = {
                     };
               const differenceLabel = {
                         x: date.x,
-                        y: date.y + date.height/2,
+                        y: date.y + ((height / y.ticks[y.ticks.length - 1].value) *difference)/2,
                     };
                     ctx.fillStyle = 'gray';
                     ctx.textAlign = "center";
