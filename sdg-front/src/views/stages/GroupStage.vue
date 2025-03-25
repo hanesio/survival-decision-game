@@ -30,7 +30,10 @@ const result = ref(0)
 function sendSolution(){
     calculateResult()
     if(session!= undefined){
-        storeGroups.addGroup(groupname.value, shuffledItems.value, session.id, members, result.value)
+        const groupId = storeGroups.addGroup(groupname.value, shuffledItems.value, session.id, members, result.value)
+        members.forEach((member)=>{
+          storeSingles.setGroupId(member, groupId)
+    })
     }
   router.push('/');
 }

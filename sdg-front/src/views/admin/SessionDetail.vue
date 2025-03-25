@@ -7,6 +7,8 @@ import { ref } from 'vue';
 import {Stages } from '@/types';
 import { useStoreSingles } from '@/stores/storeSingles';
 import { useStoreGroups } from '@/stores/storeGroups';
+import BarChart from '@/components/BarChart.vue';
+import BarChartDifference from '@/components/BarChartDifference.vue';
 
 const router = useRouter();
 const route = useRoute()
@@ -15,12 +17,15 @@ let id = Number(route.params.id);
 const storeSessions = useStoreSessions()
 const sessions = storeSessions.sessions
 const session = sessions.find((session)=>session.id === id)
+const comment = ref("")
 
 const storeSingles = useStoreSingles()
 const singles = storeSingles.singles.filter((single)=>single.sessionId===id)
+const singleData = singles.map((single)=>{return {x: single.username, y: single.result, groupId:single.groupId}})
 
 const storeGroups = useStoreGroups()
 const groups = storeGroups.groups.filter((single)=>single.sessionId===id)
+const groupData = groups.map((group)=>{return {x: group.groupname, y: group.result, groupId:group.id}})
 
 const name = session === undefined? "no session found" : session.name
 const formattedDate = session === undefined? "-" : session.date.toLocaleDateString("de-DE", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
@@ -58,34 +63,28 @@ function setStage(){
         </select>
   </div>
   
+
   <section>
-    <h3>Einzelabgaben</h3>
-    <div class="grid grid-cols-[150px_50px_auto] " v-for="single in singles">
-      <p class="border-b-2" >{{ single.username }}</p>
-      <p class="border-b-2">{{ single.result }}</p>
-    </div>
-  </section>
-  <section class="py-4">
-    <h3>Gruppenabgaben</h3>
-    <div class="grid grid-cols-[150px_50px_auto] " v-for="group in groups">
-      <p class="border-b-2" >{{ group.groupname }}</p>
-      <p class="border-b-2">{{ group.result }}</p>
-    </div>
-  </section>
-  <section>
-    <h3>Graphen</h3>
-    <div class="grid grid-cols-3 gap-4">
-      <div>
-        <h4>Einzelabgaben</h4>
-        <div class="bg-blue-50 rounded-lg h-64 mt-2"></div>
+    <h3 class="text-2xl">Graphen</h3>
+    <div class="flex flex-col gap-8 mt-2  bg-gray-50 rounded-lg p-4">
+      <div class="shadow rounded-t-md">
+        <h4 class="py-2 px-4 text-lg">Ergebnis Einzel</h4>
+        <div class="w-full h-64 p-4"><BarChart :chart_data="singleData" /></div>
+        
       </div>
-      <div>
-        <h4>Gruppenabgaben</h4>
-        <div class="bg-blue-50 rounded-lg h-64 mt-2"></div>
+      <div class="shadow rounded-t-md">
+        <h4 class="py-2 px-4 text-lg">Ergebnis Gruppen</h4>
+        <div class="w-full h-64 p-4"><BarChart :chart_data="groupData" /></div>
       </div>
-      <div>
-        <h4>Vergleich</h4>
-        <div class="bg-blue-50 rounded-lg h-64 mt-2"></div>
+      <div class="shadow rounded-t-md">
+        <h4 class="py-2 px-4 text-lg">Ergebnisunterschied zur Gruppe</h4>
+        <div class="w-full h-64 p-4"><BarChartDifference :groupData :singleData/></div>
+        
+        <div class="flex flex-col">
+          <label for="comment">Kommentar:</label>
+          <textarea placeholder="Beobachtungen über die Gruppe" class="h-24 text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 p-2.5" name="comment" v-model="comment" type="text" />
+        </div>
+        
       </div>
     </div>
   </section>
@@ -94,9 +93,6 @@ function setStage(){
     <p>bearbeiten</p>
   <p>löschen</p>
 
-  <div>Einzelwertung</div>
-  <div>Gruppenwertung</div>
-  <div>Endauswertung</div>
   </div>
   
 

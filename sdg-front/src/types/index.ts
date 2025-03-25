@@ -11,6 +11,7 @@ export interface Session {
   title: string
   description: string
   items: RankItem[]
+  comment?: string
 }
 
 export interface Group {
