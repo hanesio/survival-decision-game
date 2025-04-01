@@ -1,101 +1,158 @@
+<template>
+    <div class="flex gap-2 py-2">
+        <h1 class="text-4xl">{{ name }}</h1>
+        <div
+            v-if="id !== active.sessionId"
+            @click="activateSession"
+            class="flex w-20 cursor-pointer items-center justify-center rounded-xl border-2 border-transparent bg-blue-200 p-2"
+        >
+            aktivieren
+        </div>
+        <div
+            v-else
+            @click="deactivateSession"
+            class="flex w-20 cursor-pointer items-center justify-center rounded-xl border-2 border-green-600 bg-green-300 p-2"
+        >
+            aktiv
+        </div>
+    </div>
+    <h2>{{ formattedDate }}</h2>
+
+    <div class="mt-6 flex items-center gap-2 py-4">
+        <label for="stageSelect">Stufe:</label>
+        <select
+            name="stageSelect"
+            @change="setStage"
+            class="rounded bg-gray-200 p-2"
+            v-model="stage"
+        >
+            <option class="p-4" :key="key" v-for="key in stages" :value="key">{{ key }}</option>
+        </select>
+    </div>
+
+    <div class="flex">
+        <SessionTab @click="tabindex = 0" :isActive="tabindex === 0" label="Präsentation" />
+        <SessionTab @click="tabindex = 1" :isActive="tabindex === 1" label="Analyse" />
+    </div>
+    <div class="b rounded-lg rounded-tl-none bg-gray-100 p-4">
+        <section
+            v-if="tabindex === 0"
+            name="presentation"
+            class="flex flex-col items-start justify-center lg:flex-row lg:gap-4"
+        >
+            <div class="w-1/3 p-4">
+                <p class="bg-blue-400 py-2 text-center text-4xl">{{ originURL }}</p>
+                <img class="w-full" :src="qrcode" alt="QR Code" />
+            </div>
+            <div class="w-2/3 p-4 pr-6">
+                <h2 class="pb-8 text-6xl underline decoration-blue-400">
+                    {{ session.title }}
+                </h2>
+                <p class="text-justify text-2xl">{{ session.description }}</p>
+            </div>
+        </section>
+
+        <section v-if="tabindex === 1" name="analyzation">
+            <h3 class="text-2xl">Graphen</h3>
+            <div class="mt-2 flex flex-col gap-8 rounded-lg bg-gray-50 p-4">
+                <div class="rounded-t-md shadow">
+                    <h4 class="px-4 py-2 text-lg">Ergebnis Einzel</h4>
+                    <div class="h-64 w-full p-4"><BarChart :chart_data="singleData" /></div>
+                </div>
+                <div class="rounded-t-md shadow">
+                    <h4 class="px-4 py-2 text-lg">Ergebnis Gruppen</h4>
+                    <div class="h-64 w-full p-4"><BarChart :chart_data="groupData" /></div>
+                </div>
+                <div class="rounded-t-md shadow">
+                    <h4 class="px-4 py-2 text-lg">Ergebnisunterschied zur Gruppe</h4>
+                    <div class="w-full p-4"><BarChartDifference :groupData :singleData /></div>
+
+                    <div class="flex flex-col">
+                        <label for="comment">Kommentar:</label>
+                        <textarea
+                            placeholder="Beobachtungen über die Gruppe"
+                            class="h-24 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+                            name="comment"
+                            v-model="comment"
+                            type="text"
+                        />
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="mt-24">
+        <p>bearbeiten</p>
+        <p>löschen</p>
+    </div>
+</template>
+
 <script setup lang="ts">
 import { useStoreSessions } from '@/stores/storeSessions';
-import SessionCard from '@/components/SessionCard.vue';
 import { useStoreActive } from '@/stores/storeActive';
-import { useRoute, useRouter } from 'vue-router';
+import { useRoute } from 'vue-router';
 import { ref } from 'vue';
-import {Stages } from '@/types';
+import { Stages } from '@/types';
 import { useStoreSingles } from '@/stores/storeSingles';
 import { useStoreGroups } from '@/stores/storeGroups';
 import BarChart from '@/components/BarChart.vue';
 import BarChartDifference from '@/components/BarChartDifference.vue';
+import SessionTab from '@/components/SessionTab.vue';
+import { useQRCode } from '@vueuse/integrations/useQRCode';
+import { shallowRef } from 'vue';
 
-const router = useRouter();
-const route = useRoute()
-let id = Number(route.params.id);
+const route = useRoute();
 
-const storeSessions = useStoreSessions()
-const sessions = storeSessions.sessions
-const session = sessions.find((session)=>session.id === id)
-const comment = ref("")
+const id = Number(route.params.id);
+const originURL = shallowRef(window.location.origin); // getting the current base URL
+const qrcode = useQRCode(originURL);
 
-const storeSingles = useStoreSingles()
-const singles = storeSingles.singles.filter((single)=>single.sessionId===id)
-const singleData = singles.map((single)=>{return {x: single.username, y: single.result, groupId:single.groupId}})
+console.log(window.location);
 
-const storeGroups = useStoreGroups()
-const groups = storeGroups.groups.filter((single)=>single.sessionId===id)
-const groupData = groups.map((group)=>{return {x: group.groupname, y: group.result, groupId:group.id}})
+const tabindex = ref(0);
 
-const name = session === undefined? "no session found" : session.name
-const formattedDate = session === undefined? "-" : session.date.toLocaleDateString("de-DE", { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+const storeSessions = useStoreSessions();
+const sessions = storeSessions.sessions;
+const session = sessions.find((session) => session.id === id);
+const comment = ref('');
 
-const storeActive = useStoreActive()
-const active = storeActive.active
-const stage = ref(active.stage)
+const storeSingles = useStoreSingles();
+const singles = storeSingles.singles.filter((single) => single.sessionId === id);
+const singleData = singles.map((single) => {
+    return { x: single.username, y: single.result, groupId: single.groupId };
+});
 
-const stages = Object.values(Stages).slice(0,3)
+const storeGroups = useStoreGroups();
+const groups = storeGroups.groups.filter((single) => single.sessionId === id);
+const groupData = groups.map((group) => {
+    return { x: group.groupname, y: group.result, groupId: group.id };
+});
 
-function activateSession(){
-  storeActive.setActiveSession(id)
+const name = session === undefined ? 'no session found' : session.name;
+const formattedDate =
+    session === undefined
+        ? '-'
+        : session.date.toLocaleDateString('de-DE', {
+              weekday: 'long',
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+          });
+
+const storeActive = useStoreActive();
+const active = storeActive.active;
+const stage = ref(active.stage);
+
+const stages = Object.values(Stages).slice(0, 3);
+
+function activateSession() {
+    storeActive.setActiveSession(id);
 }
-function deactivateSession(){
-  storeActive.setActiveSession(null)
+function deactivateSession() {
+    storeActive.setActiveSession(null);
 }
-function setStage(){
-  storeActive.setStage(stage.value)
+function setStage() {
+    storeActive.setStage(stage.value);
 }
-
 </script>
-
-<template>
-  <div class="flex gap-2 py-2">
-    <h1 class="text-4xl">{{name}}</h1> 
-    <div v-if="id !== active.sessionId" @click="activateSession" class="w-20 justify-center cursor-pointer flex border-2 border-transparent bg-blue-200 p-2 rounded-xl items-center">aktivieren</div>
-    <div v-else @click="deactivateSession" class="w-20 justify-center cursor-pointer flex border-2 border-green-600 bg-green-300 p-2 rounded-xl items-center">aktiv</div>
-  </div>
-  <h2>{{ formattedDate }}</h2>
-
-  <div class="py-4 mt-6 flex gap-2 items-center">
-    <label for="stageSelect">Stufe:</label>
-    <select name="stageSelect" @change="setStage" class="bg-gray-200 rounded p-2" v-model="stage">
-          <option class="p-4" v-for="key in stages" :value="key">{{ key}}</option>
-        </select>
-  </div>
-  
-
-  <section>
-    <h3 class="text-2xl">Graphen</h3>
-    <div class="flex flex-col gap-8 mt-2  bg-gray-50 rounded-lg p-4">
-      <div class="shadow rounded-t-md">
-        <h4 class="py-2 px-4 text-lg">Ergebnis Einzel</h4>
-        <div class="w-full h-64 p-4"><BarChart :chart_data="singleData" /></div>
-        
-      </div>
-      <div class="shadow rounded-t-md">
-        <h4 class="py-2 px-4 text-lg">Ergebnis Gruppen</h4>
-        <div class="w-full h-64 p-4"><BarChart :chart_data="groupData" /></div>
-      </div>
-      <div class="shadow rounded-t-md">
-        <h4 class="py-2 px-4 text-lg">Ergebnisunterschied zur Gruppe</h4>
-        <div class="w-full p-4"><BarChartDifference :groupData :singleData/></div>
-        
-        <div class="flex flex-col">
-          <label for="comment">Kommentar:</label>
-          <textarea placeholder="Beobachtungen über die Gruppe" class="h-24 text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 p-2.5" name="comment" v-model="comment" type="text" />
-        </div>
-        
-      </div>
-    </div>
-  </section>
-
-  <div class="mt-24">
-    <p>bearbeiten</p>
-  <p>löschen</p>
-
-  </div>
-  
-
-
-  
-</template>
