@@ -12,7 +12,7 @@ import { RouterLink, RouterView } from 'vue-router'
       </nav>
 
   </header>
-<div class="w-full lg:px-40 h-full mt-20 px-6 "><RouterView /></div>
-  
+<div class="w-full lg:px-20 h-full mt-20 px-6 "><RouterView /></div>
+
 </template>
 

@@ -33,6 +33,7 @@
     <div class="flex">
         <SessionTab @click="tabindex = 0" :isActive="tabindex === 0" label="Präsentation" />
         <SessionTab @click="tabindex = 1" :isActive="tabindex === 1" label="Analyse" />
+        <SessionTab @click="tabindex = 2" :isActive="tabindex === 2" label="Lösung" />
     </div>
     <div class="b rounded-lg rounded-tl-none bg-gray-100 p-4">
         <section
@@ -52,8 +53,8 @@
             </div>
         </section>
 
+
         <section v-if="tabindex === 1" name="analyzation">
-            <h3 class="text-2xl">Graphen</h3>
             <div class="mt-2 flex flex-col gap-8 rounded-lg bg-gray-50 p-4">
                 <div class="rounded-t-md shadow">
                     <h4 class="px-4 py-2 text-lg">Ergebnis Einzel</h4>
@@ -79,6 +80,32 @@
                     </div>
                 </div>
             </div>
+        </section>
+        <section
+            v-if="tabindex === 2"
+            name="solution"
+        >
+        <div class="rounded-lg overlow overflow-clip">
+          <table class="table-auto border-collapse w-full ">
+              <thead>
+                <tr class="bg-gray-400 text-white text-left">
+                  <th>Platz</th>
+                  <th>Gegenstand</th>
+                  <th>Erklärung</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="item in session.items" class="gap-4 odd:bg-gray-200 bg-gray-50 hover:bg-cyan-400">
+                  <td class="text-center ">{{item.rank+1}}</td>
+                  <td>{{item.description}}</td>
+                  <td>{{ item.explanation }}</td>
+                </tr>
+              </tbody>
+
+
+            </table>
+        </div>
+
         </section>
     </div>
 
@@ -156,3 +183,10 @@ function setStage() {
     storeActive.setStage(stage.value);
 }
 </script>
+
+<style>
+td, th {
+  padding: 8px 16px;
+}
+
+</style>

@@ -23,19 +23,50 @@ shuffleArray(items)
 const shuffledItems = ref(items)
 const groupname = ref("")
 const singles = storeSingles.singles
-let members:number[] = []
-let newMembers:number[] = []
+let members = ref([])
+let newMembers= ref([])
 const result = ref(0)
+const showNameValidation = ref(false)
+const showMemberValidation = ref(false)
+
+const nameIsValid = computed(()=>{
+  return groupname.value.length > 0
+})
+const nameIsFree = computed(()=>{
+  return storeGroups.groups.find((group)=>group.groupname === groupname.value) === undefined
+})
+const membersChosen = computed(()=>{
+  return members.value.length > 0
+})
+
+const nameValidationMessage = computed(()=>{
+  if(!nameIsValid.value) return 'Gib einen Namen ein'
+  if(!nameIsFree.value) return 'Der Name ist bereits vergeben'
+  return 'sieht gut aus'
+})
+const membersValidationMessage = computed(()=>{
+  if(!membersChosen.value) return 'Füge Gruppenmitglieder hinzu'
+  return 'sieht gut aus'
+})
 
 function sendSolution(){
+
+
+  if(nameIsValid.value && nameIsFree.value && membersChosen.value){
     calculateResult()
     if(session!= undefined){
         const groupId = storeGroups.addGroup(groupname.value, shuffledItems.value, session.id, members, result.value)
-        members.forEach((member)=>{
+        members.value.forEach((member)=>{
           storeSingles.setGroupId(member, groupId)
     })
     }
-  router.push('/');
+    router.push('/');
+  } else {
+    if(!nameIsFree.value || !nameIsValid.value)
+      showNameValidation.value = true
+    if(!membersChosen.value)
+      showMemberValidation.value = true
+  }
 }
 
 function calculateResult(){
@@ -46,11 +77,11 @@ function calculateResult(){
 }
 
 function handleMember(singleId: number){
-    if(members.includes(singleId)){
-        newMembers = members.filter((member)=> member != singleId)
-        members = newMembers
-    } else 
-        members.push(singleId)
+    if(members.value.includes(singleId)){
+        newMembers.value = members.value.filter((member)=> member != singleId)
+        members.value = newMembers.value
+    } else
+        members.value.push(singleId)
 }
 
 
@@ -66,28 +97,39 @@ function shuffleArray (array:RankItem[]) {
 </script>
 
 <template>
-  <h1 class=" text-4xl p-2">{{ session?.title }}</h1>
+  <article class="flex flex-col border-l-4 px-4 border-cyan-500 ">
+    <h3 class=" text-xl">{{ session?.title }}</h3>
+    <h2 class="  text-6xl ">Gruppenlösung</h2>
+  </article>
   <article>
-    <h2 class="text-lg p-2">Gruppenlösung</h2>
     <details class="p-2" >
         <summary>Szenario</summary>
         <p>{{session?.description}}</p>
     </details>
   </article>
 
-  <section class="flex gap-2 p-2">
+  <div class="flex flex-col gap-1 p-4">
+    <section class="flex gap-2 ">
     <SinglePill @click="handleMember(single.id)" v-for="single in singles" :username="single.username"/>
   </section>
-  
-  <div class=" flex flex-col gap-2 rounded p-4 bg-gray-50 ">   
+    <p v-if="showMemberValidation" class="text-xs px-2" :class="[membersChosen?'text-green-500':'text-red-600']">
+      {{ membersValidationMessage }}</p>
+  </div>
+
+
+  <div class=" flex flex-col gap-2 rounded p-4 bg-gray-50 ">
       <div class=" flex gap-2 ">
-        <input v-model="groupname" class="text-lg  bg-gray-200 rounded pl-2 p-1 w-1/2" type="text" placeholder="Gruppenname">
+        <div class=" flex flex-col gap-1 w-1/2 ">
+        <input v-model="groupname" :class="[showNameValidation?  nameIsFree && nameIsValid? 'border-transparent':'border-red-600':'border-transparent']" class="text-lg border-2  bg-gray-200 rounded pl-2 p-1 " type="text" placeholder="Name">
+        <p v-if="showNameValidation" class="text-xs px-2" :class="[nameIsValid && nameIsFree?'text-green-500':'text-red-600']">
+          {{ nameValidationMessage }}</p>
+      </div>
       </div>
       <draggable v-model="shuffledItems" tag="ul">
         <template #item="{element:item}">
-            <li class="p-1 pl-4 bg-gray-200 mt-1 rounded-full w-full cursor-grab">{{ item.description }}</li> 
+            <li class="p-1 pl-4 bg-gray-200 mt-1 rounded-full w-full cursor-grab">{{ item.description }}</li>
         </template>
-      </draggable>         
+      </draggable>
     <button @click="sendSolution" class=" bg-blue-600 rounded p-4 mt-4  hover:bg-blue-500">
           anlegen
     </button>

@@ -5,7 +5,7 @@ import {  onMounted, ref } from 'vue';
 
 interface DifferenceSingle{
     username:string,
-      value:number, 
+      value:number,
       difference:number,
       rest: number,
       isBetter:boolean
@@ -21,7 +21,7 @@ interface DifferenceSingle{
 
 const props = defineProps({
   groupData: {
-    type: Object, 
+    type: Object,
     required:true
     },
 });
@@ -79,13 +79,15 @@ const groupLine = {
         ctx.fillText(String(props.groupData.groupvalue),outside,groupY);
 
 
+
+
         // add total number at the end of the bar
-        
+
          datasets.forEach((set,index)=>{
           if(set.order===1)
             {chart.getDatasetMeta(index).data.forEach((date,gindex)=>{
               const difference = set.backgroundColor==='green' ? set.data[gindex] * -1 :set.data[gindex]
-              
+
               const distanceToBar = 12;
               const sumLabel = {
                         x: date.x,
@@ -99,14 +101,18 @@ const groupLine = {
                     ctx.textAlign = "center";
                     ctx.font = ' normal 20px Inter'
                     ctx.fillText(String(props.groupData.members[set.stack].value), sumLabel.x, sumLabel.y);
-                    
+
                     ctx.font = ' bold 22px Inter'
                     ctx.fillStyle = 'darkred';
                     ctx.fillText(Math.abs(difference)>10? String(difference):'', differenceLabel.x, differenceLabel.y);
-            });}
-          
 
-         }) 
+                    ctx.font = ' normal 14px Inter'
+                    ctx.fillStyle = 'black';
+                    ctx.fillText(set.label, differenceLabel.x, bottom + 14);
+            });}
+
+
+         })
     },
 };
 
@@ -114,7 +120,7 @@ const config: ChartConfiguration = {
   type: 'bar',
   data: data,
   plugins:[groupLine],
-  options: {  
+  options: {
     layout: {
       padding: {
         right:30
