@@ -18,17 +18,14 @@
     </div>
     <h2>{{ formattedDate }}</h2>
 
-    <div class="mt-6 flex items-center gap-2 py-4">
-        <label for="stageSelect">Stufe:</label>
-        <select
-            name="stageSelect"
-            @change="setStage"
-            class="rounded bg-gray-200 p-2"
-            v-model="stage"
-        >
-            <option class="p-4" :key="key" v-for="key in stages" :value="key">{{ key }}</option>
-        </select>
-    </div>
+        <div class="py-8 gap-4 flex lg:flex-row flex-col items-center" >
+          <StageButton @click="stage='single'" :isActive="stage === 'single'" label="Einzelphase" />
+          <p class="text-2xl text-gray-400">></p>
+          <StageButton @click="stage='group'" :isActive="stage === 'group'" label="Gruppenphase"/>
+          <p class="text-2xl text-gray-400">></p>
+          <StageButton @click="stage='results'" :isActive="stage === 'results'" label="Auswertung"/>
+        </div>
+
 
     <div class="flex">
         <SessionTab @click="tabindex = 0" :isActive="tabindex === 0" label="Präsentation" />
@@ -39,13 +36,13 @@
         <section
             v-if="tabindex === 0"
             name="presentation"
-            class="flex flex-col items-start justify-center lg:flex-row lg:gap-4"
+            class="flex flex-col lg:items-start justify-center lg:flex-row lg:gap-4 items-center"
         >
-            <div class="w-1/3 p-4">
-                <p class="bg-blue-400 py-2 text-center text-4xl">{{ originURL }}</p>
-                <img class="w-full" :src="qrcode" alt="QR Code" />
+            <div class="lg:w-1/4 p-4 flex flex-col gap-4">
+                <p class="bg-blue-400 py-2 text-center text-2xl">{{ originURL }}</p>
+                <img class="w-full scale-130 mix-blend-multiply " :src="qrcode" alt="QR Code" />
             </div>
-            <div class="w-2/3 p-4 pr-6">
+            <div class="w-3/4 p-4 pr-6">
                 <h2 class="pb-8 text-6xl underline decoration-blue-400">
                     {{ session.title }}
                 </h2>
@@ -101,8 +98,6 @@
                   <td>{{ item.explanation }}</td>
                 </tr>
               </tbody>
-
-
             </table>
         </div>
 
@@ -128,6 +123,7 @@ import BarChartDifference from '@/components/BarChartDifference.vue';
 import SessionTab from '@/components/SessionTab.vue';
 import { useQRCode } from '@vueuse/integrations/useQRCode';
 import { shallowRef } from 'vue';
+import StageButton from '@/components/StageButton.vue';
 
 const route = useRoute();
 

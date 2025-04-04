@@ -1,7 +1,7 @@
 <template>
   <article class="flex flex-col border-l-4 px-4 border-cyan-500 ">
     <h3 class=" text-xl">{{ session?.title }}</h3>
-    <h2 class="  text-6xl ">Auswertung</h2>
+    <h2 class=" text-4xl lg:text-6xl ">Auswertung</h2>
   </article>
 
   <div class="flex  gap-8 mt-6">
