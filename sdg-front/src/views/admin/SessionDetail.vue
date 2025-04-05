@@ -1,29 +1,17 @@
 <template>
     <div class="flex gap-2 py-2">
         <h1 class="text-4xl">{{ name }}</h1>
-        <div
-            v-if="id !== active.sessionId"
-            @click="activateSession"
-            class="flex w-20 cursor-pointer items-center justify-center rounded-xl border-2 border-transparent bg-blue-200 p-2"
-        >
-            aktivieren
-        </div>
-        <div
-            v-else
-            @click="deactivateSession"
-            class="flex w-20 cursor-pointer items-center justify-center rounded-xl border-2 border-green-600 bg-green-300 p-2"
-        >
-            aktiv
-        </div>
+
+        <Switch  v-model="isActive"/>
     </div>
     <h2>{{ formattedDate }}</h2>
 
         <div class="py-8 gap-4 flex lg:flex-row flex-col items-center" >
-          <StageButton @click="stage='single'" :isActive="stage === 'single'" label="Einzelphase" />
+          <StageButton @click="setStage(Stages.Einzel)" :isActive="stage === 'single'" label="Einzelphase" />
           <p class="text-2xl text-gray-400">></p>
-          <StageButton @click="stage='group'" :isActive="stage === 'group'" label="Gruppenphase"/>
+          <StageButton @click="setStage(Stages.Gruppe)" :isActive="stage === 'group'" label="Gruppenphase"/>
           <p class="text-2xl text-gray-400">></p>
-          <StageButton @click="stage='results'" :isActive="stage === 'results'" label="Auswertung"/>
+          <StageButton @click="setStage(Stages.Reflektion)" :isActive="stage === 'results'" label="Auswertung"/>
         </div>
 
 
@@ -114,7 +102,7 @@
 import { useStoreSessions } from '@/stores/storeSessions';
 import { useStoreActive } from '@/stores/storeActive';
 import { useRoute } from 'vue-router';
-import { ref } from 'vue';
+import { ref, watch  } from 'vue';
 import { Stages } from '@/types';
 import { useStoreSingles } from '@/stores/storeSingles';
 import { useStoreGroups } from '@/stores/storeGroups';
@@ -124,6 +112,8 @@ import SessionTab from '@/components/SessionTab.vue';
 import { useQRCode } from '@vueuse/integrations/useQRCode';
 import { shallowRef } from 'vue';
 import StageButton from '@/components/StageButton.vue';
+import Switch from '@/components/Switch.vue';
+
 
 const route = useRoute();
 
@@ -131,14 +121,13 @@ const id = Number(route.params.id);
 const originURL = shallowRef(window.location.origin); // getting the current base URL
 const qrcode = useQRCode(originURL);
 
-console.log(window.location);
-
 const tabindex = ref(0);
 
 const storeSessions = useStoreSessions();
 const sessions = storeSessions.sessions;
 const session = sessions.find((session) => session.id === id);
 const comment = ref('');
+
 
 const storeSingles = useStoreSingles();
 const singles = storeSingles.singles.filter((single) => single.sessionId === id);
@@ -167,15 +156,20 @@ const storeActive = useStoreActive();
 const active = storeActive.active;
 const stage = ref(active.stage);
 
-const stages = Object.values(Stages).slice(0, 3);
+const isActive = ref(id === active.sessionId)
 
-function activateSession() {
+watch(isActive,()=>{
+  if(isActive.value)
     storeActive.setActiveSession(id);
-}
-function deactivateSession() {
+  else
     storeActive.setActiveSession(null);
-}
-function setStage() {
+})
+
+
+
+
+function setStage(st:Stages) {
+    stage.value = st
     storeActive.setStage(stage.value);
 }
 </script>
