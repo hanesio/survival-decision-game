@@ -23,6 +23,7 @@
   import { useStoreSingles } from '@/stores/storeSingles';
   import { useStorage } from '@vueuse/core'
   import SubmitSolution from '@/components/SubmitSolution.vue';
+  import axios from 'axios';
 
   const router = useRouter();
 
@@ -63,6 +64,11 @@
       calculateResult()
       if(session!= undefined){
           storeSingles.addSingle(username.value, password.value, sendItems.value, session.id, result.value)
+          sendData({id:0, username:username.value, items: sendItems.value, sessionId:session.id, result:result.value})
+
+
+
+
       }
       singleApplied.value = true
       router.push('/');
@@ -79,9 +85,20 @@
   function calculateResult(){
     result.value = 0
     sendItems.value.forEach((item,index)=>{
-    result.value += Math.abs(item.rank-index)
-  })
+      result.value += Math.abs(item.rank-index)
+    })
   }
+
+  async function sendData(data) {
+    axios.defaults.headers.post = {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+        }; // muss anscheinend UNBEDINGT unmittelbar vor dem request passieren
+
+  const response = await axios.post("http://localhost:8800/api/singles/create", data)
+  console.log(response);
+}
 </script>
 
 

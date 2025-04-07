@@ -23,7 +23,8 @@
       <draggable v-model="dragListItems" tag="ul" handle=".handle" animation="300">
         <template #item="{element:item, index}" >
             <li class="px-1 py-0  mt-1 flex gap-0.5 items-center justify-between rounded-sm w-full bg-gray-200 ">
-              <span class="px-1 py-1  w-8 text-center bg-gray-200  ">{{ index +1 }}</span>
+              <span class=" py-1  w-6 text-center font-bold pl-1 bg-gray-200  ">{{ index + 1 }}</span>
+              <button @click="deleteFromList(item)" class="w-6 shrink-0 text-gray-400  cursor-pointer "><IconDelete class="w-5"/></button>
               <span class="p-1 px-2 bg-gray-200 w-full border-l-2 border-white">
                 {{ item.description }}
               </span>
@@ -43,6 +44,7 @@
   import draggable from 'vuedraggable';
   import IconDragHandle from '@/components/icons/IconDragHandle.vue';
   import ItemPill from '@/components/ItemPill.vue';
+import IconDelete from './icons/IconDelete.vue';
 
   const props = defineProps({
     title:{
@@ -95,6 +97,12 @@
   function addItemToDragList(item:RankItem){
     dragListItems.value.push(item)
     shuffledItems.value = shuffledItems.value.filter((shuffle)=>shuffle.rank != item.rank )
+    emit('update:modelValue', dragListItems.value)
+  }
+
+  function deleteFromList(item:RankItem){
+    dragListItems.value = dragListItems.value.filter((listitem)=>listitem.rank != item.rank )
+    shuffledItems.value.push(item)
     emit('update:modelValue', dragListItems.value)
   }
 </script>

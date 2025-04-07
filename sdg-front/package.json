@@ -11,11 +11,12 @@
     "type-check": "vue-tsc --build",
     "lint": "eslint . --fix",
     "format": "prettier --write src/",
-    "host":"vite --host"
+    "host": "vite --host"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.15",
     "@vueuse/integrations": "^13.0.0",
+    "axios": "^1.8.4",
     "chart.js": "^4.4.8",
     "pinia": "^3.0.1",
     "qrcode": "^1.5.4",
