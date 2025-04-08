@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
-const singleSchema = mongoose.Schema({
-    username: {
+const groupSchema = mongoose.Schema({
+    groupname: {
         type: String,
         required: true,
     },
@@ -19,9 +19,9 @@ const singleSchema = mongoose.Schema({
         type: String,
         required: true,
     },
-    groupId: {
-        type: Number,
-        required: false,
+    members: {
+        type: [String],
+        required: true,
     },
     result: {
         type: Number,
@@ -29,5 +29,5 @@ const singleSchema = mongoose.Schema({
     },
 });
 
-const Single = mongoose.model('singles', singleSchema);
-export default Single;
+const Group = mongoose.model('groups', groupSchema);
+export default Group;
