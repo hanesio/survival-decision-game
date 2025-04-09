@@ -8,7 +8,7 @@ const activeSchema = mongoose.Schema({
     },
     sessionId: {
         type: String,
-        required: true,
+        required: false,
     },
 });
 

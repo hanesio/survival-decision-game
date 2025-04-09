@@ -1,11 +1,11 @@
 export interface Preset {
-    id: number;
+    _id: string;
     title: string;
     description: string;
     items: RankItem[];
 }
 export interface Session {
-    id: number;
+    _id: string;
     sessionname: string;
     date: Date;
     title: string;
@@ -18,7 +18,7 @@ export interface Group {
     id: number;
     groupname: string;
     items: RankItem[];
-    sessionId: number;
+    sessionId: string;
     members: number[];
     result: number;
 }
@@ -28,7 +28,7 @@ export interface Single {
     username: string;
     password: string;
     items: RankItem[]; // TODO shorthand oder id für bessere iteration, Lösungsbemerkung
-    sessionId: number;
+    sessionId: string;
     groupId?: number;
     result: number;
 }
@@ -44,7 +44,7 @@ export interface Setting {
 }
 export interface Active {
     stage: 'single' | 'group' | 'results';
-    sessionId: number | null;
+    sessionId: string | null;
 }
 
 export enum Stages {

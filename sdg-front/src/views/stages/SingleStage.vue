@@ -1,9 +1,10 @@
 <template>
     <SubmitSolution
+        v-if="session != undefined"
         :title="session.title"
         stage="Einzellösung"
         :description="session.description"
-        :items="items"
+        :items="session.items"
         v-model="sendItems"
         :valid="listIsValid"
         :show-validation="showListValidation"
@@ -35,7 +36,7 @@
         <template v-slot:button>
             <button
                 @click="submitSolution"
-                class="cursor-pointer rounded bg-blue-600 p-4 hover:bg-blue-500"
+                class="cursor-pointer rounded bg-cyan-500 p-4 hover:bg-cyan-400"
             >
                 abgeben
             </button>
@@ -44,29 +45,28 @@
 </template>
 
 <script setup lang="ts">
-import { useStoreSessions } from '@/stores/storeSessions';
 import type { RankItem } from '@/types';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useStoreActive } from '@/stores/storeActive';
 import { useStoreSingles } from '@/stores/storeSingles';
 import { useStorage } from '@vueuse/core';
 import SubmitSolution from '@/components/SubmitSolution.vue';
-import axios from 'axios';
+import { AxiosHelper } from '@/AxiosHelper';
+
+const axiosHelper = new AxiosHelper();
 
 const router = useRouter();
 
-const storeActive = useStoreActive();
-const active = storeActive.active;
-const storeSessions = useStoreSessions();
-const session = storeSessions.sessions.find((session) => session.id === active.sessionId);
+const active = ref();
+const session = ref(undefined);
+getActive();
+console.log('done');
+
 const storeSingles = useStoreSingles();
 const singleApplied = useStorage('single-applied', false);
 
-let items: RankItem[] = session === undefined ? [] : session.items;
 const sendItems = ref([]);
 const username = ref('');
-const password = ref('');
 const result = ref(0);
 const showNameValidation = ref(false);
 const showListValidation = ref(false);
@@ -88,22 +88,28 @@ const listIsValid = computed(() => {
     return sendItems.value.length === 15;
 });
 
+async function getSession() {
+    const sessionData = await axiosHelper.get('sessions/find/' + active.value.sessionId);
+    session.value = sessionData.data;
+    console.log(session.value);
+}
+async function getActive() {
+    const activeData = await axiosHelper.get('actives/find');
+    active.value = activeData.data;
+    console.log(active.value);
+
+    getSession();
+}
+
 function submitSolution() {
     if (nameIsValid.value && nameIsFree.value && listIsValid.value) {
         calculateResult();
         if (session != undefined) {
-            storeSingles.addSingle(
-                username.value,
-                password.value,
-                sendItems.value,
-                session.id,
-                result.value,
-            );
             sendData({
                 id: 0,
                 username: username.value,
                 items: sendItems.value,
-                sessionId: session.id,
+                sessionId: session.value._id,
                 result: result.value,
             });
         }
@@ -125,13 +131,7 @@ function calculateResult() {
 }
 
 async function sendData(data) {
-    axios.defaults.headers.post = {
-        Accept: 'application/json',
-        'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
-    }; // muss anscheinend UNBEDINGT unmittelbar vor dem request passieren
-
-    const response = await axios.post('http://localhost:8800/api/singles/create', data);
+    const response = await axiosHelper.post('singles/create', data);
     console.log(response);
 }
 </script>

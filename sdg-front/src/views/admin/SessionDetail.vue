@@ -1,19 +1,30 @@
 <template>
-    <div class="flex gap-2 py-2">
-        <h1 class="text-4xl">{{ name }}</h1>
+    <div class="flex items-end gap-2 py-2">
+        <h1 class="text-4xl" v-if="session">{{ session.sessionname }}</h1>
 
-        <Switch  v-model="isActive"/>
+        <Switch v-model="isActive" />
     </div>
     <h2>{{ formattedDate }}</h2>
 
-        <div class="py-8 gap-4 flex lg:flex-row flex-col items-center" >
-          <StageButton @click="setStage(Stages.Einzel)" :isActive="stage === 'single'" label="Einzelphase" />
-          <p class="text-2xl text-gray-400">></p>
-          <StageButton @click="setStage(Stages.Gruppe)" :isActive="stage === 'group'" label="Gruppenphase"/>
-          <p class="text-2xl text-gray-400">></p>
-          <StageButton @click="setStage(Stages.Reflektion)" :isActive="stage === 'results'" label="Auswertung"/>
-        </div>
-
+    <div class="flex flex-col items-center gap-4 py-8 lg:flex-row">
+        <StageButton
+            @click="setStage(Stages.Einzel)"
+            :isActive="stage === 'single'"
+            label="Einzelphase"
+        />
+        <p class="text-2xl text-gray-400">></p>
+        <StageButton
+            @click="setStage(Stages.Gruppe)"
+            :isActive="stage === 'group'"
+            label="Gruppenphase"
+        />
+        <p class="text-2xl text-gray-400">></p>
+        <StageButton
+            @click="setStage(Stages.Reflektion)"
+            :isActive="stage === 'results'"
+            label="Auswertung"
+        />
+    </div>
 
     <div class="flex">
         <SessionTab @click="tabindex = 0" :isActive="tabindex === 0" label="Präsentation" />
@@ -24,13 +35,13 @@
         <section
             v-if="tabindex === 0"
             name="presentation"
-            class="flex flex-col lg:items-start justify-center lg:flex-row lg:gap-4 items-center"
+            class="flex flex-col items-center justify-center lg:flex-row lg:items-start lg:gap-4"
         >
-            <div class="lg:w-1/4 p-4 flex flex-col gap-4">
+            <div class="flex flex-col gap-4 p-4 lg:w-1/4">
                 <p class="bg-blue-400 py-2 text-center text-2xl">{{ originURL }}</p>
-                <img class="w-full scale-130 mix-blend-multiply " :src="qrcode" alt="QR Code" />
+                <img class="scale-130 w-full mix-blend-multiply" :src="qrcode" alt="QR Code" />
             </div>
-            <div class="w-3/4 p-4 pr-6">
+            <div class="w-3/4 p-4 pr-6" v-if="session">
                 <h2 class="pb-8 text-6xl underline decoration-blue-400">
                     {{ session.title }}
                 </h2>
@@ -38,18 +49,20 @@
             </div>
         </section>
 
-
         <section v-if="tabindex === 1" name="analyzation">
-            <div class="mt-2 flex flex-col gap-8 rounded-lg bg-gray-50 p-4">
+            <div
+                class="mt-2 flex flex-col gap-8 rounded-lg bg-gray-50 p-4"
+                v-if="singleData.length > 0"
+            >
                 <div class="rounded-t-md shadow">
                     <h4 class="px-4 py-2 text-lg">Ergebnis Einzel</h4>
                     <div class="h-64 w-full p-4"><BarChart :chart_data="singleData" /></div>
                 </div>
-                <div class="rounded-t-md shadow">
+                <div class="rounded-t-md shadow" v-if="groupData.length > 0">
                     <h4 class="px-4 py-2 text-lg">Ergebnis Gruppen</h4>
                     <div class="h-64 w-full p-4"><BarChart :chart_data="groupData" /></div>
                 </div>
-                <div class="rounded-t-md shadow">
+                <div class="rounded-t-md shadow" v-if="groupData.length > 0">
                     <h4 class="px-4 py-2 text-lg">Ergebnisunterschied zur Gruppe</h4>
                     <div class="w-full p-4"><BarChartDifference :groupData :singleData /></div>
 
@@ -66,29 +79,28 @@
                 </div>
             </div>
         </section>
-        <section
-            v-if="tabindex === 2"
-            name="solution"
-        >
-        <div class="rounded-lg overlow overflow-clip">
-          <table class="table-auto border-collapse w-full ">
-              <thead>
-                <tr class="bg-gray-400 text-white text-left">
-                  <th>Platz</th>
-                  <th>Gegenstand</th>
-                  <th>Erklärung</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="item in session.items" class="gap-4 odd:bg-gray-200 bg-gray-50 hover:bg-cyan-400">
-                  <td class="text-center ">{{item.rank+1}}</td>
-                  <td>{{item.description}}</td>
-                  <td>{{ item.explanation }}</td>
-                </tr>
-              </tbody>
-            </table>
-        </div>
-
+        <section v-if="tabindex === 2" name="solution">
+            <div class="overlow overflow-clip rounded-lg">
+                <table class="w-full table-auto border-collapse">
+                    <thead>
+                        <tr class="bg-gray-400 text-left text-white">
+                            <th>Platz</th>
+                            <th>Gegenstand</th>
+                            <th>Erklärung</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="item in session.items"
+                            class="gap-4 bg-gray-50 odd:bg-gray-200 hover:bg-cyan-400"
+                        >
+                            <td class="text-center">{{ item.rank + 1 }}</td>
+                            <td>{{ item.description }}</td>
+                            <td>{{ item.explanation }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </section>
     </div>
 
@@ -99,10 +111,8 @@
 </template>
 
 <script setup lang="ts">
-import { useStoreSessions } from '@/stores/storeSessions';
-import { useStoreActive } from '@/stores/storeActive';
 import { useRoute } from 'vue-router';
-import { ref, watch  } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { Stages } from '@/types';
 import { useStoreSingles } from '@/stores/storeSingles';
 import { useStoreGroups } from '@/stores/storeGroups';
@@ -113,70 +123,109 @@ import { useQRCode } from '@vueuse/integrations/useQRCode';
 import { shallowRef } from 'vue';
 import StageButton from '@/components/StageButton.vue';
 import Switch from '@/components/Switch.vue';
+import { AxiosHelper } from '@/AxiosHelper';
 
+const axiosHelper = new AxiosHelper();
 
 const route = useRoute();
+const id = route.params.id;
 
-const id = Number(route.params.id);
+const session = ref();
+const active = ref();
+const singles = ref();
+const groups = ref();
+
+getSession();
+getActive();
+getSingles();
+getGroups();
+
 const originURL = shallowRef(window.location.origin); // getting the current base URL
 const qrcode = useQRCode(originURL);
-
 const tabindex = ref(0);
 
-const storeSessions = useStoreSessions();
-const sessions = storeSessions.sessions;
-const session = sessions.find((session) => session.id === id);
 const comment = ref('');
 
-
-const storeSingles = useStoreSingles();
-const singles = storeSingles.singles.filter((single) => single.sessionId === id);
-const singleData = singles.map((single) => {
-    return { x: single.username, y: single.result, groupId: single.groupId };
+const singleData = computed(() => {
+    return singles.value
+        ? singles.value.map((single) => {
+              return { x: single.username, y: single.result, groupId: single.groupId };
+          })
+        : undefined;
 });
 
-const storeGroups = useStoreGroups();
-const groups = storeGroups.groups.filter((single) => single.sessionId === id);
-const groupData = groups.map((group) => {
-    return { x: group.groupname, y: group.result, groupId: group.id };
+const groupData = computed(() => {
+    return groups.value
+        ? groups.value.map((group) => {
+              return { x: group.groupname, y: group.result, groupId: group.id };
+          })
+        : undefined;
 });
 
-const name = session === undefined ? 'no session found' : session.name;
-const formattedDate =
-    session === undefined
+const formattedDate = computed(() => {
+    return session.value === undefined
         ? '-'
-        : session.date.toLocaleDateString('de-DE', {
+        : new Date(session.value.date).toLocaleDateString('de-DE', {
               weekday: 'long',
               year: 'numeric',
               month: 'long',
               day: 'numeric',
           });
+});
 
-const storeActive = useStoreActive();
-const active = storeActive.active;
-const stage = ref(active.stage);
+const stage = ref('results');
 
-const isActive = ref(id === active.sessionId)
+const isActive = ref(false);
 
-watch(isActive,()=>{
-  if(isActive.value)
-    storeActive.setActiveSession(id);
-  else
-    storeActive.setActiveSession(null);
-})
+watch(isActive, () => {
+    setActiveSession();
+});
 
+async function getSession() {
+    const sessionData = await axiosHelper.get('sessions/find/' + id);
+    session.value = sessionData.data;
+    console.log(session.value);
+}
 
+async function getActive() {
+    const activeData = await axiosHelper.get('actives/find');
+    active.value = activeData.data;
+    stage.value = active.value.stage;
+    isActive.value = id === active.value.sessionId;
+}
 
+async function getSingles() {
+    const data = await axiosHelper.get('singles/find-by-session/' + id);
+    singles.value = data.data;
+    console.log(singles.value);
+}
 
-function setStage(st:Stages) {
-    stage.value = st
-    storeActive.setStage(stage.value);
+async function getGroups() {
+    const data = await axiosHelper.get('groups/find-by-session/' + id);
+    groups.value = data.data;
+    console.log(groups.value);
+}
+
+async function setActiveSession() {
+    if (isActive.value) {
+        const activityData = { sessionId: id, stage: stage.value };
+        const responseActive = await axiosHelper.post('actives/create', activityData);
+    } else {
+        const activityData = { sessionId: null, stage: stage.value };
+        const responseActive = await axiosHelper.post('actives/create', activityData);
+    }
+}
+
+async function setStage(st: Stages) {
+    const activityData = { sessionId: id, stage: st };
+    const responseActive = await axiosHelper.post('actives/create', activityData);
+    stage.value = st;
 }
 </script>
 
 <style>
-td, th {
-  padding: 8px 16px;
+td,
+th {
+    padding: 8px 16px;
 }
-
 </style>

@@ -1,23 +1,23 @@
-import { defineStore } from 'pinia'
-import { type Active } from '@/types'
+import { defineStore } from 'pinia';
+import { type Active } from '@/types';
 
 interface ActiveState {
-  active: Active
+    active: Active;
 }
 
 export const useStoreActive = defineStore('storeActive', {
-  state: (): ActiveState => {
-    return {
-      active: { sessionId: null, stage: 'single' },
-    }
-  },
-  actions: {
-    setActiveSession(sessionId: number | null) {
-      this.active.sessionId = sessionId
+    state: (): ActiveState => {
+        return {
+            active: { sessionId: null, stage: 'single' },
+        };
     },
-    setStage(stage: 'single' | 'group' | 'results') {
-      this.active.stage = stage
+    actions: {
+        setActiveSession(sessionId: string | string[] | null) {
+            this.active.sessionId = sessionId;
+        },
+        setStage(stage: 'single' | 'group' | 'results') {
+            this.active.stage = stage;
+        },
     },
-  },
-  getters: {},
-})
+    getters: {},
+});

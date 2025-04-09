@@ -1,22 +1,43 @@
-<script setup lang='ts'>
+<script setup lang="ts">
 import { ref } from 'vue';
 
 const props = defineProps({
-    label:{
+    label: {
         type: String,
-        required: true
-    }
-})
-
-
+        required: true,
+    },
+});
 </script>
 <template>
-    <div class="flex p-2 bg-cyan-100 rounded-full items-center gap-2 active:scale-90 active:opacity-0 transition ease-out duration-300 ">
-      <button class="p-2 h-8 cursor-pointer flex items-center justify-center w-8 bg-cyan-400 rounded-full shrink-0">+</button>
-      <p class="pr-2">{{label}}</p>
+    <div
+        class="fade-in flex items-center gap-2 rounded-full bg-cyan-100 p-2 transition duration-300 ease-out active:scale-90 active:opacity-0"
+    >
+        <button
+            class="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full bg-cyan-400 p-2"
+        >
+            +
+        </button>
+        <p class="pr-2">{{ label }}</p>
     </div>
 </template>
 
-
 <style scoped>
+.fade-in {
+    opacity: 1;
+    animation-name: fadeInOpacity;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-out;
+    animation-duration: 0.3s;
+}
+
+@keyframes fadeInOpacity {
+    0% {
+        opacity: 0;
+        scale: 90%;
+    }
+    100% {
+        opacity: 1;
+        scale: 100%;
+    }
+}
 </style>

@@ -97,6 +97,17 @@ app.get('/api/singles/find/:id', async function (req, res) {
     res.send(result);
 });
 
+app.get('/api/singles/find-by-session/:id', async function (req, res) {
+    try {
+        var fetchid = req.params.id;
+        var result = await Single.find({ sessionId: fetchid });
+    } catch (err) {
+        result = err.message;
+        console.error('Error Message:', result);
+    }
+    res.send(result);
+});
+
 app.get('/api/groups/find/:id', async function (req, res) {
     try {
         var fetchid = req.params.id;
@@ -108,10 +119,21 @@ app.get('/api/groups/find/:id', async function (req, res) {
     res.send(result);
 });
 
+app.get('/api/groups/find-by-session/:id', async function (req, res) {
+    try {
+        var fetchid = req.params.id;
+        var result = await Group.find({ sessionId: fetchid });
+    } catch (err) {
+        result = err.message;
+        console.error('Error Message:', result);
+    }
+    res.send(result);
+});
+
 app.get('/api/sessions/find/:id', async function (req, res) {
     try {
         var fetchid = req.params.id;
-        var result = await Session.findOne({ id: fetchid });
+        var result = await Session.findOne({ _id: fetchid });
     } catch (err) {
         result = err.message;
         console.error('Error Message:', result);
