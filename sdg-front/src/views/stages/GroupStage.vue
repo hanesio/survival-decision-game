@@ -151,7 +151,6 @@ async function sendData(data) {
 }
 async function setSingles(id: string, groupId: string) {
     const response = await axiosHelper.put('singles/update/' + id, { groupId: groupId });
-    console.log(response);
     return response;
 }
 
@@ -191,6 +190,5 @@ async function getSinglesBySession() {
 async function getGroups() {
     const data = await axiosHelper.get('groups/find');
     groups.value = data.data;
-    console.log(groups.value);
 }
 </script>

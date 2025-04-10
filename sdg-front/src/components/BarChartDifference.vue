@@ -32,7 +32,7 @@ props.groupData.forEach((group) => {
     };
     singlesByGroup.push(compareGroup);
 });
-
+console.log(props.singleData);
 console.log(singlesByGroup);
 </script>
 
