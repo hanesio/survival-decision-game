@@ -20,7 +20,7 @@ const singleSchema = mongoose.Schema({
         required: true,
     },
     groupId: {
-        type: Number,
+        type: String,
         required: false,
     },
     result: {
