@@ -114,8 +114,6 @@
 import { useRoute } from 'vue-router';
 import { computed, ref, watch } from 'vue';
 import { Stages } from '@/types';
-import { useStoreSingles } from '@/stores/storeSingles';
-import { useStoreGroups } from '@/stores/storeGroups';
 import BarChart from '@/components/BarChart.vue';
 import BarChartDifference from '@/components/BarChartDifference.vue';
 import SessionTab from '@/components/SessionTab.vue';
@@ -155,9 +153,10 @@ const singleData = computed(() => {
 });
 
 const groupData = computed(() => {
+    console.log(groups.value);
     return groups.value
         ? groups.value.map((group) => {
-              return { x: group.groupname, y: group.result, groupId: group.id };
+              return { x: group.groupname, y: group.result, _id: group._id };
           })
         : undefined;
 });

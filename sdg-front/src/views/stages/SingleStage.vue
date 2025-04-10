@@ -45,10 +45,8 @@
 </template>
 
 <script setup lang="ts">
-import type { RankItem } from '@/types';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useStoreSingles } from '@/stores/storeSingles';
 import { useStorage } from '@vueuse/core';
 import SubmitSolution from '@/components/SubmitSolution.vue';
 import { AxiosHelper } from '@/AxiosHelper';
@@ -59,10 +57,11 @@ const router = useRouter();
 
 const active = ref();
 const session = ref(undefined);
+const singles = ref();
 getActive();
+getSingles();
 console.log('done');
 
-const storeSingles = useStoreSingles();
 const singleApplied = useStorage('single-applied', false);
 
 const sendItems = ref([]);
@@ -75,7 +74,7 @@ const nameIsValid = computed(() => {
     return username.value.length > 0;
 });
 const nameIsFree = computed(() => {
-    return storeSingles.singles.find((single) => single.username === username.value) === undefined;
+    return singles.value.find((single) => single.username === username.value) === undefined;
 });
 
 const nameValidationMessage = computed(() => {
@@ -100,16 +99,21 @@ async function getActive() {
 
     getSession();
 }
+async function getSingles() {
+    const data = await axiosHelper.get('singles/find');
+    singles.value = data.data;
+    console.log(singles.value);
+}
 
 function submitSolution() {
     if (nameIsValid.value && nameIsFree.value && listIsValid.value) {
         calculateResult();
         if (session != undefined) {
             sendData({
-                id: 0,
                 username: username.value,
                 items: sendItems.value,
                 sessionId: session.value._id,
+                groupId: null,
                 result: result.value,
             });
         }

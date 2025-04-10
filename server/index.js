@@ -164,9 +164,11 @@ app.get('/api/actives/find/:id', async function (req, res) {
 });
 
 app.put('/api/singles/update/:id', async function (req, res) {
+    console.log(req.body);
     try {
-        var fetchid = req.params.id;
-        var result = await Active.findOneAndUpdate({ id: fetchid }, req.body);
+        var filter = { _id: req.params.id };
+        var update = req.body;
+        var result = await Single.findOneAndUpdate(filter, update);
     } catch (err) {
         result = err.message;
         console.error('Error Message:', result);

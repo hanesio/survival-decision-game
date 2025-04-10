@@ -1,128 +1,196 @@
 <template>
-  <SubmitSolution :title="session.title" stage="Gruppenlösung" :description="session.description" :items="items" v-model="sendItems" :valid="listIsValid" :show-validation="showListValidation">
+    <SubmitSolution
+        v-if="session"
+        :title="session.title"
+        stage="Gruppenlösung"
+        :description="session.description"
+        :items="session.items"
+        v-model="sendItems"
+        :valid="listIsValid"
+        :show-validation="showListValidation"
+    >
+        <template v-slot:members>
+            <div class="flex flex-col gap-1 p-4">
+                <section class="flex flex-wrap gap-2">
+                    <SinglePill
+                        @click="handleMember(single._id)"
+                        v-for="single in singles"
+                        :username="single.username"
+                    />
+                </section>
+                <p
+                    v-if="showMemberValidation"
+                    class="px-2 text-xs"
+                    :class="[membersChosen ? 'text-green-500' : 'text-red-600']"
+                >
+                    {{ membersValidationMessage }}
+                </p>
+            </div>
+        </template>
 
-    <template v-slot:members>
-      <div  class="flex flex-col gap-1 p-4">
-    <section class="flex gap-2 flex-wrap">
-    <SinglePill @click="handleMember(single.id)" v-for="single in singles" :username="single.username"/>
-  </section>
-    <p v-if="showMemberValidation" class="text-xs px-2" :class="[membersChosen?'text-green-500':'text-red-600']">
-      {{ membersValidationMessage }}</p>
-  </div>
-    </template>
+        <template v-slot:username>
+            <div class="flex w-full flex-col gap-1 lg:w-1/2">
+                <input
+                    v-model="groupname"
+                    :class="[
+                        showNameValidation
+                            ? nameIsFree && nameIsValid
+                                ? 'border-transparent'
+                                : 'border-red-600'
+                            : 'border-transparent',
+                    ]"
+                    class="w-full rounded border-2 bg-gray-200 p-1 pl-2 text-lg"
+                    type="text"
+                    placeholder="Gruppenname"
+                />
+                <p
+                    v-if="showNameValidation"
+                    class="px-2 text-xs"
+                    :class="[nameIsValid && nameIsFree ? 'text-green-500' : 'text-red-600']"
+                >
+                    {{ nameValidationMessage }}
+                </p>
+            </div>
+        </template>
 
-    <template v-slot:username>
-      <div class=" flex flex-col gap-1 lg:w-1/2 w-full ">
-          <input v-model="groupname" :class="[showNameValidation?  nameIsFree && nameIsValid? 'border-transparent':'border-red-600':'border-transparent']" class="text-lg border-2 w-full  bg-gray-200 rounded pl-2 p-1 " type="text" placeholder="Nickname">
-          <p v-if="showNameValidation" class="text-xs px-2" :class="[nameIsValid && nameIsFree?'text-green-500':'text-red-600']">{{ nameValidationMessage }}</p>
-        </div>
-    </template>
-
-    <template v-slot:button>
-      <button @click="submitSolution" class=" bg-blue-600 rounded p-4 cursor-pointer  hover:bg-blue-500">
-            abgeben
-      </button>
-    </template>
-  </SubmitSolution>
+        <template v-slot:button>
+            <button
+                @click="submitSolution"
+                class="cursor-pointer rounded bg-blue-600 p-4 hover:bg-blue-500"
+            >
+                abgeben
+            </button>
+        </template>
+    </SubmitSolution>
 </template>
 
 <script setup lang="ts">
-  import { useStoreSessions } from '@/stores/storeSessions';
-  import type { RankItem } from '@/types';
-  import {  computed, ref} from 'vue';
-  import {  useRouter } from 'vue-router';
-  import { useStoreActive } from '@/stores/storeActive';
-  import { useStoreSingles } from '@/stores/storeSingles';
-  import { useStorage } from '@vueuse/core'
-  import SubmitSolution from '@/components/SubmitSolution.vue';
-  import { useStoreGroups } from '@/stores/storeGroups';
-  import SinglePill from '@/components/SinglePill.vue';
+import { computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useStorage } from '@vueuse/core';
+import SubmitSolution from '@/components/SubmitSolution.vue';
+import SinglePill from '@/components/SinglePill.vue';
+import { AxiosHelper } from '@/AxiosHelper';
 
-  const router = useRouter();
+const axiosHelper = new AxiosHelper();
+const router = useRouter();
 
-  const storeActive = useStoreActive()
-  const active = storeActive.active
-  const storeSessions = useStoreSessions()
-  const session = storeSessions.sessions.find((session)=>session.id === active.sessionId)
-  const storeGroups = useStoreGroups()
-  const storeSingles = useStoreSingles()
-  const groupApplied = useStorage('group-applied', false)
+const active = ref();
+const session = ref(undefined);
+const singles = ref();
+const groups = ref();
+handleRequests();
 
-  let items:RankItem[] = session === undefined ? [] : session.items
-  const sendItems = ref([])
-  const groupname = ref("")
-  const singles = storeSingles.singles.filter((single)=>single.sessionId === active.sessionId)
-  const result = ref(0)
-  let members = ref([])
-let newMembers= ref([])
-  const showNameValidation = ref(false)
-  const showMemberValidation = ref(false)
-  const showListValidation = ref(false)
+const groupApplied = useStorage('group-applied', false);
+const sendItems = ref([]);
+const groupname = ref('');
+const result = ref(0);
+let members = ref([]);
+let newMembers = ref([]);
+const showNameValidation = ref(false);
+const showMemberValidation = ref(false);
+const showListValidation = ref(false);
 
-  const nameIsValid = computed(()=>{
-    return groupname.value.length > 0
-  })
-  const nameIsFree = computed(()=>{
-    return storeGroups.groups.find((group)=>group.groupname === groupname.value) === undefined
-})
+const nameIsValid = computed(() => {
+    return groupname.value.length > 0;
+});
 
-  const nameValidationMessage = computed(()=>{
-    if(!nameIsValid.value) return 'Gib einen Namen ein'
-    if(!nameIsFree.value) return 'Der Name ist bereits vergeben'
-    return 'sieht gut aus'
-  })
+const nameIsFree = computed(() => {
+    return groups.value.find((group) => group.groupname === groupname.value) === undefined;
+});
 
-  const membersChosen = computed(()=>{
-  return members.value.length > 0
-})
+const nameValidationMessage = computed(() => {
+    if (!nameIsValid.value) return 'Gib einen Namen ein';
+    if (!nameIsFree.value) return 'Der Name ist bereits vergeben';
+    return 'sieht gut aus';
+});
 
-const membersValidationMessage = computed(()=>{
-  if(!membersChosen.value) return 'Füge Gruppenmitglieder hinzu'
-  return 'sieht gut aus'
-})
+const membersChosen = computed(() => {
+    return members.value.length > 0;
+});
 
-  const listIsValid = computed(()=>{
-    return sendItems.value.length === 15
-  })
+const membersValidationMessage = computed(() => {
+    if (!membersChosen.value) return 'Füge Gruppenmitglieder hinzu';
+    return 'sieht gut aus';
+});
 
-  function submitSolution(){
-    if(nameIsValid.value && nameIsFree.value && membersChosen.value && listIsValid.value){
-      calculateResult()
-      if(session!= undefined){
-        const groupId = storeGroups.addGroup(groupname.value, sendItems.value, session.id, members.value, result.value)
-        members.value.forEach((member)=>{
-          storeSingles.setGroupId(member, groupId)
-    })
-    }
-      groupApplied.value = true
-      router.push('/');
+const listIsValid = computed(() => {
+    return sendItems.value.length === 15;
+});
+
+async function submitSolution() {
+    if (nameIsValid.value && nameIsFree.value && membersChosen.value && listIsValid.value) {
+        calculateResult();
+        if (session != undefined) {
+            const group = await sendData({
+                groupname: groupname.value,
+                items: sendItems.value,
+                sessionId: session.value._id,
+                members: members.value,
+                result: result.value,
+            });
+            members.value.forEach((member) => {
+                setSingles(member, group.data._id);
+            });
+        }
+        groupApplied.value = true;
+        router.push('/');
     } else {
-      if(!nameIsFree.value || !nameIsValid.value)
-        showNameValidation.value = true
+        if (!nameIsFree.value || !nameIsValid.value) showNameValidation.value = true;
 
-      if(!membersChosen.value)
-        showMemberValidation.value = true
+        if (!membersChosen.value) showMemberValidation.value = true;
 
-      if(!listIsValid.value)
-        showListValidation.value = true
-      window.scrollTo(0,0);
+        if (!listIsValid.value) showListValidation.value = true;
+        window.scrollTo(0, 0);
     }
-  }
+}
 
-  function calculateResult(){
-    result.value = 0
-    sendItems.value.forEach((item,index)=>{
-    result.value += Math.abs(item.rank-index)
-  })
-  }
+async function sendData(data) {
+    const response = await axiosHelper.post('groups/create', data);
+    return response;
+}
+async function setSingles(id: string, groupId: string) {
+    const response = await axiosHelper.put('singles/update/' + id, { groupId: groupId });
+    console.log(response);
+    return response;
+}
 
-  function handleMember(singleId: number){
-    if(members.value.includes(singleId)){
-        newMembers.value = members.value.filter((member)=> member != singleId)
-        members.value = newMembers.value
-    } else
-        members.value.push(singleId)
+function calculateResult() {
+    result.value = 0;
+    sendItems.value.forEach((item, index) => {
+        result.value += Math.abs(item.rank - index);
+    });
+}
+
+function handleMember(singleId: number) {
+    if (members.value.includes(singleId)) {
+        newMembers.value = members.value.filter((member) => member != singleId);
+        members.value = newMembers.value;
+    } else members.value.push(singleId);
+}
+
+async function handleRequests() {
+    await getActive();
+    await getSession();
+    await getSinglesBySession();
+    await getGroups();
+}
+
+async function getActive() {
+    const activeData = await axiosHelper.get('actives/find');
+    active.value = activeData.data;
+}
+async function getSession() {
+    const sessionData = await axiosHelper.get('sessions/find/' + active.value.sessionId);
+    session.value = sessionData.data;
+}
+async function getSinglesBySession() {
+    const data = await axiosHelper.get('singles/find-by-session/' + active.value.sessionId);
+    singles.value = data.data;
+}
+async function getGroups() {
+    const data = await axiosHelper.get('groups/find');
+    groups.value = data.data;
+    console.log(groups.value);
 }
 </script>
-
-
