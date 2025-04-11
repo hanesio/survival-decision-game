@@ -32,14 +32,12 @@ props.groupData.forEach((group) => {
     };
     singlesByGroup.push(compareGroup);
 });
-console.log(props.singleData);
-console.log(singlesByGroup);
 </script>
 
 <template>
-    <div class="grid grid-cols-1 gap-2 lg:grid-cols-2">
-        <div class="h-72 p-4" v-for="group in singlesByGroup">
-            <div class="h-64">
+    <div class="grid grid-cols-1 gap-2 lg:flex">
+        <div class="h-72 w-full min-w-0 p-4" v-for="group in singlesByGroup">
+            <div class="l h-64">
                 <BarChartDifferenceGroup :groupData="group" />
             </div>
             <div class="flex justify-center">{{ group.groupname }}</div>

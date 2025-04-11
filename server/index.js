@@ -144,7 +144,7 @@ app.get('/api/sessions/find/:id', async function (req, res) {
 app.get('/api/presets/find/:id', async function (req, res) {
     try {
         var fetchid = req.params.id;
-        var result = await Preset.findOne({ id: fetchid });
+        var result = await Preset.findOne({ _id: fetchid });
     } catch (err) {
         result = err.message;
         console.error('Error Message:', result);
@@ -155,7 +155,7 @@ app.get('/api/presets/find/:id', async function (req, res) {
 app.get('/api/actives/find/:id', async function (req, res) {
     try {
         var fetchid = req.params.id;
-        var result = await Active.findOne({ id: fetchid });
+        var result = await Active.findOne({ _id: fetchid });
     } catch (err) {
         result = err.message;
         console.error('Error Message:', result);
@@ -169,6 +169,19 @@ app.put('/api/singles/update/:id', async function (req, res) {
         var filter = { _id: req.params.id };
         var update = req.body;
         var result = await Single.findOneAndUpdate(filter, update);
+    } catch (err) {
+        result = err.message;
+        console.error('Error Message:', result);
+    }
+    res.send(result);
+});
+
+app.get('/api/presets/delete/:id', async function (req, res) {
+    try {
+        var fetchid = req.params.id;
+        var result = await Preset.deleteOne({ _id: fetchid });
+        console.log('Data deleted');
+        res.send(result);
     } catch (err) {
         result = err.message;
         console.error('Error Message:', result);

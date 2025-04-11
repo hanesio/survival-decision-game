@@ -1,11 +1,11 @@
 export interface Preset {
-    _id: string;
+    _id?: string;
     title: string;
     description: string;
     items: RankItem[];
 }
 export interface Session {
-    _id: string;
+    _id?: string;
     sessionname: string;
     date: Date;
     title: string;
@@ -15,7 +15,7 @@ export interface Session {
 }
 
 export interface Group {
-    id: number;
+    _id?: number;
     groupname: string;
     items: RankItem[];
     sessionId: string;
@@ -24,7 +24,7 @@ export interface Group {
 }
 
 export interface Single {
-    id: number;
+    _id?: number;
     username: string;
     password: string;
     items: RankItem[]; // TODO shorthand oder id für bessere iteration, Lösungsbemerkung

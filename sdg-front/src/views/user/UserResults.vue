@@ -50,7 +50,9 @@
             </div>
             <div v-if="group" class="rounded-lg border border-cyan-500 p-4">
                 <h4 class="px-4 py-2 text-lg">Ergebnisunterschied zur Gruppe</h4>
-                <div class="w-full p-4"><BarChartDifference :groupData :singleData /></div>
+                <div class="w-full p-4">
+                    <BarChartDifference :groupData="groupDifference" :singleData />
+                </div>
             </div>
         </section>
     </div>
@@ -76,6 +78,7 @@ const yValuesSingles = ref();
 const averageSingles = ref();
 const user = ref();
 const groupData = ref();
+const groupDifference = ref();
 const yValuesGroups = ref();
 const averageGroups = ref();
 const group = ref();
@@ -114,7 +117,8 @@ function handleGroup() {
         };
     });
 
-    console.log(groupData.value);
+    groupDifference.value = groupData.value.filter((group) => group._id === user.value.groupId);
+
     yValuesGroups.value = groupData.value.map((data) => data.y);
     averageGroups.value =
         Math.floor(
