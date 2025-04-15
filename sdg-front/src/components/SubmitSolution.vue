@@ -29,10 +29,17 @@
             {{ validationMessage }}
         </p>
 
-        <draggable v-model="dragListItems" tag="ul" handle=".handle" animation="300">
-            <template #item="{ element: item, index }">
+        <draggable
+            v-model="dragListItems"
+            tag="ul"
+            handle=".handle"
+            animation="300"
+            :force-fallback="true"
+            item-key="id"
+        >
+            <template #item="{ element: item, index }" ">
                 <li
-                    class="mt-1 flex w-full items-center justify-between gap-0.5 rounded-sm bg-gray-200 px-1 py-0"
+                    class="mt-1 handle flex w-full items-center justify-between gap-0.5 rounded-sm bg-gray-200 px-1 py-0"
                 >
                     <span class="w-6 bg-gray-200 py-1 pl-1 text-center font-bold">{{
                         index + 1
@@ -47,7 +54,7 @@
                         {{ item.description }}
                     </span>
                     <div
-                        class="handle mr-1 flex w-10 cursor-grab items-center justify-center rounded-sm"
+                        class="mr-1 flex w-10 cursor-grab items-center justify-center rounded-sm"
                     >
                         <IconDragHandle class="text-gray-400" />
                     </div>
@@ -127,3 +134,9 @@ function deleteFromList(item: RankItem) {
     emit('update:modelValue', dragListItems.value);
 }
 </script>
+
+<style>
+.sortable-chosen {
+    opacity: 0;
+}
+</style>

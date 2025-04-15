@@ -1,4 +1,33 @@
 <template>
+    <dialog
+        ref="dialog"
+        class="m-auto flex h-48 w-80 flex-col justify-between rounded-md p-4"
+        :class="[dialogOpen ? 'visible' : 'invisible']"
+    >
+        <button
+            class="absolute right-2 top-2 cursor-pointer p-2 text-gray-500 hover:text-black"
+            @click="closeDialog"
+        >
+            <IconClose />
+        </button>
+        <p class="flex h-full items-center justify-center text-center">
+            Möchten Sie das Preset wirklich löschen?
+        </p>
+        <div class="flex justify-end gap-2">
+            <button
+                @click="closeDialog"
+                class="cursor-pointer rounded-sm bg-gray-200 p-2 transition hover:bg-gray-300 active:scale-95"
+            >
+                abbrechen
+            </button>
+            <button
+                @click="deletePreset"
+                class="cursor-pointer rounded-sm bg-rose-300 p-2 transition hover:bg-rose-400 active:scale-95"
+            >
+                löschen
+            </button>
+        </div>
+    </dialog>
     <h1 class="py-4 text-6xl">NEUE SESSION</h1>
 
     <div class="flex flex-col gap-2">
@@ -72,7 +101,7 @@
                     </button>
                     <button
                         v-else
-                        @click="deletePreset"
+                        @click="openDialog"
                         class="flex h-12 cursor-pointer items-center justify-center rounded bg-rose-300 p-4 hover:bg-rose-400"
                     >
                         Preset löschen
@@ -130,12 +159,15 @@ import { computed, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { AxiosHelper } from '@/AxiosHelper';
 import IconArrowRight from '@/components/icons/IconArrowRight.vue';
+import IconClose from '@/components/icons/IconClose.vue';
 
 const axiosHelper = new AxiosHelper();
 const router = useRouter();
 
 const presets = ref();
 const sessions = ref();
+const dialog = ref<HTMLDialogElement>();
+const dialogOpen = ref(false);
 
 const selectedPresetId = ref('');
 let items: RankItem[] = [];
@@ -145,9 +177,6 @@ const presetDescription = ref('');
 start();
 const sessionName = ref('');
 const currentDate = new Date();
-// const day = currentDate.getDate();
-// const month = currentDate.getMonth() + 1; // Add 1 as months are zero-based
-// const year = currentDate.getFullYear();
 
 const showNameValidation = ref(false);
 
@@ -231,6 +260,7 @@ async function savePreset() {
 }
 
 async function deletePreset() {
+    closeDialog();
     const response = await axiosHelper.get('presets/delete/' + selectedPresetId.value);
     console.log(response);
     await getPresets();
@@ -253,5 +283,14 @@ async function start() {
     selectedPresetId.value = presets.value[0]._id;
     getPreset();
     getSessions();
+}
+
+function openDialog() {
+    dialogOpen.value = true;
+    dialog.value.showModal();
+}
+function closeDialog() {
+    dialogOpen.value = false;
+    dialog.value.close();
 }
 </script>

@@ -1,19 +1,17 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { RouterLink, RouterView } from 'vue-router';
 </script>
 
 <template>
-
-  <header class="flex justify-between items-center px-6 py-4 fixed top-0 w-screen bg-cyan-500">
-
-      <nav class="flex gap-2">
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/admin">Admin</RouterLink>
-      </nav>
-
-  </header>
-<div class="w-full lg:px-20 h-full mt-20 px-2 "><RouterView /></div>
-
+    <header
+        class="fixed top-0 z-20 flex w-screen items-center justify-between bg-cyan-500 px-6 py-4"
+    >
+        <nav class="flex gap-2">
+            <RouterLink to="/">Home</RouterLink>
+            <RouterLink to="/admin">Admin</RouterLink>
+        </nav>
+    </header>
+    <div class="mt-20 h-full w-full px-2 lg:px-20"><RouterView /></div>
 </template>
 
 <!-- html {
@@ -62,6 +60,4 @@ import { RouterLink, RouterView } from 'vue-router'
     linear-gradient(45deg,var(--c1) var(--g));
   background-size: var(--s) var(--s);
 } -->
-<style>
-
-</style>
+<style></style>

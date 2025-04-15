@@ -180,7 +180,19 @@ app.get('/api/presets/delete/:id', async function (req, res) {
     try {
         var fetchid = req.params.id;
         var result = await Preset.deleteOne({ _id: fetchid });
-        console.log('Data deleted');
+        console.log('Preset deleted');
+        res.send(result);
+    } catch (err) {
+        result = err.message;
+        console.error('Error Message:', result);
+    }
+    res.send(result);
+});
+app.get('/api/sessions/delete/:id', async function (req, res) {
+    try {
+        var fetchid = req.params.id;
+        var result = await Session.deleteOne({ _id: fetchid });
+        console.log('Session deleted');
         res.send(result);
     } catch (err) {
         result = err.message;

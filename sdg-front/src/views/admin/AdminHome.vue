@@ -39,6 +39,7 @@ function openSession(id: number) {
             <p class="text-xl">NEUE SESSION</p>
         </div>
         <SessionCard
+            v-if="active"
             @click="openSession(session._id)"
             v-for="session in sessions.slice().reverse()"
             :name="session.sessionname"

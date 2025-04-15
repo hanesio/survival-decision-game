@@ -1,8 +1,17 @@
 <template>
-    <div class="flex items-end gap-2 py-2">
-        <h1 class="text-4xl" v-if="session">{{ session.sessionname }}</h1>
+    <div class="flex items-center justify-between py-2">
+        <div class="flex items-end gap-2">
+            <h1 class="text-4xl" v-if="session">{{ session.sessionname }}</h1>
 
-        <Switch v-model="isActive" />
+            <Switch v-model="isActive" />
+        </div>
+
+        <button
+            class="cursor-pointer rounded-sm bg-rose-300 p-2 transition hover:bg-rose-400 active:scale-95"
+            @click="openDialog"
+        >
+            Session löschen
+        </button>
     </div>
     <h2>{{ formattedDate }}</h2>
 
@@ -103,15 +112,39 @@
             </div>
         </section>
     </div>
-
-    <div class="mt-24">
-        <p>bearbeiten</p>
-        <p>löschen</p>
-    </div>
+    <dialog
+        :class="[dialogOpen ? 'visible' : 'invisible']"
+        ref="dialog"
+        class="relative m-auto flex h-48 w-80 flex-col justify-between rounded-md p-4"
+    >
+        <button
+            class="absolute right-2 top-2 cursor-pointer p-2 text-gray-500 hover:text-black"
+            @click="closeDialog"
+        >
+            <IconClose />
+        </button>
+        <p class="flex h-full items-center justify-center text-center">
+            Möchten Sie die Session wirklich löschen?
+        </p>
+        <div class="flex justify-end gap-2">
+            <button
+                @click="closeDialog"
+                class="cursor-pointer rounded-sm bg-gray-200 p-2 transition hover:bg-gray-300 active:scale-95"
+            >
+                abbrechen
+            </button>
+            <button
+                @click="deleteSession"
+                class="cursor-pointer rounded-sm bg-rose-300 p-2 transition hover:bg-rose-400 active:scale-95"
+            >
+                löschen
+            </button>
+        </div>
+    </dialog>
 </template>
 
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { computed, ref, watch } from 'vue';
 import { Stages } from '@/types';
 import BarChart from '@/components/BarChart.vue';
@@ -122,16 +155,20 @@ import { shallowRef } from 'vue';
 import StageButton from '@/components/StageButton.vue';
 import Switch from '@/components/Switch.vue';
 import { AxiosHelper } from '@/AxiosHelper';
+import IconClose from '@/components/icons/IconClose.vue';
 
 const axiosHelper = new AxiosHelper();
 
 const route = useRoute();
 const id = route.params.id;
+const router = useRouter();
 
 const session = ref();
 const active = ref();
 const singles = ref();
 const groups = ref();
+const dialog = ref<HTMLDialogElement>();
+const dialogOpen = ref(false);
 
 getSession();
 getActive();
@@ -219,6 +256,22 @@ async function setStage(st: Stages) {
     const activityData = { sessionId: id, stage: st };
     const responseActive = await axiosHelper.post('actives/create', activityData);
     stage.value = st;
+}
+
+async function deleteSession() {
+    closeDialog();
+    const response = axiosHelper.get('sessions/delete/' + id);
+    console.log(response);
+    router.push('/admin');
+}
+
+function openDialog() {
+    dialogOpen.value = true;
+    dialog.value.showModal();
+}
+function closeDialog() {
+    dialogOpen.value = false;
+    dialog.value.close();
 }
 </script>
 
