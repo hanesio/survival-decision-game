@@ -1,5 +1,5 @@
 <template>
-    <article class="flex flex-col border-l-4 border-cyan-500 px-4">
+    <article class="flex flex-col border-l-4 border-primary-500 px-4">
         <h3 class="text-xl">{{ title }}</h3>
         <h2 class="text-4xl lg:text-6xl">{{ stage }}</h2>
     </article>

@@ -1,13 +1,13 @@
 <template>
     <div class="flex w-20 flex-col items-center">
-        <p :class="[modelValue ? 'text-cyan-700' : 'text-gray-400']">{{ label }}</p>
+        <p :class="[modelValue ? 'text-primary-700' : 'text-gray-400']">{{ label }}</p>
         <div
             @click="toggleSwitch"
             class="flex h-5 w-12 cursor-pointer items-center rounded-full transition duration-100"
-            :class="[props.modelValue ? 'bg-cyan-500 ' : 'bg-gray-200']"
+            :class="[props.modelValue ? 'bg-primary-500 ' : 'bg-gray-200']"
         >
             <div
-                class="border-1 h-6 w-6 rounded-full border-cyan-500 bg-white transition duration-100 ease-out"
+                class="border-1 border-primary-500 h-6 w-6 rounded-full bg-white transition duration-100 ease-out"
                 :class="[props.modelValue ? 'translate-x-6' : 'translate-0']"
             ></div>
         </div>

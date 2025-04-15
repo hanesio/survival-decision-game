@@ -36,7 +36,7 @@
         <template v-slot:button>
             <button
                 @click="submitSolution"
-                class="cursor-pointer rounded bg-cyan-500 p-4 hover:bg-cyan-400"
+                class="bg-primary-500 hover:bg-primary-400 cursor-pointer rounded p-4"
             >
                 abgeben
             </button>

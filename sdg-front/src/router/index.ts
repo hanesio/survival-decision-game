@@ -3,7 +3,6 @@ import HomeView from '../views/HomeView.vue';
 import NewSession from '@/views/admin/NewSession.vue';
 import ActiveStage from '@/views/ActiveStage.vue';
 import AdminHome from '../views/admin/AdminHome.vue';
-import AboutView from '../views/AboutView.vue';
 import SessionDetail from '@/views/admin/SessionDetail.vue';
 import UserResults from '@/views/user/UserResults.vue';
 
@@ -14,14 +13,6 @@ const router = createRouter({
             path: '/',
             name: 'home',
             component: HomeView,
-        },
-        {
-            path: '/about',
-            name: 'about',
-            // route level code-splitting
-            // this generates a separate chunk (About.[hash].js) for this route
-            // which is lazy-loaded when the route is visited.
-            component: () => AboutView,
         },
         {
             path: '/active-stage',

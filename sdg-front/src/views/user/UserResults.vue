@@ -1,5 +1,5 @@
 <template>
-    <article class="flex flex-col border-l-4 border-cyan-500 px-4">
+    <article class="border-primary-500 flex flex-col border-l-4 px-4">
         <h3 class="text-xl">{{ session?.title }}</h3>
         <h2 class="text-4xl lg:text-6xl">Auswertung</h2>
     </article>
@@ -12,8 +12,8 @@
                     class="flex h-full w-1/2 flex-col items-center justify-center rounded-lg bg-gray-50 p-4 text-center"
                 >
                     <h3 class="p-2 text-4xl">{{ user.username }}</h3>
-                    <p class="text-8xl font-light text-cyan-500">{{ user.result }}</p>
-                    <p class="text-cyan-500">Punkte Abstand</p>
+                    <p class="text-primary-500 text-8xl font-light">{{ user.result }}</p>
+                    <p class="text-primary-500">Punkte Abstand</p>
                 </div>
                 <div class="grid h-full w-1/2 grid-cols-2 gap-1">
                     <div
@@ -21,34 +21,36 @@
                         class="flex flex-col items-center rounded-lg bg-gray-50 p-3 text-center"
                     >
                         <p class="h-12">{{ group.groupname }}</p>
-                        <p class="p-2 text-3xl text-cyan-500">{{ group.result }}</p>
+                        <p class="text-primary-500 p-2 text-3xl">{{ group.result }}</p>
                     </div>
                     <div
                         v-if="group"
                         class="flex flex-col items-center rounded-lg bg-gray-50 p-3 text-center"
                     >
                         <p class="h-12">Differenz Gruppe</p>
-                        <p class="p-2 text-3xl text-cyan-500">{{ user.result - group.result }}</p>
+                        <p class="text-primary-500 p-2 text-3xl">
+                            {{ user.result - group.result }}
+                        </p>
                     </div>
                     <div class="flex flex-col items-center rounded-lg bg-gray-50 p-3 text-center">
                         <p class="h-12">Durchschnitt Spieler</p>
-                        <p class="p-2 text-3xl text-cyan-500">{{ averageSingles }}</p>
+                        <p class="text-primary-500 p-2 text-3xl">{{ averageSingles }}</p>
                     </div>
                     <div class="flex flex-col items-center rounded-lg bg-gray-50 p-3 text-center">
                         <p class="h-12">Durchschnitt Gruppen</p>
-                        <p class="p-2 text-3xl text-cyan-500">{{ averageGroups }}</p>
+                        <p class="text-primary-500 p-2 text-3xl">{{ averageGroups }}</p>
                     </div>
                 </div>
             </div>
-            <div v-if="user" class="rounded-lg border border-cyan-500 p-4">
+            <div v-if="user" class="border-primary-500 rounded-lg border p-4">
                 <h4 class="px-4 py-2 text-lg">Vergleich Einzel</h4>
                 <div class="h-64 w-full p-4"><BarChart :chart_data="singleData" /></div>
             </div>
-            <div v-if="group" class="rounded-lg border border-cyan-500 p-4">
+            <div v-if="group" class="border-primary-500 rounded-lg border p-4">
                 <h4 class="px-4 py-2 text-lg">Vergleich Gruppen</h4>
                 <div class="h-64 w-full p-4"><BarChart :chart_data="groupData" /></div>
             </div>
-            <div v-if="group" class="rounded-lg border border-cyan-500 p-4">
+            <div v-if="group" class="border-primary-500 rounded-lg border p-4">
                 <h4 class="px-4 py-2 text-lg">Ergebnisunterschied zur Gruppe</h4>
                 <div class="w-full p-4">
                     <BarChartDifference :groupData="groupDifference" :singleData />

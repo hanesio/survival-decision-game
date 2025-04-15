@@ -1,14 +1,32 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import { RouterLink, RouterView } from 'vue-router';
+import DarkModeButton from './components/DarkModeButton.vue';
+import { watch } from 'vue';
+
+const mode = ref('');
+
+watch(mode, (newMode) => {
+    document.documentElement.classList.toggle(
+        'dark',
+        localStorage.theme === 'dark' ||
+            (!('theme' in localStorage) &&
+                window.matchMedia('(prefers-color-scheme: dark)').matches),
+    );
+    if (newMode === 'light') localStorage.removeItem('theme');
+    if (newMode === 'dark') localStorage.theme = 'light';
+    if (newMode === 'OS') localStorage.theme = 'dark';
+});
 </script>
 
 <template>
     <header
-        class="fixed top-0 z-20 flex w-screen items-center justify-between bg-cyan-500 px-6 py-4"
+        class="bg-primary-400 fixed top-0 z-20 flex w-screen items-center justify-between px-6 py-2"
     >
-        <nav class="flex gap-2">
+        <nav class="flex items-center gap-2">
             <RouterLink to="/">Home</RouterLink>
             <RouterLink to="/admin">Admin</RouterLink>
+            <DarkModeButton v-model="mode" class="text-primary-900" />
         </nav>
     </header>
     <div class="mt-20 h-full w-full px-2 lg:px-20"><RouterView /></div>

@@ -7,7 +7,7 @@
         </div>
 
         <button
-            class="cursor-pointer rounded-sm bg-rose-300 p-2 transition hover:bg-rose-400 active:scale-95"
+            class="cursor-pointer rounded-sm border-2 border-rose-300 p-2 transition hover:bg-rose-400 hover:text-black active:scale-95 dark:bg-gray-800 dark:text-rose-400"
             @click="openDialog"
         >
             Session löschen
@@ -101,7 +101,7 @@
                     <tbody>
                         <tr
                             v-for="item in session.items"
-                            class="gap-4 bg-gray-50 odd:bg-gray-200 hover:bg-cyan-400"
+                            class="hover:bg-primary-400 gap-4 bg-gray-50 odd:bg-gray-200"
                         >
                             <td class="text-center">{{ item.rank + 1 }}</td>
                             <td>{{ item.description }}</td>
@@ -135,7 +135,7 @@
             </button>
             <button
                 @click="deleteSession"
-                class="cursor-pointer rounded-sm bg-rose-300 p-2 transition hover:bg-rose-400 active:scale-95"
+                class="cursor-pointer rounded-sm border-2 border-rose-300 bg-rose-50 p-2 transition hover:bg-rose-400 active:scale-95"
             >
                 löschen
             </button>

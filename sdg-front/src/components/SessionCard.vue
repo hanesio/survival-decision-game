@@ -38,7 +38,7 @@ const nameLength = computed(() => {
 </script>
 <template>
     <div
-        class="lg:w-74 hover:scale-102 relative flex h-40 w-full cursor-pointer flex-col items-center justify-between rounded-2xl border-2 border-cyan-200 bg-cyan-900 transition hover:bg-cyan-700"
+        class="lg:w-74 hover:scale-102 bg-primary-900 hover:bg-primary-950 group relative flex h-40 w-full cursor-pointer flex-col items-center justify-between rounded-2xl transition"
     >
         <div
             class="absolute -top-0 flex h-6 w-14 items-center justify-center rounded-b-xl border-2 border-t-0 border-green-600 bg-green-300 p-2 text-center text-sm font-semibold"
@@ -48,34 +48,34 @@ const nameLength = computed(() => {
         </div>
         <div
             v-if="name.length < 18"
-            class="flex h-full w-full items-center justify-center px-2 pt-3 text-center text-3xl text-gray-100"
+            class="flex h-full w-full items-center justify-center px-3 pt-4 text-center text-3xl text-gray-100"
         >
             {{ name }}
         </div>
         <div
             v-if="name.length >= 18 && name.length < 38"
-            class="flex h-full w-full items-center justify-center hyphens-auto px-2 pt-3 text-center text-2xl text-gray-100"
+            class="flex h-full w-full items-center justify-center hyphens-auto px-3 pt-4 text-center text-2xl text-gray-100"
         >
             {{ name }}
         </div>
         <div
             v-if="name.length >= 38"
-            class="flex h-full items-center justify-center hyphens-auto px-2 pt-3 text-center text-xl text-gray-100"
+            class="flex h-full items-center justify-center hyphens-auto px-3 pt-4 text-center text-xl text-gray-100"
         >
             {{ name }}
         </div>
-        <div class="flex w-full justify-center gap-4 bg-cyan-800 p-1">
+        <div class="bg-primary-700 group-hover:bg-primary-800 flex w-full justify-center gap-4 p-1">
             <div class="flex gap-2">
-                <p class="text-cyan-500">{{ singlesCount }}</p>
+                <p class="text-secondary-500 font-semibold">{{ singlesCount }}</p>
                 <p class="text-white">Spieler</p>
             </div>
             <div class="flex gap-2">
-                <p class="text-cyan-500">{{ groupCount }}</p>
+                <p class="text-secondary-500 font-semibold">{{ groupCount }}</p>
                 <p class="text-white">Gruppen</p>
             </div>
         </div>
 
-        <div class="py-2 text-sm text-cyan-200">{{ formattedDate }}</div>
+        <div class="text-primary-200 py-2 text-sm">{{ formattedDate }}</div>
     </div>
 </template>
 

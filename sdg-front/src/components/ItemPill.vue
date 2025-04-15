@@ -10,10 +10,10 @@ const props = defineProps({
 </script>
 <template>
     <div
-        class="fade-in flex items-center gap-2 rounded-full bg-cyan-100 p-2 transition duration-300 ease-out active:scale-90 active:opacity-0"
+        class="fade-in bg-secondary-100 flex items-center gap-2 rounded-full p-2 transition duration-300 ease-out active:scale-90 active:opacity-0"
     >
         <button
-            class="flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full bg-cyan-400 p-2"
+            class="bg-secondary-400 flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-full p-2"
         >
             +
         </button>

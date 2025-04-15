@@ -16,13 +16,13 @@
         <div class="flex justify-end gap-2">
             <button
                 @click="closeDialog"
-                class="cursor-pointer rounded-sm bg-gray-200 p-2 transition hover:bg-gray-300 active:scale-95"
+                class="cursor-pointer rounded-sm border-2 border-gray-300 bg-gray-50 p-2 transition hover:bg-gray-300 active:scale-95"
             >
                 abbrechen
             </button>
             <button
                 @click="deletePreset"
-                class="cursor-pointer rounded-sm bg-rose-300 p-2 transition hover:bg-rose-400 active:scale-95"
+                class="cursor-pointer rounded-sm border-2 border-rose-300 bg-rose-50 p-2 transition hover:bg-rose-400 active:scale-95"
             >
                 löschen
             </button>
@@ -34,31 +34,29 @@
         <div class="flex items-center gap-2">
             <input
                 v-model="sessionName"
-                class="border-b-3 flex bg-gray-50 p-2 text-2xl focus:bg-cyan-50 focus:outline-0"
+                class="border-b-3 focus:border-primary-500 flex bg-gray-50 p-2 text-2xl focus:outline-0"
                 :class="[
                     showNameValidation
                         ? nameIsFree && nameIsValid
-                            ? 'border-cyan-500'
-                            : 'border-red-600'
-                        : 'border-cyan-500',
+                            ? 'border-gray-400'
+                            : 'border-rose-600'
+                        : 'border-gray-400',
                 ]"
                 type="text"
                 placeholder="Sessionname eingeben"
             />
             <div
                 @click="applySession"
-                class="group flex cursor-pointer items-center gap-1 rounded py-3 text-gray-500 hover:text-cyan-600"
+                class="bg-primary-700 hover:bg-primary-900 group flex cursor-pointer items-center gap-1 rounded px-4 py-2 text-white"
             >
-                <p class="text-lg transition group-hover:font-bold">anlegen</p>
-                <IconArrowRight
-                    class="group-hover:translate-0 duration-50 w-8 -translate-x-2 opacity-0 transition group-hover:opacity-100"
-                />
+                <p class="text-lg transition">anlegen</p>
+                <IconArrowRight class="w-8 transition duration-100 group-hover:translate-x-2" />
             </div>
         </div>
         <p
             v-if="showNameValidation"
             class="px-2 text-xs"
-            :class="[nameIsValid && nameIsFree ? 'text-green-500' : 'text-red-600']"
+            :class="[nameIsValid && nameIsFree ? 'text-green-500' : 'text-rose-600']"
         >
             {{ nameValidationMessage }}
         </p>
@@ -68,7 +66,7 @@
         <div class="flex gap-2">
             <select
                 @change="getPreset"
-                class="rounded bg-cyan-50 p-2"
+                class="bg-primary-50 rounded p-2"
                 v-model="selectedPresetId"
                 name="presets"
             >
@@ -81,7 +79,7 @@
                     <button
                         v-if="savePresetEnabled"
                         @click="savePreset"
-                        class="flex h-12 cursor-pointer items-center justify-center rounded border-2 border-cyan-600 bg-cyan-500 p-4 hover:bg-cyan-400"
+                        class="border-primary-500 bg-primary-50 hover:bg-primary-600 flex h-12 cursor-pointer items-center justify-center rounded border-2 p-4 hover:text-white"
                     >
                         Preset speichern
                     </button>
@@ -102,7 +100,7 @@
                     <button
                         v-else
                         @click="openDialog"
-                        class="flex h-12 cursor-pointer items-center justify-center rounded bg-rose-300 p-4 hover:bg-rose-400"
+                        class="flex h-12 cursor-pointer items-center justify-center rounded border-2 border-rose-300 bg-rose-50 p-4 hover:bg-rose-400"
                     >
                         Preset löschen
                     </button>

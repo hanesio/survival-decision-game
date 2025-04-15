@@ -43,11 +43,11 @@ function openSession(id: number) {
 </script>
 
 <template>
-    <h1 class="text-4xl">ADMIN DASHBOARD</h1>
+    <h1 class="py-4 text-4xl dark:text-gray-200">ADMIN DASHBOARD</h1>
     <div class="mt-4 flex flex-wrap gap-2">
         <div
             @click="router.push('/admin/new-session')"
-            class="lg:w-74 hover:scale-102 flex h-40 w-full cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-cyan-400 transition hover:bg-cyan-300"
+            class="lg:w-74 hover:scale-102 hover:bg-primary-950 flex h-40 w-full cursor-pointer flex-col items-center justify-center rounded-2xl bg-gray-200 text-gray-700 transition hover:text-gray-200 dark:bg-gray-800 dark:text-gray-400"
         >
             <p class="text-6xl">+</p>
             <p class="text-xl">NEUE SESSION</p>

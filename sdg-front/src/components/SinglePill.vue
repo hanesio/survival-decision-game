@@ -1,19 +1,27 @@
-<script setup lang='ts'>
+<script setup lang="ts">
 import { ref } from 'vue';
 
 const props = defineProps({
-    username:{
+    username: {
         type: String,
-        required: true
-    }
-})
+        required: true,
+    },
+});
 
-const isActive = ref(false)
+const isActive = ref(false);
 </script>
 <template>
-    <p @click="isActive=!isActive" :class="[isActive ? 'bg-blue-300  border-blue-500': 'text-gray-400 bg-blue-100 border-transparent']" class="cursor-pointer rounded-full px-4 py-1 border-2 text-xl ">{{username}}</p>
+    <p
+        @click="isActive = !isActive"
+        :class="[
+            isActive
+                ? 'bg-primary-300  border-primary-500'
+                : 'bg-primary-100 border-transparent text-gray-400',
+        ]"
+        class="cursor-pointer rounded-full border-2 px-4 py-1 text-xl"
+    >
+        {{ username }}
+    </p>
 </template>
 
-
-<style scoped>
-</style>
+<style scoped></style>
