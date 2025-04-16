@@ -1,7 +1,7 @@
 <template>
     <div class="flex items-center justify-between py-2">
         <div class="flex items-end gap-2">
-            <h1 class="text-4xl" v-if="session">{{ session.sessionname }}</h1>
+            <h1 class="text-4xl dark:text-gray-300" v-if="session">{{ session.sessionname }}</h1>
 
             <Switch v-model="isActive" />
         </div>
@@ -13,7 +13,7 @@
             Session löschen
         </button>
     </div>
-    <h2>{{ formattedDate }}</h2>
+    <h2 class="dark:text-gray-300">{{ formattedDate }}</h2>
 
     <div class="flex flex-col items-center gap-4 py-8 lg:flex-row">
         <StageButton
@@ -21,13 +21,13 @@
             :isActive="stage === 'single'"
             label="Einzelphase"
         />
-        <p class="text-2xl text-gray-400">></p>
+        <p class="text-2xl text-gray-400 dark:text-gray-600">></p>
         <StageButton
             @click="setStage(Stages.Gruppe)"
             :isActive="stage === 'group'"
             label="Gruppenphase"
         />
-        <p class="text-2xl text-gray-400">></p>
+        <p class="text-2xl text-gray-400 dark:text-gray-600">></p>
         <StageButton
             @click="setStage(Stages.Reflektion)"
             :isActive="stage === 'results'"
@@ -40,7 +40,7 @@
         <SessionTab @click="tabindex = 1" :isActive="tabindex === 1" label="Analyse" />
         <SessionTab @click="tabindex = 2" :isActive="tabindex === 2" label="Lösung" />
     </div>
-    <div class="b rounded-lg rounded-tl-none bg-gray-100 p-4">
+    <div class="b rounded-lg rounded-tl-none bg-gray-100 p-4 dark:bg-gray-800">
         <section
             v-if="tabindex === 0"
             name="presentation"
@@ -60,18 +60,18 @@
 
         <section v-if="tabindex === 1" name="analyzation">
             <div
-                class="mt-2 flex flex-col gap-8 rounded-lg bg-gray-50 p-4"
+                class="mt-2 flex flex-col gap-8 rounded-lg p-4 dark:text-gray-300"
                 v-if="singleData.length > 0"
             >
-                <div class="rounded-t-md shadow">
+                <div class="rounded-t-md">
                     <h4 class="px-4 py-2 text-lg">Ergebnis Einzel</h4>
                     <div class="h-64 w-full p-4"><BarChart :chart_data="singleData" /></div>
                 </div>
-                <div class="rounded-t-md shadow" v-if="groupData.length > 0">
+                <div class="rounded-t-md" v-if="groupData.length > 0">
                     <h4 class="px-4 py-2 text-lg">Ergebnis Gruppen</h4>
                     <div class="h-64 w-full p-4"><BarChart :chart_data="groupData" /></div>
                 </div>
-                <div class="rounded-t-md shadow" v-if="groupData.length > 0">
+                <div class="rounded-t-md" v-if="groupData.length > 0">
                     <h4 class="px-4 py-2 text-lg">Ergebnisunterschied zur Gruppe</h4>
                     <div class="w-full p-4"><BarChartDifference :groupData :singleData /></div>
 
@@ -79,7 +79,7 @@
                         <label for="comment">Kommentar:</label>
                         <textarea
                             placeholder="Beobachtungen über die Gruppe"
-                            class="h-24 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500"
+                            class="h-24 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-600 dark:text-gray-200"
                             name="comment"
                             v-model="comment"
                             type="text"
@@ -92,7 +92,9 @@
             <div class="overlow overflow-clip rounded-lg">
                 <table class="w-full table-auto border-collapse">
                     <thead>
-                        <tr class="bg-gray-400 text-left text-white">
+                        <tr
+                            class="bg-gray-400 text-left text-white dark:bg-gray-900 dark:text-gray-300"
+                        >
                             <th>Platz</th>
                             <th>Gegenstand</th>
                             <th>Erklärung</th>
@@ -101,7 +103,7 @@
                     <tbody>
                         <tr
                             v-for="item in session.items"
-                            class="hover:bg-primary-400 gap-4 bg-gray-50 odd:bg-gray-200"
+                            class="hover:bg-primary-400 dark:hover:bg-primary-900 gap-4 bg-gray-50 odd:bg-gray-200 dark:bg-gray-600 dark:text-gray-300 dark:odd:bg-gray-700"
                         >
                             <td class="text-center">{{ item.rank + 1 }}</td>
                             <td>{{ item.description }}</td>

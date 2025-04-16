@@ -39,7 +39,7 @@
                                 : 'border-red-600'
                             : 'border-transparent',
                     ]"
-                    class="w-full rounded border-2 bg-gray-200 p-1 pl-2 text-lg"
+                    class="w-full rounded border-2 bg-gray-200 p-1 pl-2 text-lg dark:bg-gray-500 dark:text-gray-200"
                     type="text"
                     placeholder="Gruppenname"
                 />
@@ -56,7 +56,7 @@
         <template v-slot:button>
             <button
                 @click="submitSolution"
-                class="cursor-pointer rounded bg-blue-600 p-4 hover:bg-blue-500"
+                class="bg-primary-600 hover:bg-primary-700 cursor-pointer rounded-sm p-4 text-white"
             >
                 abgeben
             </button>

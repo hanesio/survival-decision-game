@@ -29,7 +29,7 @@ async function getActive() {
 
 <template>
     <div
-        class="bg-primary-50 absolute left-1/2 top-1/2 flex w-96 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-2 rounded-lg p-4"
+        class="bg-primary-50 absolute left-1/2 top-1/2 flex w-96 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-2 rounded-lg p-4 dark:bg-gray-700 dark:text-gray-200"
         v-if="
             active.sessionId === null ||
             (active.stage === 'single' && singleApplied) ||
@@ -40,7 +40,10 @@ async function getActive() {
             Es ist keine Spiel-Session aktiv oder du hast dein Ergebnis bereits abgegeben. Warte auf
             die Anweisungen des Spielleiters.
         </p>
-        <button @click="resetApply" class="bg-primary-500 cursor-pointer rounded-md p-2">
+        <button
+            @click="resetApply"
+            class="bg-primary-500 hover:bg-primary-600 cursor-pointer rounded-md p-2 text-white"
+        >
             erneut abgeben
         </button>
     </div>

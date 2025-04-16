@@ -28,13 +28,13 @@
             </button>
         </div>
     </dialog>
-    <h1 class="py-4 text-6xl">NEUE SESSION</h1>
+    <h1 class="py-4 text-6xl dark:text-gray-200">NEUE SESSION</h1>
 
     <div class="flex flex-col gap-2">
         <div class="flex items-center gap-2">
             <input
                 v-model="sessionName"
-                class="border-b-3 focus:border-primary-500 flex bg-gray-50 p-2 text-2xl focus:outline-0"
+                class="border-b-3 focus:border-primary-500 flex bg-gray-50 p-2 text-2xl focus:outline-0 dark:bg-gray-800 dark:text-gray-400"
                 :class="[
                     showNameValidation
                         ? nameIsFree && nameIsValid
@@ -62,11 +62,14 @@
         </p>
     </div>
 
-    <div v-if="presets" class="mx-auto mt-2 flex flex-col gap-2 rounded bg-gray-200 p-4">
+    <div
+        v-if="presets"
+        class="mx-auto mt-2 flex flex-col gap-2 rounded bg-gray-200 p-4 dark:bg-gray-800"
+    >
         <div class="flex gap-2">
             <select
                 @change="getPreset"
-                class="bg-primary-50 rounded p-2"
+                class="bg-primary-300 rounded p-2"
                 v-model="selectedPresetId"
                 name="presets"
             >
@@ -79,13 +82,13 @@
                     <button
                         v-if="savePresetEnabled"
                         @click="savePreset"
-                        class="border-primary-500 bg-primary-50 hover:bg-primary-600 flex h-12 cursor-pointer items-center justify-center rounded border-2 p-4 hover:text-white"
+                        class="border-primary-500 bg-primary-50 hover:bg-primary-600 flex h-12 cursor-pointer items-center justify-center rounded border-2 p-4 hover:text-white dark:bg-gray-900 dark:text-gray-200"
                     >
                         Preset speichern
                     </button>
                     <button
                         v-else
-                        class="flex h-12 items-center justify-center rounded border-2 border-transparent bg-gray-300 p-4 text-gray-400"
+                        class="flex h-12 items-center justify-center rounded border-2 border-transparent bg-gray-300 p-4 text-gray-400 dark:bg-gray-700 dark:text-gray-800"
                     >
                         Preset speichern
                     </button>
@@ -93,14 +96,14 @@
                 <div>
                     <button
                         v-if="savePresetEnabled"
-                        class="flex h-12 items-center justify-center rounded bg-gray-300 p-4 text-gray-400"
+                        class="flex h-12 items-center justify-center rounded bg-gray-300 p-4 text-gray-400 dark:bg-gray-700 dark:text-gray-800"
                     >
                         Preset löschen
                     </button>
                     <button
                         v-else
                         @click="openDialog"
-                        class="flex h-12 cursor-pointer items-center justify-center rounded border-2 border-rose-300 bg-rose-50 p-4 hover:bg-rose-400"
+                        class="flex h-12 cursor-pointer items-center justify-center rounded border-2 border-rose-300 bg-rose-50 p-4 hover:bg-rose-400 dark:bg-gray-900 dark:text-gray-200"
                     >
                         Preset löschen
                     </button>
@@ -109,7 +112,9 @@
         </div>
         <div>
             <div class="flex gap-2">
-                <div class="flex w-2/3 flex-col justify-between gap-2 rounded-md bg-gray-300 p-2">
+                <div
+                    class="flex w-2/3 flex-col justify-between gap-2 rounded-md p-2 dark:bg-gray-700 dark:text-gray-200"
+                >
                     <label for="">Gegenstände:</label>
                     <div class="flex" v-for="(item, index) in items">
                         <label
@@ -118,12 +123,12 @@
                         >
                         <div class="flex w-full gap-0.5">
                             <input
-                                class="w-2/5 rounded-l bg-white p-1 px-2 text-sm"
+                                class="w-2/5 rounded-l bg-white p-1 px-2 text-sm dark:bg-gray-500"
                                 v-model="item.description"
                                 type="text"
                             />
                             <input
-                                class="w-3/5 rounded-r bg-gray-50 p-1 px-2 text-sm"
+                                class="w-3/5 rounded-r bg-gray-50 p-1 px-2 text-sm dark:bg-gray-600"
                                 v-model="item.explanation"
                                 type="text"
                             />
@@ -131,17 +136,21 @@
                     </div>
                 </div>
                 <div class="flex w-1/3 flex-col gap-2">
-                    <div class="flex flex-col gap-1 rounded-md bg-gray-300 p-2">
+                    <div
+                        class="flex flex-col gap-1 rounded-md bg-gray-300 p-2 dark:bg-gray-700 dark:text-gray-200"
+                    >
                         <label for="title">Titel: </label>
                         <input
-                            class="block w-full rounded bg-white p-2 text-lg"
+                            class="block w-full rounded bg-white p-2 text-lg dark:bg-gray-600"
                             v-model="presetTitle"
                         />
                     </div>
-                    <div class="flex h-full flex-col gap-1 rounded-md bg-gray-300 p-2">
+                    <div
+                        class="flex h-full flex-col gap-1 rounded-md bg-gray-300 p-2 dark:bg-gray-700 dark:text-gray-200"
+                    >
                         <label class="" for="description">Beschreibung: </label>
                         <textarea
-                            class="block h-full w-full rounded bg-white p-4 text-sm"
+                            class="block h-full w-full rounded bg-white p-4 text-sm dark:bg-gray-600"
                             v-model="presetDescription"
                         ></textarea>
                     </div>

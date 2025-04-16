@@ -1,5 +1,5 @@
 <template>
-    <button @click="cycle" class="h-8 w-8">
+    <button @click="cycle" class="active:scale-70 h-8 w-8 cursor-pointer transition ease-in-out">
         <IconLightMode class="shrink-0" v-if="mode === 'light'" />
         <IconOSMode class="shrink-0" v-if="mode === 'OS'" />
         <IconDarkMode class="shrink-0" v-if="mode === 'dark'" />

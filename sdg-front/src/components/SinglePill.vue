@@ -16,7 +16,7 @@ const isActive = ref(false);
         :class="[
             isActive
                 ? 'bg-primary-300  border-primary-500'
-                : 'bg-primary-100 border-transparent text-gray-400',
+                : 'bg-primary-100 border-transparent text-gray-400 dark:bg-gray-800 dark:text-gray-600',
         ]"
         class="cursor-pointer rounded-full border-2 px-4 py-1 text-xl"
     >

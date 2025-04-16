@@ -13,7 +13,11 @@ const props = defineProps({
 <template>
     <div
         class="cursor-pointer rounded-t-lg px-3 py-1"
-        :class="[isActive ? 'bg-gray-100' : 'border-transparent bg-gray-50 text-gray-400']"
+        :class="[
+            isActive
+                ? 'bg-gray-100 dark:bg-gray-800 dark:text-gray-200'
+                : 'border-transparent bg-gray-50 text-gray-400 dark:bg-gray-950 dark:text-gray-600',
+        ]"
     >
         {{ label }}
     </div>

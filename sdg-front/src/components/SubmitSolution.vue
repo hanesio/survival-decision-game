@@ -1,16 +1,16 @@
 <template>
     <article class="flex flex-col border-l-4 border-primary-500 px-4">
-        <h3 class="text-xl">{{ title }}</h3>
-        <h2 class="text-4xl lg:text-6xl">{{ stage }}</h2>
+        <h3 class="text-xl dark:text-gray-500">{{ title }}</h3>
+        <h2 class="text-4xl lg:text-6xl dark:text-gray-300">{{ stage }}</h2>
     </article>
     <article>
-        <details class="p-2">
-            <summary>Szenario</summary>
-            <p>{{ description }}</p>
+        <details class="p-2 dark:text-gray-300 flex ">
+            <summary class="cursor-pointer bg-primary-200 pl-4 w-32 rounded-full dark:bg-primary-600">Szenario</summary>
+            <p class="dark:text-gray-400">{{ description }}</p>
         </details>
     </article>
     <slot name="members"></slot>
-    <div class="flex flex-col gap-2 rounded bg-gray-50 p-4">
+    <div class="flex flex-col gap-2 rounded bg-gray-50 dark:bg-gray-800 p-4">
         <div class="flex flex-col gap-2 py-2 lg:flex-row">
             <slot name="username"></slot>
         </div>
@@ -39,18 +39,18 @@
         >
             <template #item="{ element: item, index }" ">
                 <li
-                    class="mt-1 handle flex w-full items-center justify-between gap-0.5 rounded-sm bg-gray-200 px-1 py-0"
+                    class="mt-1 handle flex w-full items-center justify-between gap-0.5 rounded-sm dark:text-gray-200 dark:bg-gray-700 bg-gray-200 px-1 py-0"
                 >
-                    <span class="w-6 bg-gray-200 py-1 pl-1 text-center font-bold">{{
+                    <span class="w-6  py-1 pl-1 text-center font-bold">{{
                         index + 1
                     }}</span>
                     <button
                         @click="deleteFromList(item)"
-                        class="w-6 shrink-0 cursor-pointer text-gray-400"
+                        class="w-6 shrink-0 cursor-pointer  text-gray-400"
                     >
                         <IconDelete class="w-5" />
                     </button>
-                    <span class="w-full border-l-2 border-white bg-gray-200 p-1 px-2">
+                    <span class="w-full border-l-2 border-white dark:border-gray-900  p-1 px-2">
                         {{ item.description }}
                     </span>
                     <div
