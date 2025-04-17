@@ -19,15 +19,6 @@ app.get('/api/test', (req, res) => {
     res.send('Dies war ein HTTP Request');
 });
 
-const PORT = process.env.PORT || 6001; // wichtig dass der Port aus env kommt...warum auch immer
-
-mongoose
-    .connect(process.env.MONGO_URL)
-    .then(() => {
-        app.listen(PORT, () => console.log('Connected to backend'));
-    })
-    .catch((error) => console.log(`${error} did not connect`));
-
 /* INSERT ROUTES*/
 app.post('/api/singles/create', async (req, res) => {
     console.log(req.body);
@@ -200,3 +191,19 @@ app.get('/api/sessions/delete/:id', async function (req, res) {
     }
     res.send(result);
 });
+
+// Handle production
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(__dirname + '/dist/'));
+}
+
+// Handle SPA
+app.get(/.*/, (req, res) => res.sendFile(__dirname + '/dist/index.html'));
+const PORT = process.env.PORT || 5000;
+
+mongoose
+    .connect(process.env.MONGO_URL)
+    .then(() => {
+        app.listen(PORT, () => console.log('Connected to backend'));
+    })
+    .catch((error) => console.log(`${error} did not connect`));
