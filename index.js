@@ -194,11 +194,11 @@ app.get('/api/sessions/delete/:id', async function (req, res) {
 
 // Handle production
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(__dirname + '/dist/'));
+    app.use(express.static(__dirname + '/public/'));
 }
 
 // Handle SPA
-app.get(/.*/, (req, res) => res.sendFile(__dirname + '/dist/index.html'));
+app.get(/.*/, (req, res) => res.sendFile(__dirname + '/public/index.html'));
 const PORT = process.env.PORT || 5000;
 
 mongoose
