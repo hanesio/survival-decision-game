@@ -196,7 +196,7 @@ app.get('/api/sessions/delete/:id', async function (req, res) {
 
 // // Handle production
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(__dirname + 'public'));
+    app.use(express.static(path.resolve() + 'public'));
 }
 
 // Handle SPA
