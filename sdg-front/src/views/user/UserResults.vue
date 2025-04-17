@@ -148,11 +148,9 @@ async function getSession() {
 async function getSinglesBySession() {
     const data = await axiosHelper.get('singles/find-by-session/' + active.value.sessionId);
     singles.value = data.data;
-    console.log(singles.value);
 }
 async function getGroupsBySession() {
     const data = await axiosHelper.get('groups/find-by-session/' + active.value.sessionId);
     groups.value = data.data;
-    console.log(groups.value);
 }
 </script>

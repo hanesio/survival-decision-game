@@ -192,7 +192,6 @@ const singleData = computed(() => {
 });
 
 const groupData = computed(() => {
-    console.log(groups.value);
     return groups.value
         ? groups.value.map((group) => {
               return { x: group.groupname, y: group.result, _id: group._id };
@@ -222,7 +221,6 @@ watch(isActive, () => {
 async function getSession() {
     const sessionData = await axiosHelper.get('sessions/find/' + id);
     session.value = sessionData.data;
-    console.log(session.value);
 }
 
 async function getActive() {
@@ -235,13 +233,11 @@ async function getActive() {
 async function getSingles() {
     const data = await axiosHelper.get('singles/find-by-session/' + id);
     singles.value = data.data;
-    console.log(singles.value);
 }
 
 async function getGroups() {
     const data = await axiosHelper.get('groups/find-by-session/' + id);
     groups.value = data.data;
-    console.log(groups.value);
 }
 
 async function setActiveSession() {
@@ -263,7 +259,6 @@ async function setStage(st: Stages) {
 async function deleteSession() {
     closeDialog();
     const response = axiosHelper.get('sessions/delete/' + id);
-    console.log(response);
     router.push('/admin');
 }
 

@@ -3,13 +3,11 @@ import SingleStage from './stages/SingleStage.vue';
 import GroupStage from './stages/GroupStage.vue';
 import ResultStage from './stages/ResultStage.vue';
 import { useStorage } from '@vueuse/core';
-import { useStoreActive } from '@/stores/storeActive';
 import { AxiosHelper } from '@/AxiosHelper';
 import { ref } from 'vue';
 
 const axiosHelper = new AxiosHelper();
 
-const storeActive = useStoreActive();
 const active = ref({ sessionId: null, stage: 'single' });
 getActive();
 const singleApplied = useStorage('single-applied', false);
@@ -23,7 +21,6 @@ function resetApply() {
 async function getActive() {
     const activeData = await axiosHelper.get('actives/find');
     active.value = activeData.data;
-    console.log(active.value);
 }
 </script>
 

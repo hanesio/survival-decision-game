@@ -60,7 +60,6 @@ const session = ref(undefined);
 const singles = ref();
 getActive();
 getSingles();
-console.log('done');
 
 const singleApplied = useStorage('single-applied', false);
 
@@ -90,19 +89,16 @@ const listIsValid = computed(() => {
 async function getSession() {
     const sessionData = await axiosHelper.get('sessions/find/' + active.value.sessionId);
     session.value = sessionData.data;
-    console.log(session.value);
 }
 async function getActive() {
     const activeData = await axiosHelper.get('actives/find');
     active.value = activeData.data;
-    console.log(active.value);
 
     getSession();
 }
 async function getSingles() {
     const data = await axiosHelper.get('singles/find');
     singles.value = data.data;
-    console.log(singles.value);
 }
 
 function submitSolution() {
@@ -136,6 +132,5 @@ function calculateResult() {
 
 async function sendData(data) {
     const response = await axiosHelper.post('singles/create', data);
-    console.log(response);
 }
 </script>

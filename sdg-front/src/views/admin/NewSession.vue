@@ -242,11 +242,9 @@ async function applySession() {
             items,
         };
         const responseSession = await axiosHelper.post('sessions/create', data);
-        console.log(responseSession);
         const sessionId = responseSession.data._id;
         const activityData = { sessionId: sessionId, stage: 'single' };
         const responseActive = await axiosHelper.post('actives/create', activityData);
-        console.log(responseActive);
 
         router.push('/admin');
     } else {
@@ -261,7 +259,6 @@ async function savePreset() {
         items,
     };
     const response = await axiosHelper.post('presets/create', data);
-    console.log(response);
     await getPresets();
     selectedPresetId.value = response.data._id;
 }
@@ -269,7 +266,6 @@ async function savePreset() {
 async function deletePreset() {
     closeDialog();
     const response = await axiosHelper.get('presets/delete/' + selectedPresetId.value);
-    console.log(response);
     await getPresets();
     selectedPresetId.value = presets.value[0]._id;
     getPreset();
@@ -278,7 +274,6 @@ async function deletePreset() {
 async function getPresets() {
     const response = await axiosHelper.get('presets/find');
     presets.value = response.data;
-    console.log(response.data);
 }
 async function getSessions() {
     const response = await axiosHelper.get('sessions/find');
