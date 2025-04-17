@@ -10,6 +10,8 @@ import Preset from './models/Preset.js';
 import Session from './models/Session.js';
 import Active from './models/Active.js';
 
+import path from 'path';
+
 const app = express();
 dotenv.config();
 app.use(bodyParser.json({ extended: true }));
@@ -192,13 +194,14 @@ app.get('/api/sessions/delete/:id', async function (req, res) {
     res.send(result);
 });
 
-// Handle production
+// // Handle production
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(__dirname + '/public/'));
+    app.use(express.static(path.resolve(__dirname + 'public'), { maxAge: '1y', etag: false }));
 }
 
 // Handle SPA
-app.get(/.*/, (req, res) => res.sendFile(__dirname + '/public/index.html'));
+// app.get('*', (req, res) => res.sendFile(path.join(__dirname + 'public/index.html')));
+
 const PORT = process.env.PORT || 5000;
 
 mongoose
