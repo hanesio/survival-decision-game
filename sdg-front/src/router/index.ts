@@ -7,7 +7,7 @@ import SessionDetail from '@/views/admin/SessionDetail.vue';
 import UserResults from '@/views/user/UserResults.vue';
 
 const router = createRouter({
-    history: createWebHistory(import.meta.env.BASE_URL),
+    history: createWebHistory(),
     routes: [
         {
             path: '/',
