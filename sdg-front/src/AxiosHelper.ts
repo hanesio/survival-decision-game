@@ -3,8 +3,9 @@ import { AxiosResponse } from 'axios';
 // Dev URL
 const hostname = window.location.hostname; // z.B.localhost
 
-const URL = 'http://' + hostname + ':8800/api/';
-// const URL = 'http://192.168.178.24:8800/api/';
+// const URL = '/api';
+const URL = 'http://' + hostname + ':5000/api/';
+// const URL = 'http://192.168.178.24:5000/api/';
 
 export class AxiosHelper {
     constructor() {

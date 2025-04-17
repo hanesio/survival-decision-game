@@ -48,7 +48,7 @@
         >
             <div class="flex flex-col gap-4 p-4 lg:w-1/4">
                 <p class="bg-blue-400 py-2 text-center text-2xl">{{ originURL }}</p>
-                <img class="scale-130 w-full mix-blend-multiply" :src="qrcode" alt="QR Code" />
+                <!-- <img class="scale-130 w-full mix-blend-multiply" :src="qrcode" alt="QR Code" /> -->
             </div>
             <div class="w-3/4 p-4 pr-6" v-if="session">
                 <h2 class="pb-8 text-6xl underline decoration-blue-400">
@@ -152,7 +152,7 @@ import { Stages } from '@/types';
 import BarChart from '@/components/BarChart.vue';
 import BarChartDifference from '@/components/BarChartDifference.vue';
 import SessionTab from '@/components/SessionTab.vue';
-import { useQRCode } from '@vueuse/integrations/useQRCode';
+// import { useQRCode } from '@vueuse/integrations/useQRCode';
 import { shallowRef } from 'vue';
 import StageButton from '@/components/StageButton.vue';
 import Switch from '@/components/Switch.vue';
@@ -178,7 +178,7 @@ getSingles();
 getGroups();
 
 const originURL = shallowRef(window.location.origin); // getting the current base URL
-const qrcode = useQRCode(originURL);
+// const qrcode = useQRCode(originURL);
 const tabindex = ref(0);
 
 const comment = ref('');
