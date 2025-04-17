@@ -1,12 +1,12 @@
 import axios from 'axios';
 import { AxiosResponse } from 'axios';
-// Dev URL
+// Dev myURL
 const hostname = window.location.hostname; // z.B.localhost
-// const URL = 'http://' + hostname + ':5000/api/';
-// const URL = 'http://192.168.178.24:5000/api/';
+// const myURL = 'http://' + hostname + ':5000/api/';
+// const myURL = 'http://192.168.178.24:5000/api/';
 
-// Production URL
-const URL = 'api/';
+// Production myURL
+const myURL = '/api/';
 
 export class AxiosHelper {
     constructor() {
@@ -31,7 +31,7 @@ export class AxiosHelper {
      */
     async get(route: string, params?: Object): Promise<AxiosResponse<any, any>> {
         return axios
-            .get(`${URL}${route}`, { params: params })
+            .get(`${myURL}${route}`, { params: params })
             .then((response) => {
                 return response;
             })
@@ -48,7 +48,7 @@ export class AxiosHelper {
      */
     async post(route: string, data: any): Promise<AxiosResponse<any, any>> {
         return axios
-            .post(`${URL}${route}`, data)
+            .post(`${myURL}${route}`, data)
             .then((response) => {
                 return response;
             })
@@ -66,7 +66,7 @@ export class AxiosHelper {
      */
     async put(route: string, data: any): Promise<AxiosResponse<any, any>> {
         return axios
-            .put(`${URL}${route}`, data)
+            .put(`${myURL}${route}`, data)
             .then((response) => {
                 return response;
             })
