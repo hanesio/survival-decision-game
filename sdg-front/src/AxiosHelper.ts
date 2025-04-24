@@ -5,8 +5,8 @@ const hostname = window.location.hostname; // z.B.localhost
 // const myURL = 'http://' + hostname + ':5000/api/';
 // const myURL = 'http://192.168.178.24:5000/api/';
 
-// Production myURL
-const myURL = '/api/';
+// Production URL
+const myURL = '/api/'; // leading slash for absolute path not relative (creates errors in routing otherwise)
 
 export class AxiosHelper {
     constructor() {

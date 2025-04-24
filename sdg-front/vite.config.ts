@@ -14,7 +14,7 @@ export default defineConfig({
         },
     },
     build: {
-        outDir: '../server/public',
+        outDir: '../server/public', // change output directory to deploy client and server together
         emptyOutDir: true, // also necessary
     },
     server: {

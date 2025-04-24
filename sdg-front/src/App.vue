@@ -4,18 +4,24 @@ import { RouterLink, RouterView } from 'vue-router';
 import DarkModeButton from './components/DarkModeButton.vue';
 import { watch } from 'vue';
 
-const mode = ref('');
+const mode = ref('OS');
+localStorage.removeItem('theme');
+document.documentElement.classList.toggle(
+    'dark',
+    localStorage.theme === 'dark' ||
+        (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches),
+);
 
 watch(mode, (newMode) => {
+    if (newMode === 'OS') localStorage.removeItem('theme');
+    if (newMode === 'light') localStorage.theme = 'light';
+    if (newMode === 'dark') localStorage.theme = 'dark';
     document.documentElement.classList.toggle(
         'dark',
         localStorage.theme === 'dark' ||
             (!('theme' in localStorage) &&
                 window.matchMedia('(prefers-color-scheme: dark)').matches),
     );
-    if (newMode === 'light') localStorage.removeItem('theme');
-    if (newMode === 'dark') localStorage.theme = 'light';
-    if (newMode === 'OS') localStorage.theme = 'dark';
 });
 </script>
 

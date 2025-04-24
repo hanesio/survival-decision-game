@@ -1,7 +1,9 @@
 <template>
     <div class="flex items-center justify-between py-2">
         <div class="flex items-end gap-2">
-            <h1 class="text-4xl dark:text-gray-300" v-if="session">{{ session.sessionname }}</h1>
+            <h1 class="text-4xl dark:text-gray-200" v-if="session">
+                {{ session.sessionname }}
+            </h1>
 
             <Switch v-model="isActive" />
         </div>
@@ -51,10 +53,10 @@
                 <!-- <img class="scale-130 w-full mix-blend-multiply" :src="qrcode" alt="QR Code" /> -->
             </div>
             <div class="w-3/4 p-4 pr-6" v-if="session">
-                <h2 class="pb-8 text-6xl underline decoration-blue-400">
+                <h2 class="pb-8 text-6xl underline decoration-blue-400 dark:text-gray-300">
                     {{ session.title }}
                 </h2>
-                <p class="text-justify text-2xl">{{ session.description }}</p>
+                <p class="text-justify text-2xl dark:text-gray-300">{{ session.description }}</p>
             </div>
         </section>
 
@@ -248,6 +250,7 @@ async function setActiveSession() {
         const activityData = { sessionId: null, stage: stage.value };
         const responseActive = await axiosHelper.post('actives/create', activityData);
     }
+    localStorage.removeItem('username');
 }
 
 async function setStage(st: Stages) {

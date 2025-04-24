@@ -2,7 +2,7 @@
     <SubmitSolution
         v-if="session != undefined"
         :title="session.title"
-        stage="Einzellösung"
+        stage="Meine Lösung"
         :description="session.description"
         :items="session.items"
         v-model="sendItems"
@@ -11,6 +11,9 @@
     >
         <template v-slot:username>
             <div class="flex w-full flex-col gap-1 lg:w-1/2">
+                <p class="dark:text-gray-400">
+                    Merke dir deinen Nickname, du wirst ihn später noch einmal brauchen.
+                </p>
                 <input
                     v-model="username"
                     :class="[
@@ -62,6 +65,7 @@ getActive();
 getSingles();
 
 const singleApplied = useStorage('single-applied', false);
+const storeUser = useStorage('username', '');
 
 const sendItems = ref([]);
 const username = ref('');
@@ -113,6 +117,7 @@ function submitSolution() {
                 result: result.value,
             });
         }
+        storeUser.value = username.value;
         singleApplied.value = true;
         router.push('/');
     } else {

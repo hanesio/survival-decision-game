@@ -20,9 +20,9 @@ const emit = defineEmits(['update:modelValue']);
 const counter = ref(0);
 const mode = computed(() => {
     const mod = counter.value % 3;
-    if (mod === 0) return 'dark';
+    if (mod === 0) return 'OS';
     if (mod === 1) return 'light';
-    return 'OS';
+    return 'dark';
 });
 
 function cycle() {
