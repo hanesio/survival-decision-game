@@ -173,6 +173,7 @@ async function handleRequests() {
     await getSession();
     await getSinglesBySession();
     await getGroups();
+    filterSingles();
 }
 
 async function getActive() {
@@ -190,5 +191,13 @@ async function getSinglesBySession() {
 async function getGroups() {
     const data = await axiosHelper.get('groups/find');
     groups.value = data.data;
+}
+function filterSingles() {
+    const singlesInGroups = [];
+    groups.value.forEach((group) => {
+        console.log(group.members);
+        singlesInGroups.push(...group.members);
+    });
+    singles.value = singles.value.filter((single) => !singlesInGroups.includes(single._id));
 }
 </script>

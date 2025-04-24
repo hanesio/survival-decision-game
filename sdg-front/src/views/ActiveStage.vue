@@ -1,30 +1,3 @@
-<script setup lang="ts">
-import SingleStage from './stages/SingleStage.vue';
-import GroupStage from './stages/GroupStage.vue';
-import ResultStage from './stages/ResultStage.vue';
-import { useStorage } from '@vueuse/core';
-import { AxiosHelper } from '@/AxiosHelper';
-import { ref } from 'vue';
-
-const axiosHelper = new AxiosHelper();
-
-const active = ref({ sessionId: null, stage: 'single' });
-getActive();
-const singleApplied = useStorage('single-applied', false);
-const groupApplied = useStorage('group-applied', false);
-const username = useStorage('username', '');
-
-function resetApply() {
-    singleApplied.value = false;
-    groupApplied.value = false;
-}
-
-async function getActive() {
-    const activeData = await axiosHelper.get('actives/find');
-    active.value = activeData.data;
-}
-</script>
-
 <template>
     <div
         v-if="
@@ -33,8 +6,13 @@ async function getActive() {
             (active.stage === 'group' && groupApplied)
         "
     >
+        <ButtonRefresh
+            class="bottom-1/5 absolute left-1/2 -translate-x-1/2 translate-y-1/2 lg:top-20"
+            @click="getActive"
+        />
+
         <p
-            class="absolute left-1/2 top-1/4 -translate-x-1/2 -translate-y-1/2 text-center text-4xl dark:text-gray-300"
+            class="absolute left-1/2 top-1/4 w-full -translate-x-1/2 -translate-y-1/2 text-center text-4xl dark:text-gray-300"
             v-if="username"
         >
             Danke <span class="dark:text-secondary-400 text-secondary-600">{{ username }}</span> !
@@ -61,3 +39,34 @@ async function getActive() {
         <ResultStage v-if="active.stage === 'results'" />
     </div>
 </template>
+
+<script setup lang="ts">
+import SingleStage from './stages/SingleStage.vue';
+import GroupStage from './stages/GroupStage.vue';
+import ResultStage from './stages/ResultStage.vue';
+import { useStorage } from '@vueuse/core';
+import { AxiosHelper } from '@/AxiosHelper';
+import { ref } from 'vue';
+import ButtonRefresh from '@/components/ButtonRefresh.vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const axiosHelper = new AxiosHelper();
+
+const active = ref({ sessionId: null, stage: 'single' });
+getActive();
+const singleApplied = useStorage('single-applied', false);
+const groupApplied = useStorage('group-applied', false);
+const username = useStorage('username', '');
+
+function resetApply() {
+    singleApplied.value = false;
+    groupApplied.value = false;
+}
+
+async function getActive() {
+    const activeData = await axiosHelper.get('actives/find');
+    active.value = activeData.data;
+}
+</script>

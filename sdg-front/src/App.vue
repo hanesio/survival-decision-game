@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { RouterLink, RouterView } from 'vue-router';
-import DarkModeButton from './components/DarkModeButton.vue';
+import ButtonDarkMode from './components/ButtonDarkMode.vue';
 import { watch } from 'vue';
 
 const mode = ref('OS');
@@ -32,7 +32,7 @@ watch(mode, (newMode) => {
         <nav class="flex items-center gap-2">
             <RouterLink to="/">Home</RouterLink>
             <RouterLink to="/admin">Admin</RouterLink>
-            <DarkModeButton v-model="mode" class="text-primary-900" />
+            <ButtonDarkMode v-model="mode" class="text-primary-900" />
         </nav>
     </header>
     <div class="mt-20 h-full w-full px-2 lg:px-20"><RouterView /></div>
