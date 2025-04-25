@@ -1,6 +1,8 @@
 <template>
     <div class="flex w-20 flex-col items-center">
-        <p :class="[modelValue ? 'text-primary-700' : 'text-gray-400']">{{ label }}</p>
+        <p :class="[modelValue ? 'text-primary-500 font-medium' : 'font-normal text-gray-400']">
+            {{ label }}
+        </p>
         <div
             @click="toggleSwitch"
             class="flex h-5 w-12 cursor-pointer items-center rounded-full transition duration-100"

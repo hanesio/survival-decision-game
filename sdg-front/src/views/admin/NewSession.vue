@@ -1,33 +1,12 @@
 <template>
-    <dialog
-        ref="dialog"
-        class="m-auto flex h-48 w-80 flex-col justify-between rounded-md p-4"
-        :class="[dialogOpen ? 'visible' : 'invisible']"
-    >
-        <button
-            class="absolute right-2 top-2 cursor-pointer p-2 text-gray-500 hover:text-black"
-            @click="closeDialog"
-        >
-            <IconClose />
-        </button>
-        <p class="flex h-full items-center justify-center text-center">
-            Möchten Sie das Preset wirklich löschen?
-        </p>
-        <div class="flex justify-end gap-2">
-            <button
-                @click="closeDialog"
-                class="cursor-pointer rounded-sm border-2 border-gray-300 bg-gray-50 p-2 transition hover:bg-gray-300 active:scale-95"
-            >
-                abbrechen
-            </button>
-            <button
-                @click="deletePreset"
-                class="cursor-pointer rounded-sm border-2 border-rose-300 bg-rose-50 p-2 transition hover:bg-rose-400 active:scale-95"
-            >
-                löschen
-            </button>
-        </div>
-    </dialog>
+    <ModalDialog
+        class="m-auto"
+        @delete="deletePreset"
+        @close="closeDialog"
+        action-button-label="Preset löschen"
+        text="Möchten Sie das Preset wirklich löschen?"
+        :dialog-open="dialogOpen"
+    />
     <h1 class="py-4 text-6xl dark:text-gray-200">NEUE SESSION</h1>
 
     <div class="flex flex-col gap-2">
@@ -166,7 +145,7 @@ import { computed, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { AxiosHelper } from '@/AxiosHelper';
 import IconArrowRight from '@/components/icons/IconArrowRight.vue';
-import IconClose from '@/components/icons/IconClose.vue';
+import ModalDialog from '@/components/ModalDialog.vue';
 
 const axiosHelper = new AxiosHelper();
 const router = useRouter();
@@ -289,10 +268,10 @@ async function start() {
 
 function openDialog() {
     dialogOpen.value = true;
-    dialog.value.showModal();
+    // dialog.value.showModal();
 }
 function closeDialog() {
     dialogOpen.value = false;
-    dialog.value.close();
+    // dialog.value.close();
 }
 </script>

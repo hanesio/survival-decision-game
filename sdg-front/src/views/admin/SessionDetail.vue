@@ -116,7 +116,15 @@
             </div>
         </section>
     </div>
-    <dialog
+    <ModalDialog
+        class="m-auto"
+        @delete="deleteSession"
+        @close="closeDialog"
+        action-button-label="Session löschen"
+        text="Möchten Sie die Session wirklich löschen?"
+        :dialog-open="dialogOpen"
+    />
+    <!-- <dialog
         :class="[dialogOpen ? 'visible' : 'invisible']"
         ref="dialog"
         class="relative m-auto flex h-48 w-80 flex-col justify-between rounded-md p-4"
@@ -144,7 +152,7 @@
                 löschen
             </button>
         </div>
-    </dialog>
+    </dialog> -->
 </template>
 
 <script setup lang="ts">
@@ -160,6 +168,7 @@ import StageButton from '@/components/StageButton.vue';
 import Switch from '@/components/Switch.vue';
 import { AxiosHelper } from '@/AxiosHelper';
 import IconClose from '@/components/icons/IconClose.vue';
+import ModalDialog from '@/components/ModalDialog.vue';
 
 const axiosHelper = new AxiosHelper();
 
@@ -171,7 +180,6 @@ const session = ref();
 const active = ref();
 const singles = ref();
 const groups = ref();
-const dialog = ref<HTMLDialogElement>();
 const dialogOpen = ref(false);
 
 getSession();
@@ -267,11 +275,11 @@ async function deleteSession() {
 
 function openDialog() {
     dialogOpen.value = true;
-    dialog.value.showModal();
+    // dialog.value.showModal();
 }
 function closeDialog() {
     dialogOpen.value = false;
-    dialog.value.close();
+    // dialog.value.close();
 }
 </script>
 
