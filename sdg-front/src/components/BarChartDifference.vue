@@ -1,3 +1,22 @@
+<template>
+    <div class="grid grid-cols-1 gap-2 lg:grid-cols-3 lg:gap-y-6">
+        <div class="h-86 w-full min-w-0 p-4" v-for="(group, index) in singlesByGroup">
+            <div class="flex">
+                <div
+                    class="bg-primary-200 flex justify-start gap-2 rounded-br-full rounded-tl-full px-8 py-1 text-2xl dark:bg-gray-900"
+                >
+                    <h3 class="dark:text-gray-00">Gruppe {{ index + 1 }}:</h3>
+                    <h3 class="text-primary-600 dark:text-primary-400 font-semibold">
+                        {{ group.groupvalue }}
+                    </h3>
+                </div>
+            </div>
+            <div class="l h-64">
+                <BarChartDifferenceGroup :groupData="group" />
+            </div>
+        </div>
+    </div>
+</template>
 <script setup lang="ts">
 import BarChartDifferenceGroup from './BarChartDifferenceGroup.vue';
 
@@ -11,7 +30,6 @@ const props = defineProps({
         required: true,
     },
 });
-
 const singlesByGroup = [];
 props.groupData.forEach((group) => {
     const compareGroup = {
@@ -33,14 +51,3 @@ props.groupData.forEach((group) => {
     singlesByGroup.push(compareGroup);
 });
 </script>
-
-<template>
-    <div class="grid grid-cols-1 gap-2 lg:flex">
-        <div class="h-72 w-full min-w-0 p-4" v-for="group in singlesByGroup">
-            <div class="l h-64">
-                <BarChartDifferenceGroup :groupData="group" />
-            </div>
-            <div class="flex justify-center">{{ group.groupname }}</div>
-        </div>
-    </div>
-</template>

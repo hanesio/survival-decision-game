@@ -12,7 +12,7 @@
         />
 
         <p
-            class="absolute left-1/2 top-1/4 w-full -translate-x-1/2 -translate-y-1/2 text-center text-4xl dark:text-gray-300"
+            class="absolute left-1/2 top-1/3 w-full -translate-x-1/2 -translate-y-1/2 text-center text-4xl dark:text-gray-300"
             v-if="username"
         >
             Danke <span class="dark:text-secondary-400 text-secondary-600">{{ username }}</span> !
@@ -48,9 +48,6 @@ import { useStorage } from '@vueuse/core';
 import { AxiosHelper } from '@/AxiosHelper';
 import { ref } from 'vue';
 import ButtonRefresh from '@/components/ButtonRefresh.vue';
-import { useRouter } from 'vue-router';
-
-const router = useRouter();
 
 const axiosHelper = new AxiosHelper();
 

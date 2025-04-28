@@ -1,44 +1,58 @@
 <template>
     <article class="border-primary-500 flex flex-col border-l-4 px-4">
-        <h3 class="text-xl">{{ session?.title }}</h3>
-        <h2 class="text-4xl lg:text-6xl">Auswertung</h2>
+        <h3 class="text-xl dark:text-gray-400">{{ session?.title }}</h3>
+        <h2 class="text-4xl lg:text-6xl dark:text-gray-200">Auswertung</h2>
     </article>
 
     <div class="mt-6 flex gap-8">
-        <section class="grid w-full grid-cols-1 gap-2 lg:grid-cols-2">
+        <section class="grid w-full grid-cols-1 gap-2 lg:grid-cols-2 dark:text-gray-200">
             <div class="flex items-center gap-1">
                 <div
                     v-if="user"
-                    class="flex h-full w-1/2 flex-col items-center justify-center rounded-lg bg-gray-50 p-4 text-center"
+                    class="flex h-full w-1/2 flex-col items-center justify-center rounded-lg bg-gray-50 p-4 text-center dark:bg-gray-800"
                 >
                     <h3 class="p-2 text-4xl">{{ user.username }}</h3>
-                    <p class="text-primary-500 text-8xl font-light">{{ user.result }}</p>
-                    <p class="text-primary-500">Punkte Abstand</p>
+                    <p
+                        class="text-primary-500 dark:text-primary-400 dark:text-primary-400 text-8xl font-light"
+                    >
+                        {{ user.result }}
+                    </p>
+                    <p class="text-primary-500 dark:text-primary-400">Punkte Abstand</p>
                 </div>
                 <div class="grid h-full w-1/2 grid-cols-2 gap-1">
                     <div
                         v-if="group"
-                        class="flex flex-col items-center rounded-lg bg-gray-50 p-3 text-center"
+                        class="flex flex-col items-center rounded-lg bg-gray-50 p-3 text-center dark:bg-gray-800"
                     >
                         <p class="h-12">{{ group.groupname }}</p>
-                        <p class="text-primary-500 p-2 text-3xl">{{ group.result }}</p>
+                        <p class="text-primary-500 dark:text-primary-400 p-2 text-3xl">
+                            {{ group.result }}
+                        </p>
                     </div>
                     <div
                         v-if="group"
-                        class="flex flex-col items-center rounded-lg bg-gray-50 p-3 text-center"
+                        class="flex flex-col items-center rounded-lg bg-gray-50 p-3 text-center dark:bg-gray-800"
                     >
                         <p class="h-12">Differenz Gruppe</p>
-                        <p class="text-primary-500 p-2 text-3xl">
+                        <p class="text-primary-500 dark:text-primary-400 p-2 text-3xl">
                             {{ user.result - group.result }}
                         </p>
                     </div>
-                    <div class="flex flex-col items-center rounded-lg bg-gray-50 p-3 text-center">
+                    <div
+                        class="flex flex-col items-center rounded-lg bg-gray-50 p-3 text-center dark:bg-gray-800"
+                    >
                         <p class="h-12">Durchschnitt Spieler</p>
-                        <p class="text-primary-500 p-2 text-3xl">{{ averageSingles }}</p>
+                        <p class="text-primary-500 dark:text-primary-400 p-2 text-3xl">
+                            {{ averageSingles }}
+                        </p>
                     </div>
-                    <div class="flex flex-col items-center rounded-lg bg-gray-50 p-3 text-center">
+                    <div
+                        class="flex flex-col items-center rounded-lg bg-gray-50 p-3 text-center dark:bg-gray-800"
+                    >
                         <p class="h-12">Durchschnitt Gruppen</p>
-                        <p class="text-primary-500 p-2 text-3xl">{{ averageGroups }}</p>
+                        <p class="text-primary-500 dark:text-primary-400 p-2 text-3xl">
+                            {{ averageGroups }}
+                        </p>
                     </div>
                 </div>
             </div>

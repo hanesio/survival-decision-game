@@ -39,8 +39,9 @@
 
     <div class="flex">
         <SessionTab @click="tabindex = 0" :isActive="tabindex === 0" label="Präsentation" />
-        <SessionTab @click="tabindex = 1" :isActive="tabindex === 1" label="Analyse" />
-        <SessionTab @click="tabindex = 2" :isActive="tabindex === 2" label="Lösung" />
+        <SessionTab @click="tabindex = 1" :isActive="tabindex === 1" label="Gruppenorganisation" />
+        <SessionTab @click="tabindex = 2" :isActive="tabindex === 2" label="Analyse" />
+        <SessionTab @click="tabindex = 3" :isActive="tabindex === 3" label="Lösung" />
     </div>
     <div class="b rounded-lg rounded-tl-none bg-gray-100 p-4 dark:bg-gray-800">
         <section
@@ -59,23 +60,50 @@
                 <p class="text-justify text-2xl dark:text-gray-300">{{ session.description }}</p>
             </div>
         </section>
-
-        <section v-if="tabindex === 1" name="analyzation">
+        <section v-if="tabindex === 1" name="group organization" class="dark:text-gray-200">
             <div
-                class="mt-2 flex flex-col gap-8 rounded-lg p-4 dark:text-gray-300"
+                class="flex flex-col items-center gap-4 lg:flex-row lg:items-start lg:gap-4"
+                v-if="groups"
+            >
+                <div
+                    class="flex flex-col rounded border border-gray-300 p-2"
+                    v-for="group in groups"
+                >
+                    <h2 class="text-3xl font-semibold">{{ group.groupname }}</h2>
+                    <div class="mt-1 rounded-sm bg-gray-200 p-2 dark:bg-gray-700">
+                        <p class="text-lg" v-for="member in group.members">
+                            {{ singles.find((single) => single._id === member).username }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div v-if="singles">
+                <div class="rounded-sm bg-gray-200 p-2 dark:bg-gray-700">
+                    <p class="text-lg" v-for="single in singles">
+                        {{ single.username }}
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section v-if="tabindex === 2" name="analyzation">
+            <div
+                class="flex flex-col gap-8 rounded-lg dark:text-gray-300"
                 v-if="singleData.length > 0"
             >
-                <div class="rounded-t-md">
-                    <h4 class="px-4 py-2 text-lg">Ergebnis Einzel</h4>
-                    <div class="h-64 w-full p-4"><BarChart :chart_data="singleData" /></div>
+                <div class="grid grid-cols-2">
+                    <div class="rounded-t-md">
+                        <h4 class="py-2 text-lg">Ergebnis Einzel</h4>
+                        <div class="h-64 w-full"><BarChart :chart_data="singleData" /></div>
+                    </div>
+                    <div class="rounded-t-md" v-if="groupData.length > 0">
+                        <h4 class="py-2 text-lg">Ergebnis Gruppen</h4>
+                        <div class="h-64 w-full"><BarChart :chart_data="groupData" /></div>
+                    </div>
                 </div>
                 <div class="rounded-t-md" v-if="groupData.length > 0">
-                    <h4 class="px-4 py-2 text-lg">Ergebnis Gruppen</h4>
-                    <div class="h-64 w-full p-4"><BarChart :chart_data="groupData" /></div>
-                </div>
-                <div class="rounded-t-md" v-if="groupData.length > 0">
-                    <h4 class="px-4 py-2 text-lg">Ergebnisunterschied zur Gruppe</h4>
-                    <div class="w-full p-4"><BarChartDifference :groupData :singleData /></div>
+                    <h4 class="py-2 text-lg">Ergebnisunterschied zur Gruppe</h4>
+                    <div class="w-full"><BarChartDifference :groupData :singleData /></div>
 
                     <div class="flex flex-col">
                         <label for="comment">Kommentar:</label>
@@ -90,7 +118,7 @@
                 </div>
             </div>
         </section>
-        <section v-if="tabindex === 2" name="solution">
+        <section v-if="tabindex === 3" name="solution">
             <div class="overlow overflow-clip rounded-lg">
                 <table class="w-full table-auto border-collapse">
                     <thead>
@@ -124,35 +152,6 @@
         text="Möchten Sie die Session wirklich löschen?"
         :dialog-open="dialogOpen"
     />
-    <!-- <dialog
-        :class="[dialogOpen ? 'visible' : 'invisible']"
-        ref="dialog"
-        class="relative m-auto flex h-48 w-80 flex-col justify-between rounded-md p-4"
-    >
-        <button
-            class="absolute right-2 top-2 cursor-pointer p-2 text-gray-500 hover:text-black"
-            @click="closeDialog"
-        >
-            <IconClose />
-        </button>
-        <p class="flex h-full items-center justify-center text-center">
-            Möchten Sie die Session wirklich löschen?
-        </p>
-        <div class="flex justify-end gap-2">
-            <button
-                @click="closeDialog"
-                class="cursor-pointer rounded-sm bg-gray-200 p-2 transition hover:bg-gray-300 active:scale-95"
-            >
-                abbrechen
-            </button>
-            <button
-                @click="deleteSession"
-                class="cursor-pointer rounded-sm border-2 border-rose-300 bg-rose-50 p-2 transition hover:bg-rose-400 active:scale-95"
-            >
-                löschen
-            </button>
-        </div>
-    </dialog> -->
 </template>
 
 <script setup lang="ts">
@@ -182,10 +181,7 @@ const singles = ref();
 const groups = ref();
 const dialogOpen = ref(false);
 
-getSession();
-getActive();
-getSingles();
-getGroups();
+start();
 
 const originURL = shallowRef(window.location.origin); // getting the current base URL
 // const qrcode = useQRCode(originURL);
@@ -228,6 +224,12 @@ watch(isActive, () => {
     setActiveSession();
 });
 
+async function start() {
+    await getSession();
+    await getActive();
+    await getSingles();
+    await getGroups();
+}
 async function getSession() {
     const sessionData = await axiosHelper.get('sessions/find/' + id);
     session.value = sessionData.data;
@@ -248,6 +250,7 @@ async function getSingles() {
 async function getGroups() {
     const data = await axiosHelper.get('groups/find-by-session/' + id);
     groups.value = data.data;
+    console.log(groups.value);
 }
 
 async function setActiveSession() {

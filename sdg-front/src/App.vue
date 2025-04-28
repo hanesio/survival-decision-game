@@ -1,3 +1,16 @@
+<template>
+    <header
+        class="bg-primary-400 fixed top-0 z-20 flex w-screen items-center justify-between px-6 py-2"
+    >
+        <nav class="flex w-full items-center justify-between gap-2">
+            <RouterLink to="/">Home</RouterLink>
+
+            <ButtonDarkMode v-model="mode" class="text-primary-900" />
+            <RouterLink to="/admin">Admin</RouterLink>
+        </nav>
+    </header>
+    <div class="mt-20 h-full w-full px-2 lg:px-20"><RouterView /></div>
+</template>
 <script setup lang="ts">
 import { ref } from 'vue';
 import { RouterLink, RouterView } from 'vue-router';
@@ -24,19 +37,6 @@ watch(mode, (newMode) => {
     );
 });
 </script>
-
-<template>
-    <header
-        class="bg-primary-400 fixed top-0 z-20 flex w-screen items-center justify-between px-6 py-2"
-    >
-        <nav class="flex items-center gap-2">
-            <RouterLink to="/">Home</RouterLink>
-            <RouterLink to="/admin">Admin</RouterLink>
-            <ButtonDarkMode v-model="mode" class="text-primary-900" />
-        </nav>
-    </header>
-    <div class="mt-20 h-full w-full px-2 lg:px-20"><RouterView /></div>
-</template>
 
 <!-- html {
   --s: 6px; /* control the size*/
