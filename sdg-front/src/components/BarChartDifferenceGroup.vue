@@ -132,7 +132,7 @@ const groupLine = {
                     // );
 
                     ctx.font = ' normal 14px Inter';
-                    ctx.fillStyle = isDark ? 'white' : 'black';
+                    ctx.fillStyle = isDark.value ? 'white' : 'black';
                     ctx.fillText(set.label, differenceLabel.x, bottom + 14);
                 });
             }

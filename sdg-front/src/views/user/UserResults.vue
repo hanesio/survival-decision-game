@@ -12,9 +12,7 @@
                     class="flex h-full w-1/2 flex-col items-center justify-center rounded-lg bg-gray-50 p-4 text-center dark:bg-gray-800"
                 >
                     <h3 class="p-2 text-4xl">{{ user.username }}</h3>
-                    <p
-                        class="text-primary-500 dark:text-primary-400 dark:text-primary-400 text-8xl font-light"
-                    >
+                    <p class="text-primary-500 dark:text-primary-400 text-8xl font-light">
                         {{ user.result }}
                     </p>
                     <p class="text-primary-500 dark:text-primary-400">Punkte Abstand</p>
@@ -56,15 +54,15 @@
                     </div>
                 </div>
             </div>
-            <div v-if="user" class="border-primary-500 rounded-lg border p-4">
+            <div v-if="user" class="rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
                 <h4 class="px-4 py-2 text-lg">Vergleich Einzel</h4>
                 <div class="h-64 w-full p-4"><BarChart :chart_data="singleData" /></div>
             </div>
-            <div v-if="group" class="border-primary-500 rounded-lg border p-4">
+            <div v-if="group" class="rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
                 <h4 class="px-4 py-2 text-lg">Vergleich Gruppen</h4>
                 <div class="h-64 w-full p-4"><BarChart :chart_data="groupData" /></div>
             </div>
-            <div v-if="group" class="border-primary-500 rounded-lg border p-4">
+            <div v-if="group" class="rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
                 <h4 class="px-4 py-2 text-lg">Ergebnisunterschied zur Gruppe</h4>
                 <div class="w-full p-4">
                     <BarChartDifference :groupData="groupDifference" :singleData />

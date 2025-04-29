@@ -23,6 +23,7 @@ Chart.defaults.font.family = 'Inter, sans';
 Chart.defaults.color = isDark.value ? 'white' : 'black';
 
 const canvas = ref<HTMLCanvasElement>();
+// TODO: User sieht seinen Namen
 // const labels = props.chart_data.map((label) => label.x);
 const labels = props.chart_data.map((label, index) => index + 1);
 const yValues = props.chart_data.map((data) => data.y);
