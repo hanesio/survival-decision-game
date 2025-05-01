@@ -39,8 +39,7 @@
         >
             <template #item="{ element: item, index }" ">
                 <li
-                    class="mt-1 handle flex w-full items-center justify-between gap-0.5 rounded-sm dark:text-gray-200 dark:bg-gray-700 bg-gray-200 px-1 py-0"
-                >
+                    class="mt-1  flex w-full items-center justify-between gap-0.5 rounded-sm dark:text-gray-200 dark:bg-gray-700 bg-gray-200 px-1 py-0 " :class="[isLargeScreen && 'handle cursor-grab']"                >
                     <span class="w-6  py-1 pl-1 text-center font-bold">{{
                         index + 1
                     }}</span>
@@ -54,7 +53,7 @@
                         {{ item.description }}
                     </span>
                     <div
-                        class="mr-1 flex w-10 cursor-grab items-center justify-center rounded-sm"
+                        class="mr-1 flex w-10 cursor-grab items-center justify-center rounded-sm handle"
                     >
                         <IconDragHandle class="text-gray-400" />
                     </div>
@@ -72,6 +71,9 @@ import draggable from 'vuedraggable';
 import IconDragHandle from '@/components/icons/IconDragHandle.vue';
 import ItemPill from '@/components/ItemPill.vue';
 import IconDelete from './icons/IconDelete.vue';
+import { useMediaQuery } from '@vueuse/core'
+
+const isLargeScreen = useMediaQuery('(min-width: 1024px)')
 
 const props = defineProps({
     title: {
