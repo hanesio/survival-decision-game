@@ -7,19 +7,20 @@
         "
     >
         <ButtonRefresh
-            class="bottom-1/5 absolute left-1/2 -translate-x-1/2 translate-y-1/2 lg:top-20"
+            class="bottom-1/5 absolute left-1/2 -translate-x-1/2 translate-y-1/2"
             @click="getActive"
         />
 
-        <p
-            class="absolute left-1/2 top-1/3 w-full -translate-x-1/2 -translate-y-1/2 text-center text-4xl dark:text-gray-300"
-            v-if="username"
-        >
-            Danke <span class="dark:text-secondary-400 text-secondary-600">{{ username }}</span> !
-        </p>
         <div
             class="bg-primary-50 absolute left-1/2 top-1/2 flex w-96 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-2 rounded-lg p-4 dark:bg-gray-700 dark:text-gray-200"
         >
+            <p
+                class="absolute -top-14 left-1/2 w-full -translate-x-1/2 text-center text-4xl dark:text-gray-300"
+                v-if="username"
+            >
+                Danke
+                <span class="dark:text-secondary-400 text-secondary-600">{{ username }}</span> !
+            </p>
             <p class="p-4">
                 Es ist keine Spiel-Session aktiv oder du hast dein Ergebnis bereits abgegeben. Warte
                 auf die Anweisungen des Spielleiters.
