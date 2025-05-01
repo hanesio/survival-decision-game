@@ -1,13 +1,14 @@
 <template>
-    <div class="flex items-center justify-between py-2">
-        <div class="flex items-end gap-2">
-            <h1 class="text-4xl dark:text-gray-200" v-if="session">
-                {{ session.sessionname }}
-            </h1>
-
+    <div class="flex flex-col justify-between gap-2 py-2 lg:flex-row">
+        <div class="flex gap-2 lg:items-end">
+            <div>
+                <h1 class="text-2xl lg:text-4xl dark:text-gray-200" v-if="session">
+                    {{ session.sessionname }}
+                </h1>
+                <h2 class="lg:text-left dark:text-gray-300">{{ formattedDate }}</h2>
+            </div>
             <Switch v-model="isActive" />
         </div>
-
         <button
             class="cursor-pointer rounded-sm border-2 border-rose-300 p-2 transition hover:bg-rose-400 hover:text-black active:scale-95 dark:bg-gray-800 dark:text-rose-400"
             @click="openDialog"
@@ -15,21 +16,20 @@
             Session löschen
         </button>
     </div>
-    <h2 class="dark:text-gray-300">{{ formattedDate }}</h2>
 
-    <div class="flex flex-col items-center gap-4 py-8 lg:flex-row">
+    <div class="flex flex-col gap-1 py-8 lg:flex-row lg:items-center lg:gap-4">
         <StageButton
             @click="setStage(Stages.Einzel)"
             :isActive="stage === 'single'"
             label="Einzelphase"
         />
-        <p class="text-2xl text-gray-400 dark:text-gray-600">></p>
+        <p class="hidden text-2xl text-gray-400 lg:visible dark:text-gray-600">></p>
         <StageButton
             @click="setStage(Stages.Gruppe)"
             :isActive="stage === 'group'"
             label="Gruppenphase"
         />
-        <p class="text-2xl text-gray-400 dark:text-gray-600">></p>
+        <p class="hidden text-2xl text-gray-400 lg:visible dark:text-gray-600">></p>
         <StageButton
             @click="setStage(Stages.Reflektion)"
             :isActive="stage === 'results'"
@@ -43,21 +43,28 @@
         <SessionTab @click="tabindex = 2" :isActive="tabindex === 2" label="Analyse" />
         <SessionTab @click="tabindex = 3" :isActive="tabindex === 3" label="Lösung" />
     </div>
-    <div class="b rounded-lg rounded-tl-none bg-gray-100 p-4 dark:bg-gray-800">
+    <div class="rounded-lg rounded-tl-none bg-gray-100 lg:p-4 dark:bg-gray-800">
         <section
             v-if="tabindex === 0"
             name="presentation"
             class="flex flex-col items-center justify-center lg:flex-row lg:items-start lg:gap-4"
         >
-            <div class="flex flex-col gap-4 p-4 lg:w-1/4">
-                <p class="bg-blue-400 py-2 text-center text-2xl">{{ originURL }}</p>
+            <div class="flex flex-col gap-4 lg:w-1/4 lg:p-4">
+                <p
+                    class="dark:bg-secondary-400 bg-secondary-500 rounded-md py-2 text-center text-2xl"
+                >
+                    {{ originURL }}
+                </p>
                 <!-- <img class="scale-130 w-full mix-blend-multiply" :src="qrcode" alt="QR Code" /> -->
+                <QRCode class="dark:text-secondary-400 text-secondary-500 w-full" />
             </div>
-            <div class="w-3/4 p-4 pr-6" v-if="session">
-                <h2 class="pb-8 text-6xl underline decoration-blue-400 dark:text-gray-300">
+            <div class="lg:w-3/4 lg:p-4 lg:pr-6" v-if="session">
+                <h2
+                    class="dark:decoration-secondary-400 decoration-secondary-500 pb-8 text-center text-3xl underline lg:text-left lg:text-6xl dark:text-gray-300"
+                >
                     {{ session.title }}
                 </h2>
-                <p class="text-justify text-2xl dark:text-gray-300">{{ session.description }}</p>
+                <p class="text-justify lg:text-2xl dark:text-gray-300">{{ session.description }}</p>
             </div>
         </section>
         <section v-if="tabindex === 1" name="group organization" class="dark:text-gray-200">
@@ -168,6 +175,7 @@ import Switch from '@/components/Switch.vue';
 import { AxiosHelper } from '@/AxiosHelper';
 import IconClose from '@/components/icons/IconClose.vue';
 import ModalDialog from '@/components/ModalDialog.vue';
+import QRCode from '@/components/icons/QRCode.vue';
 
 const axiosHelper = new AxiosHelper();
 
