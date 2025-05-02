@@ -19,7 +19,7 @@
                     </p>
                     <p class="text-primary-500 dark:text-primary-400">Punkte Abstand</p>
                 </div>
-                <div class="grid h-full grid-cols-2 gap-1 lg:w-1/2">
+                <div class="grid h-full w-full grid-cols-2 gap-1 lg:w-1/2">
                     <div
                         v-if="group"
                         class="flex flex-col items-center rounded-lg bg-gray-50 p-3 text-center dark:bg-gray-800"
@@ -64,7 +64,7 @@
                 <h4 class="px-4 py-2 text-lg">Vergleich Gruppen</h4>
                 <div class="h-56 w-full lg:p-4"><BarChart :chart_data="groupData" /></div>
             </div>
-            <div v-if="group" class="rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
+            <div v-if="group" class="rounded-lg bg-gray-50 lg:p-4 dark:bg-gray-800">
                 <h4 class="px-4 py-2 text-lg">Ergebnisunterschied zur Gruppe</h4>
                 <div class="h-80 w-full lg:p-4">
                     <BarChartDifference :groupData="groupDifference" :singleData />
