@@ -6,18 +6,20 @@
 
     <div class="mt-6 flex gap-8">
         <section class="grid w-full grid-cols-1 gap-2 lg:grid-cols-2 dark:text-gray-200">
-            <div class="flex items-center gap-1">
+            <div class="flex flex-col items-center gap-1 lg:flex-row">
                 <div
                     v-if="user"
-                    class="flex h-full w-1/2 flex-col items-center justify-center rounded-lg bg-gray-50 p-4 text-center dark:bg-gray-800"
+                    class="flex h-full w-full flex-col items-center justify-center rounded-lg bg-gray-50 p-4 text-center lg:w-1/2 dark:bg-gray-800"
                 >
                     <h3 class="p-2 text-4xl">{{ user.username }}</h3>
-                    <p class="text-primary-500 dark:text-primary-400 text-8xl font-light">
+                    <p
+                        class="text-primary-500 dark:text-primary-400 text-6xl font-light lg:text-8xl"
+                    >
                         {{ user.result }}
                     </p>
                     <p class="text-primary-500 dark:text-primary-400">Punkte Abstand</p>
                 </div>
-                <div class="grid h-full w-1/2 grid-cols-2 gap-1">
+                <div class="grid h-full grid-cols-2 gap-1 lg:w-1/2">
                     <div
                         v-if="group"
                         class="flex flex-col items-center rounded-lg bg-gray-50 p-3 text-center dark:bg-gray-800"
@@ -56,15 +58,15 @@
             </div>
             <div v-if="user" class="rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
                 <h4 class="px-4 py-2 text-lg">Vergleich Einzel</h4>
-                <div class="h-64 w-full p-4"><BarChart :chart_data="singleData" /></div>
+                <div class="h-56 w-full lg:p-4"><BarChart :chart_data="singleData" /></div>
             </div>
             <div v-if="group" class="rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
                 <h4 class="px-4 py-2 text-lg">Vergleich Gruppen</h4>
-                <div class="h-64 w-full p-4"><BarChart :chart_data="groupData" /></div>
+                <div class="h-56 w-full lg:p-4"><BarChart :chart_data="groupData" /></div>
             </div>
             <div v-if="group" class="rounded-lg bg-gray-50 p-4 dark:bg-gray-800">
                 <h4 class="px-4 py-2 text-lg">Ergebnisunterschied zur Gruppe</h4>
-                <div class="w-full p-4">
+                <div class="h-80 w-full lg:p-4">
                     <BarChartDifference :groupData="groupDifference" :singleData />
                 </div>
             </div>

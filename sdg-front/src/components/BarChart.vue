@@ -1,4 +1,5 @@
 <template>
+    <!-- <p class="text-primary-500">Ø {{ average }}</p> -->
     <canvas ref="canvas"></canvas>
 </template>
 
@@ -111,7 +112,7 @@ const config: ChartConfiguration = {
     options: {
         layout: {
             padding: {
-                right: 70,
+                // right: 70,
                 top: 20,
             },
         },
