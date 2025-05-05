@@ -173,7 +173,7 @@ app.put('/api/groups/update/:id', async function (req, res) {
     console.log(req.body);
     try {
         var filter = { _id: req.params.id };
-        var update = { members: req.body };
+        var update = req.body;
         var result = await Group.findOneAndUpdate(filter, update);
     } catch (err) {
         result = err.message;
@@ -199,6 +199,18 @@ app.get('/api/sessions/delete/:id', async function (req, res) {
         var fetchid = req.params.id;
         var result = await Session.deleteOne({ _id: fetchid });
         console.log('Session deleted');
+        res.send(result);
+    } catch (err) {
+        result = err.message;
+        console.error('Error Message:', result);
+    }
+    res.send(result);
+});
+app.get('/api/groups/delete/:id', async function (req, res) {
+    try {
+        var fetchid = req.params.id;
+        var result = await Group.deleteOne({ _id: fetchid });
+        console.log('Group deleted');
         res.send(result);
     } catch (err) {
         result = err.message;

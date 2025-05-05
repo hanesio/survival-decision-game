@@ -11,7 +11,7 @@
         </div>
         <button
             class="cursor-pointer rounded-sm border-2 border-rose-300 p-2 transition hover:bg-rose-400 hover:text-black active:scale-95 dark:bg-gray-800 dark:text-rose-400"
-            @click="openDialog"
+            @click="openSessionDialog"
         >
             Session löschen
         </button>
@@ -99,13 +99,44 @@
                     <h3 class="pb-2 text-2xl">Gruppen</h3>
                     <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:gap-4">
                         <div
-                            class="flex flex-col rounded border border-gray-300 p-2"
+                            class="group flex flex-col rounded border border-gray-300 p-2"
                             v-for="group in groups"
                         >
-                            <h2 class="text-3xl font-semibold">{{ group.groupname }}</h2>
+                            <div class="flex items-center gap-2">
+                                <h2 class="text-3xl font-semibold">{{ group.groupname }}</h2>
+                                <ButtonTrash @click="openGroupDialog(group._id)" />
+                            </div>
                             <div class="mt-1 rounded-sm bg-gray-200 p-2 dark:bg-gray-700">
                                 <draggable
                                     v-model="group.members"
+                                    tag="ul"
+                                    handle=".handle"
+                                    animation="300"
+                                    :force-fallback="true"
+                                    item-key="id"
+                                    group="people"
+                                    @change="updateGroups"
+                                >
+                                    <template #item="{ element: item }">
+                                        <li>
+                                            <p class="handle cursor-grab text-lg">
+                                                {{
+                                                    singles.find((single) => single._id === item)
+                                                        .username
+                                                }}
+                                            </p>
+                                        </li>
+                                    </template>
+                                </draggable>
+                            </div>
+                        </div>
+                        <div class="group flex flex-col rounded border border-gray-300 p-2">
+                            <div class="flex items-center gap-2">
+                                <h2 class="text-3xl text-gray-500">nicht zugeordnet</h2>
+                            </div>
+                            <div class="mt-1 rounded-sm bg-gray-200 p-2 dark:bg-gray-700">
+                                <draggable
+                                    v-model="ungrouped"
                                     tag="ul"
                                     handle=".handle"
                                     animation="300"
@@ -145,7 +176,7 @@
                     class="flex flex-col gap-8 rounded-lg dark:text-gray-300"
                     v-if="singleData.length > 0"
                 >
-                    <div class="grid grid-cols-1 lg:grid-cols-2">
+                    <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
                         <div class="rounded-t-md">
                             <h4 class="py-2 text-lg">Ergebnis Einzel</h4>
                             <div class="h-64 w-full"><BarChart :chart_data="singleData" /></div>
@@ -155,9 +186,9 @@
                             <div class="h-64 w-full"><BarChart :chart_data="groupData" /></div>
                         </div>
                     </div>
-                    <div class="rounded-t-md" v-if="groupData.length > 0">
+                    <div class="rounded-t-md" v-if="groupData.length > 0 && singles">
                         <h4 class="py-2 text-lg">Ergebnisunterschied zur Gruppe</h4>
-                        <div class="w-full"><BarChartDifference :groupData :singleData /></div>
+                        <div class="w-full"><BarChartDifference :groupData :singles /></div>
 
                         <div class="flex flex-col">
                             <label for="comment">Kommentar:</label>
@@ -203,10 +234,18 @@
     <ModalDialog
         class="m-auto"
         @delete="deleteSession"
-        @close="closeDialog"
+        @close="closeSessionDialog"
         action-button-label="Session löschen"
         text="Möchten Sie die Session wirklich löschen?"
-        :dialog-open="dialogOpen"
+        :dialog-open="sessionDialogOpen"
+    />
+    <ModalDialog
+        class="m-auto"
+        @delete="deleteGroup(groupToDelete)"
+        @close="closeGroupDialog"
+        action-button-label="Gruppe löschen"
+        text="Möchten Sie die Gruppe wirklich löschen?"
+        :dialog-open="groupDialogOpen"
     />
 </template>
 
@@ -222,11 +261,11 @@ import { shallowRef } from 'vue';
 import StageButton from '@/components/StageButton.vue';
 import Switch from '@/components/Switch.vue';
 import { AxiosHelper } from '@/AxiosHelper';
-import IconClose from '@/components/icons/IconClose.vue';
 import ModalDialog from '@/components/ModalDialog.vue';
 import QRCode from '@/components/icons/QRCode.vue';
 import draggable from 'vuedraggable';
 import { useMediaQuery } from '@vueuse/core';
+import ButtonTrash from '@/components/ButtonTrash.vue';
 
 const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 
@@ -240,7 +279,10 @@ const session = ref();
 const active = ref();
 const singles = ref();
 const groups = ref();
-const dialogOpen = ref(false);
+const ungrouped = ref();
+const groupToDelete = ref();
+const sessionDialogOpen = ref(false);
+const groupDialogOpen = ref(false);
 
 start();
 
@@ -261,7 +303,12 @@ const singleData = computed(() => {
 const groupData = computed(() => {
     return groups.value
         ? groups.value.map((group) => {
-              return { x: group.groupname, y: group.result, _id: group._id };
+              return {
+                  x: group.groupname,
+                  y: group.result,
+                  _id: group._id,
+                  members: group.members,
+              };
           })
         : undefined;
 });
@@ -311,13 +358,23 @@ async function getSingles() {
 async function getGroups() {
     const data = await axiosHelper.get('groups/find-by-session/' + id);
     groups.value = data.data;
+    ungrouped.value = singles.value
+        .filter((single) => single.groupId === null)
+        .map((single) => single._id);
+    console.log(ungrouped.value);
     console.log(groups.value);
 }
 
 async function updateGroups() {
     groups.value.forEach(async (group) => {
-        const data = await axiosHelper.put('groups/update/' + group._id, group.members);
+        const data = await axiosHelper.put('groups/update/' + group._id, {
+            members: group.members,
+        });
+        group.members.forEach(async (member) => {
+            await axiosHelper.put('singles/update/' + member, { groupId: group._id });
+        });
     });
+    await getGroups();
 }
 
 async function setActiveSession() {
@@ -338,18 +395,33 @@ async function setStage(st: Stages) {
 }
 
 async function deleteSession() {
-    closeDialog();
+    closeSessionDialog();
     const response = axiosHelper.get('sessions/delete/' + id);
     router.push('/admin');
 }
-
-function openDialog() {
-    dialogOpen.value = true;
-    // dialog.value.showModal();
+async function deleteGroup(grId: string) {
+    closeGroupDialog();
+    singles.value.forEach(async (single) => {
+        if (single.groupId === grId)
+            await axiosHelper.put('singles/update/' + single._id, { groupId: null });
+    });
+    const response = axiosHelper.get('groups/delete/' + grId);
+    await getGroups();
+    await getSingles();
 }
-function closeDialog() {
-    dialogOpen.value = false;
-    // dialog.value.close();
+
+function openSessionDialog() {
+    sessionDialogOpen.value = true;
+}
+function closeSessionDialog() {
+    sessionDialogOpen.value = false;
+}
+function openGroupDialog(id: string) {
+    groupDialogOpen.value = true;
+    groupToDelete.value = id;
+}
+function closeGroupDialog() {
+    groupDialogOpen.value = false;
 }
 </script>
 

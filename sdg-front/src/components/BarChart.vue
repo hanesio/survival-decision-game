@@ -113,7 +113,7 @@ const config: ChartConfiguration = {
         layout: {
             padding: {
                 // right: 70,
-                top: 20,
+                top: 30,
             },
         },
         scales: {

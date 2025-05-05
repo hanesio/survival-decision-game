@@ -64,10 +64,14 @@
                 <h4 class="px-4 py-2 text-lg">Vergleich Gruppen</h4>
                 <div class="h-56 w-full lg:p-4"><BarChart :chart_data="groupData" /></div>
             </div>
-            <div v-if="group" class="rounded-lg bg-gray-50 lg:p-4 dark:bg-gray-800">
+            <div v-if="group && singles" class="rounded-lg bg-gray-50 lg:p-4 dark:bg-gray-800">
                 <h4 class="px-4 py-2 text-lg">Ergebnisunterschied zur Gruppe</h4>
-                <div class="h-80 w-full lg:p-4">
-                    <BarChartDifference :groupData="groupDifference" :singleData />
+                <div class="w-full lg:p-4">
+                    <BarChartDifference
+                        :groupData="groupDifference"
+                        :singles
+                        :is-anonymous="false"
+                    />
                 </div>
             </div>
         </section>
@@ -127,13 +131,16 @@ function handleSingle() {
 function handleGroup() {
     groupData.value = groups.value.map((group) => {
         return {
-            x: group._id === user.value.groupId ? group.groupname : '',
+            x: group.groupname,
             y: group.result,
             _id: group._id,
+            members: group.members,
         };
     });
 
-    groupDifference.value = groupData.value.filter((group) => group._id === user.value.groupId);
+    groupDifference.value = groupData.value.filter((group) =>
+        group.members.includes(user.value._id),
+    );
 
     yValuesGroups.value = groupData.value.map((data) => data.y);
     averageGroups.value =
@@ -141,7 +148,7 @@ function handleGroup() {
             (yValuesGroups.value.reduce((a, b) => a + b) / yValuesGroups.value.length) * 10,
         ) / 10;
 
-    group.value = groups.value.find((group) => user.value.groupId === group._id);
+    group.value = groups.value.find((group) => group.members.includes(user.value._id));
 }
 
 async function handleRequests() {
