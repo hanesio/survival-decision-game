@@ -8,6 +8,8 @@
         v-model="sendItems"
         :valid="listIsValid"
         :show-validation="showListValidation"
+        :show-group-decision="tabindex === -1"
+        :single-items="singleItems"
     >
         <template v-slot:members>
             <div class="flex flex-col gap-1 p-4">
@@ -26,9 +28,18 @@
                     {{ membersValidationMessage }}
                 </p>
             </div>
+            <div class="overflow flex w-screen overflow-scroll">
+                <UserTab @click="tabindex = -1" label="Gruppe" :is-active="tabindex === -1" />
+                <UserTab
+                    @click="showSingleDecisions(index)"
+                    v-for="(member, index) in members"
+                    :is-active="tabindex === index"
+                    :label="singles.find((single) => single._id === member).username"
+                />
+            </div>
         </template>
 
-        <template v-slot:username>
+        <template v-if="tabindex === -1" v-slot:username>
             <div class="flex w-full flex-col gap-1 lg:w-1/2">
                 <input
                     v-model="groupname"
@@ -53,7 +64,7 @@
             </div>
         </template>
 
-        <template v-slot:button>
+        <template v-if="tabindex === -1" v-slot:button>
             <button
                 @click="submitSolution"
                 class="bg-primary-600 hover:bg-primary-700 cursor-pointer rounded-sm p-4 text-white"
@@ -71,9 +82,11 @@ import { useStorage } from '@vueuse/core';
 import SubmitSolution from '@/components/SubmitSolution.vue';
 import SinglePill from '@/components/SinglePill.vue';
 import { AxiosHelper } from '@/AxiosHelper';
+import UserTab from '@/components/UserTab.vue';
 
 const axiosHelper = new AxiosHelper();
 const router = useRouter();
+const tabindex = ref(-1);
 
 const active = ref();
 const session = ref(undefined);
@@ -82,6 +95,7 @@ const groups = ref();
 handleRequests();
 
 const groupApplied = useStorage('group-applied', false);
+const singleItems = ref([]);
 const sendItems = ref([]);
 const groupname = ref('');
 const result = ref(0);
@@ -199,5 +213,12 @@ function filterSingles() {
         singlesInGroups.push(...group.members);
     });
     singles.value = singles.value.filter((single) => !singlesInGroups.includes(single._id));
+}
+
+function showSingleDecisions(index: number) {
+    tabindex.value = index;
+    singleItems.value = singles.value.find(
+        (single) => single._id === members.value[tabindex.value],
+    ).items;
 }
 </script>

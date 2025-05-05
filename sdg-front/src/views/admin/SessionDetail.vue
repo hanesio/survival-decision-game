@@ -36,121 +36,170 @@
             label="Auswertung"
         />
     </div>
-
-    <div class="flex">
-        <SessionTab @click="tabindex = 0" :isActive="tabindex === 0" label="Präsentation" />
-        <SessionTab @click="tabindex = 1" :isActive="tabindex === 1" label="Gruppenorganisation" />
-        <SessionTab @click="tabindex = 2" :isActive="tabindex === 2" label="Analyse" />
-        <SessionTab @click="tabindex = 3" :isActive="tabindex === 3" label="Lösung" />
-    </div>
-    <div class="rounded-lg rounded-tl-none bg-gray-100 lg:p-4 dark:bg-gray-800">
-        <section
-            v-if="tabindex === 0"
-            name="presentation"
-            class="flex flex-col items-center justify-center lg:flex-row lg:items-start lg:gap-4"
-        >
-            <div class="flex flex-col gap-4 lg:w-1/4 lg:p-4">
-                <p
-                    class="dark:bg-secondary-400 bg-secondary-500 rounded-md py-2 text-center text-2xl"
-                >
-                    {{ originURL }}
-                </p>
-                <!-- <img class="scale-130 w-full mix-blend-multiply" :src="qrcode" alt="QR Code" /> -->
-                <QRCode class="dark:text-secondary-400 text-secondary-500 w-full" />
-            </div>
-            <div class="lg:w-3/4 lg:p-4 lg:pr-6" v-if="session">
-                <h2
-                    class="dark:decoration-secondary-400 decoration-secondary-500 pb-8 text-center text-3xl underline lg:text-left lg:text-6xl dark:text-gray-300"
-                >
-                    {{ session.title }}
-                </h2>
-                <p class="text-justify lg:text-2xl dark:text-gray-300">{{ session.description }}</p>
-            </div>
-        </section>
-        <section v-if="tabindex === 1" name="group organization" class="dark:text-gray-200">
-            <div
-                class="flex flex-col items-center gap-4 lg:flex-row lg:items-start lg:gap-4"
-                v-if="groups"
+    <div class="flex flex-row lg:flex-col">
+        <div class="flex flex-col lg:flex-row">
+            <SessionTab
+                :is-large="isLargeScreen"
+                @click="tabindex = 0"
+                :isActive="tabindex === 0"
+                label="Präsentation"
+            />
+            <SessionTab
+                @click="tabindex = 1"
+                :isActive="tabindex === 1"
+                label="Gruppenorganisation"
+                :is-large="isLargeScreen"
+            />
+            <SessionTab
+                @click="tabindex = 2"
+                :isActive="tabindex === 2"
+                label="Analyse"
+                :is-large="isLargeScreen"
+            />
+            <SessionTab
+                @click="tabindex = 3"
+                :isActive="tabindex === 3"
+                label="Lösung"
+                :is-large="isLargeScreen"
+            />
+        </div>
+        <div class="w-full rounded-lg rounded-tl-none bg-gray-100 p-2 lg:p-4 dark:bg-gray-800">
+            <section
+                v-if="tabindex === 0"
+                name="presentation"
+                class="flex flex-col items-center justify-center lg:flex-row lg:items-start lg:gap-4"
             >
-                <div
-                    class="flex flex-col rounded border border-gray-300 p-2"
-                    v-for="group in groups"
-                >
-                    <h2 class="text-3xl font-semibold">{{ group.groupname }}</h2>
-                    <div class="mt-1 rounded-sm bg-gray-200 p-2 dark:bg-gray-700">
-                        <p class="text-lg" v-for="member in group.members">
-                            {{ singles.find((single) => single._id === member).username }}
+                <div class="flex flex-col gap-4 lg:w-1/4 lg:p-4">
+                    <p
+                        class="dark:bg-secondary-400 bg-secondary-500 rounded-md py-2 text-center text-2xl"
+                    >
+                        {{ originURL }}
+                    </p>
+                    <!-- <img class="scale-130 w-full mix-blend-multiply" :src="qrcode" alt="QR Code" /> -->
+                    <QRCode class="dark:text-secondary-400 text-secondary-500 w-full" />
+                </div>
+                <div class="lg:w-3/4 lg:p-4 lg:pr-6" v-if="session">
+                    <h2
+                        class="dark:decoration-secondary-400 decoration-secondary-500 pb-8 text-center text-3xl underline lg:text-left lg:text-6xl dark:text-gray-300"
+                    >
+                        {{ session.title }}
+                    </h2>
+                    <p class="text-justify lg:text-2xl dark:text-gray-300">
+                        {{ session.description }}
+                    </p>
+                </div>
+            </section>
+
+            <section
+                v-if="tabindex === 1"
+                name="group organization"
+                class="flex flex-col gap-4 dark:text-gray-200"
+            >
+                <div v-if="groups">
+                    <h3 class="pb-2 text-2xl">Gruppen</h3>
+                    <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:gap-4">
+                        <div
+                            class="flex flex-col rounded border border-gray-300 p-2"
+                            v-for="group in groups"
+                        >
+                            <h2 class="text-3xl font-semibold">{{ group.groupname }}</h2>
+                            <div class="mt-1 rounded-sm bg-gray-200 p-2 dark:bg-gray-700">
+                                <draggable
+                                    v-model="group.members"
+                                    tag="ul"
+                                    handle=".handle"
+                                    animation="300"
+                                    :force-fallback="true"
+                                    item-key="id"
+                                    group="people"
+                                    @change="updateGroups"
+                                >
+                                    <template #item="{ element: item }">
+                                        <li>
+                                            <p class="handle cursor-grab text-lg">
+                                                {{
+                                                    singles.find((single) => single._id === item)
+                                                        .username
+                                                }}
+                                            </p>
+                                        </li>
+                                    </template>
+                                </draggable>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div v-if="singles">
+                    <h3 class="pb-2 text-2xl">Spielende</h3>
+                    <div class="rounded-sm bg-gray-200 p-2 dark:bg-gray-700">
+                        <p class="text-lg" v-for="single in singles">
+                            {{ single.username }}
                         </p>
                     </div>
                 </div>
-            </div>
-            <div v-if="singles">
-                <div class="rounded-sm bg-gray-200 p-2 dark:bg-gray-700">
-                    <p class="text-lg" v-for="single in singles">
-                        {{ single.username }}
-                    </p>
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <section v-if="tabindex === 2" name="analyzation">
-            <div
-                class="flex flex-col gap-8 rounded-lg dark:text-gray-300"
-                v-if="singleData.length > 0"
-            >
-                <div class="grid grid-cols-2">
-                    <div class="rounded-t-md">
-                        <h4 class="py-2 text-lg">Ergebnis Einzel</h4>
-                        <div class="h-64 w-full"><BarChart :chart_data="singleData" /></div>
+            <section v-if="tabindex === 2" name="analyzation">
+                <div
+                    class="flex flex-col gap-8 rounded-lg dark:text-gray-300"
+                    v-if="singleData.length > 0"
+                >
+                    <div class="grid grid-cols-1 lg:grid-cols-2">
+                        <div class="rounded-t-md">
+                            <h4 class="py-2 text-lg">Ergebnis Einzel</h4>
+                            <div class="h-64 w-full"><BarChart :chart_data="singleData" /></div>
+                        </div>
+                        <div class="rounded-t-md" v-if="groupData.length > 0">
+                            <h4 class="py-2 text-lg">Ergebnis Gruppen</h4>
+                            <div class="h-64 w-full"><BarChart :chart_data="groupData" /></div>
+                        </div>
                     </div>
                     <div class="rounded-t-md" v-if="groupData.length > 0">
-                        <h4 class="py-2 text-lg">Ergebnis Gruppen</h4>
-                        <div class="h-64 w-full"><BarChart :chart_data="groupData" /></div>
-                    </div>
-                </div>
-                <div class="rounded-t-md" v-if="groupData.length > 0">
-                    <h4 class="py-2 text-lg">Ergebnisunterschied zur Gruppe</h4>
-                    <div class="w-full"><BarChartDifference :groupData :singleData /></div>
+                        <h4 class="py-2 text-lg">Ergebnisunterschied zur Gruppe</h4>
+                        <div class="w-full"><BarChartDifference :groupData :singleData /></div>
 
-                    <div class="flex flex-col">
-                        <label for="comment">Kommentar:</label>
-                        <textarea
-                            placeholder="Beobachtungen über die Gruppe"
-                            class="h-24 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-600 dark:text-gray-200"
-                            name="comment"
-                            v-model="comment"
-                            type="text"
-                        />
+                        <div class="flex flex-col">
+                            <label for="comment">Kommentar:</label>
+                            <textarea
+                                placeholder="Beobachtungen über die Gruppe"
+                                class="h-24 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-600 dark:text-gray-200"
+                                name="comment"
+                                v-model="comment"
+                                type="text"
+                            />
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
-        <section v-if="tabindex === 3" name="solution">
-            <div class="overlow overflow-clip rounded-lg">
-                <table class="w-full table-auto border-collapse">
-                    <thead>
-                        <tr
-                            class="bg-gray-400 text-left text-white dark:bg-gray-900 dark:text-gray-300"
-                        >
-                            <th>Platz</th>
-                            <th>Gegenstand</th>
-                            <th>Erklärung</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr
-                            v-for="item in session.items"
-                            class="hover:bg-primary-400 dark:hover:bg-primary-900 gap-4 bg-gray-50 odd:bg-gray-200 dark:bg-gray-600 dark:text-gray-300 dark:odd:bg-gray-700"
-                        >
-                            <td class="text-center">{{ item.rank + 1 }}</td>
-                            <td>{{ item.description }}</td>
-                            <td>{{ item.explanation }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
+            </section>
+            <section v-if="tabindex === 3" name="solution">
+                <div class="overlow overflow-clip rounded-lg">
+                    <table class="table-auto border-collapse lg:w-full">
+                        <thead>
+                            <tr
+                                class="bg-gray-400 text-left text-white dark:bg-gray-900 dark:text-gray-300"
+                            >
+                                <th>Platz</th>
+                                <th>Gegenstand</th>
+                                <th>Erklärung</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr
+                                v-for="item in session.items"
+                                class="hover:bg-primary-400 dark:hover:bg-primary-900 gap-4 bg-gray-50 odd:bg-gray-200 dark:bg-gray-600 dark:text-gray-300 dark:odd:bg-gray-700"
+                            >
+                                <td class="text-center">{{ item.rank + 1 }}</td>
+                                <td>{{ item.description }}</td>
+                                <td>{{ item.explanation }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
     </div>
+
     <ModalDialog
         class="m-auto"
         @delete="deleteSession"
@@ -163,7 +212,7 @@
 
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router';
-import { computed, ref, watch } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 import { Stages } from '@/types';
 import BarChart from '@/components/BarChart.vue';
 import BarChartDifference from '@/components/BarChartDifference.vue';
@@ -176,6 +225,10 @@ import { AxiosHelper } from '@/AxiosHelper';
 import IconClose from '@/components/icons/IconClose.vue';
 import ModalDialog from '@/components/ModalDialog.vue';
 import QRCode from '@/components/icons/QRCode.vue';
+import draggable from 'vuedraggable';
+import { useMediaQuery } from '@vueuse/core';
+
+const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 
 const axiosHelper = new AxiosHelper();
 
@@ -259,6 +312,12 @@ async function getGroups() {
     const data = await axiosHelper.get('groups/find-by-session/' + id);
     groups.value = data.data;
     console.log(groups.value);
+}
+
+async function updateGroups() {
+    groups.value.forEach(async (group) => {
+        const data = await axiosHelper.put('groups/update/' + group._id, group.members);
+    });
 }
 
 async function setActiveSession() {

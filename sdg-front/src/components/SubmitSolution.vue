@@ -10,12 +10,22 @@
         </details>
     </article>
     <slot name="members"></slot>
-    <div class="flex flex-col gap-2 rounded bg-gray-50 dark:bg-gray-800 p-4">
+    <div class="flex flex-col gap-2 rounded bg-gray-100 dark:bg-gray-800 p-4">
+
+            <slot name="singleDecisions">
+              <div v-if="!showGroupDecision" class="flex flex-col gap-1 p-1 dark:text-gray-200 text-sm">
+                <div v-for="item,index in singleItems" class="grid grid-cols-[16px_1fr] gap-3 dark:bg-gray-700 bg-gray-200 px-2 py-1.5 rounded-full">
+                  <p class="w-6 flex justify-center font-bold items-center">{{ index + 1 }}</p>
+                  <p class=" ">{{item.description}}</p>
+                </div>
+              </div>
+            </slot>
+
         <div class="flex flex-col gap-2 py-2 lg:flex-row">
             <slot name="username"></slot>
         </div>
         <div class="flex flex-wrap gap-2">
-            <ItemPill
+            <ItemPill v-if="showGroupDecision"
                 @click="addItemToDragList(item)"
                 v-for="item in shuffledItems"
                 :label="item.description"
@@ -29,7 +39,7 @@
             {{ validationMessage }}
         </p>
 
-        <draggable
+        <draggable v-if="showGroupDecision"
             v-model="dragListItems"
             tag="ul"
             handle=".handle"
@@ -101,6 +111,12 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    showGroupDecision: {
+        type: Boolean,
+        default: true,
+    },
+    singleItems:Array<RankItem>,
+
 });
 const emit = defineEmits(['update:modelValue']);
 

@@ -169,6 +169,19 @@ app.put('/api/singles/update/:id', async function (req, res) {
     res.send(result);
 });
 
+app.put('/api/groups/update/:id', async function (req, res) {
+    console.log(req.body);
+    try {
+        var filter = { _id: req.params.id };
+        var update = { members: req.body };
+        var result = await Group.findOneAndUpdate(filter, update);
+    } catch (err) {
+        result = err.message;
+        console.error('Error Message:', result);
+    }
+    res.send(result);
+});
+
 app.get('/api/presets/delete/:id', async function (req, res) {
     try {
         var fetchid = req.params.id;
