@@ -1,6 +1,6 @@
 <template>
     <div class="flex flex-col justify-between gap-2 py-2 lg:flex-row">
-        <div class="flex gap-2 lg:items-end">
+        <div class="flex gap-2">
             <div>
                 <h1 class="text-2xl lg:text-4xl dark:text-gray-200" v-if="session">
                     {{ session.sessionname }}
@@ -8,6 +8,12 @@
                 <h2 class="lg:text-left dark:text-gray-300">{{ formattedDate }}</h2>
             </div>
             <Switch v-model="isActive" />
+            <button
+                class="h-10 cursor-pointer self-center rounded-full border-2 border-green-600 bg-green-300 px-3 transition active:scale-90"
+                @click="exportCSV"
+            >
+                CSV-Export
+            </button>
         </div>
         <button
             class="cursor-pointer rounded-sm border-2 border-rose-300 p-2 transition hover:bg-rose-400 hover:text-black active:scale-95 dark:bg-gray-800 dark:text-rose-400"
@@ -71,12 +77,12 @@
             >
                 <div class="flex flex-col gap-4 lg:w-1/4 lg:p-4">
                     <p
-                        class="dark:bg-secondary-400 bg-secondary-500 rounded-md py-2 text-center text-2xl"
+                        class="dark:bg-secondary-400 bg-secondary-500 rounded-md p-2 text-center text-2xl"
                     >
                         {{ originURL }}
                     </p>
                     <!-- <img class="scale-130 w-full mix-blend-multiply" :src="qrcode" alt="QR Code" /> -->
-                    <QRCode class="dark:text-secondary-400 text-secondary-500 w-full" />
+                    <QRCode class="dark:text-secondary-400 text-secondary-700 w-full" />
                 </div>
                 <div class="lg:w-3/4 lg:p-4 lg:pr-6" v-if="session">
                     <h2
@@ -102,7 +108,7 @@
                             class="group flex flex-col rounded border border-gray-300 p-2"
                             v-for="group in groups"
                         >
-                            <div class="flex items-center gap-2">
+                            <div class="flex items-center justify-between gap-2">
                                 <h2 class="text-3xl font-semibold">{{ group.groupname }}</h2>
                                 <ButtonTrash @click="openGroupDialog(group._id)" />
                             </div>
@@ -119,12 +125,18 @@
                                 >
                                     <template #item="{ element: item }">
                                         <li>
-                                            <p class="handle cursor-grab text-lg">
-                                                {{
-                                                    singles.find((single) => single._id === item)
-                                                        .username
-                                                }}
-                                            </p>
+                                            <div
+                                                class="handle mb-1 flex cursor-grab justify-between gap-2 rounded-sm bg-gray-300 p-1 dark:bg-gray-600"
+                                            >
+                                                <p class="text-lg">
+                                                    {{
+                                                        singles.find(
+                                                            (single) => single._id === item,
+                                                        ).username
+                                                    }}
+                                                </p>
+                                                <IconDragHandle class="text-gray-500" />
+                                            </div>
                                         </li>
                                     </template>
                                 </draggable>
@@ -147,12 +159,18 @@
                                 >
                                     <template #item="{ element: item }">
                                         <li>
-                                            <p class="handle cursor-grab text-lg">
-                                                {{
-                                                    singles.find((single) => single._id === item)
-                                                        .username
-                                                }}
-                                            </p>
+                                            <div
+                                                class="handle mb-1 flex cursor-grab justify-between gap-2 rounded-sm bg-gray-300 p-1 dark:bg-gray-600"
+                                            >
+                                                <p class="text-lg">
+                                                    {{
+                                                        singles.find(
+                                                            (single) => single._id === item,
+                                                        ).username
+                                                    }}
+                                                </p>
+                                                <IconDragHandle class="text-gray-500" />
+                                            </div>
                                         </li>
                                     </template>
                                 </draggable>
@@ -186,9 +204,11 @@
                             <div class="h-64 w-full"><BarChart :chart_data="groupData" /></div>
                         </div>
                     </div>
-                    <div class="rounded-t-md" v-if="groupData.length > 0 && singles">
+                    <div class="rounded-t-md" v-if="groupData.length > 0 && singlesAnonym">
                         <h4 class="py-2 text-lg">Ergebnisunterschied zur Gruppe</h4>
-                        <div class="w-full"><BarChartDifference :groupData :singles /></div>
+                        <div class="w-full">
+                            <BarChartDifference :groupData :singles="singlesAnonym" />
+                        </div>
 
                         <div class="flex flex-col">
                             <label for="comment">Kommentar:</label>
@@ -218,7 +238,7 @@
                         <tbody>
                             <tr
                                 v-for="item in session.items"
-                                class="hover:bg-primary-400 dark:hover:bg-primary-900 gap-4 bg-gray-50 odd:bg-gray-200 dark:bg-gray-600 dark:text-gray-300 dark:odd:bg-gray-700"
+                                class="hover:bg-primary-400 dark:hover:bg-primary-900 bg-gray-50 odd:bg-gray-200 hover:text-white dark:bg-gray-600 dark:text-gray-300 dark:odd:bg-gray-700"
                             >
                                 <td class="text-center">{{ item.rank + 1 }}</td>
                                 <td>{{ item.description }}</td>
@@ -266,6 +286,8 @@ import QRCode from '@/components/icons/QRCode.vue';
 import draggable from 'vuedraggable';
 import { useMediaQuery } from '@vueuse/core';
 import ButtonTrash from '@/components/ButtonTrash.vue';
+import IconDragHandle from '@/components/icons/IconDragHandle.vue';
+import { url } from 'inspector';
 
 const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 
@@ -294,17 +316,30 @@ const comment = ref('');
 
 const singleData = computed(() => {
     return singles.value
-        ? singles.value.map((single) => {
-              return { x: single.username, y: single.result, groupId: single.groupId };
+        ? singles.value.map((single, index) => {
+              return { x: index + 1, y: single.result, groupId: single.groupId };
+          })
+        : undefined;
+});
+
+const singlesAnonym = computed(() => {
+    return singles.value
+        ? singles.value.map((single, index) => {
+              return {
+                  _id: single._id,
+                  username: index + 1,
+                  result: single.result,
+                  groupId: single.groupId,
+              };
           })
         : undefined;
 });
 
 const groupData = computed(() => {
     return groups.value
-        ? groups.value.map((group) => {
+        ? groups.value.map((group, index) => {
               return {
-                  x: group.groupname,
+                  x: 'Gruppe ' + (index + 1),
                   y: group.result,
                   _id: group._id,
                   members: group.members,
@@ -422,6 +457,53 @@ function openGroupDialog(id: string) {
 }
 function closeGroupDialog() {
     groupDialogOpen.value = false;
+}
+
+function exportCSV() {
+    let data = [];
+    data.push({ Name: '---EINZEL---', Ergebnis: '', Gruppe: '', Unterschied: '' });
+    singles.value.forEach((single) => {
+        const name = single.username;
+        const result = single.result;
+        let groupname;
+        let difference;
+
+        if (groups.value.find((group) => group._id === single.groupId) != undefined) {
+            groupname = groups.value.find((group) => group._id === single.groupId).groupname;
+            difference =
+                single.result - groups.value.find((group) => group._id === single.groupId).result;
+        } else {
+            groupname = '';
+            difference = '';
+        }
+        data.push({ Name: name, Ergebnis: result, Gruppe: groupname, Unterschied: difference });
+    });
+
+    data.push({ Name: '---GRUPPEN---', Ergebnis: '', Gruppe: '', Unterschied: '' });
+    groups.value.forEach((group) => {
+        const name = group.groupname;
+        const result = group.result;
+        data.push({ Name: name, Ergebnis: result, Gruppe: '', Unterschied: '' });
+    });
+
+    console.log(data);
+
+    const csvContent = convertToCSV(data);
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });
+
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', 'export_data.csv');
+    link.click();
+}
+
+function convertToCSV(data) {
+    const headers = Object.keys(data[0]);
+    const rows = data.map((obj) => headers.map((header) => obj[header]));
+    const headerRow = headers.join(';');
+    const csvRows = [headerRow, ...rows.map((row) => row.join(';'))];
+    return csvRows.join('\n');
 }
 </script>
 

@@ -64,12 +64,15 @@
                 <h4 class="px-4 py-2 text-lg">Vergleich Gruppen</h4>
                 <div class="h-56 w-full lg:p-4"><BarChart :chart_data="groupData" /></div>
             </div>
-            <div v-if="group && singles" class="rounded-lg bg-gray-50 lg:p-4 dark:bg-gray-800">
+            <div
+                v-if="group && singlesAnonym"
+                class="rounded-lg bg-gray-50 lg:p-4 dark:bg-gray-800"
+            >
                 <h4 class="px-4 py-2 text-lg">Ergebnisunterschied zur Gruppe</h4>
                 <div class="w-full lg:p-4">
                     <BarChartDifference
                         :groupData="groupDifference"
-                        :singles
+                        :singles="singlesAnonym"
                         :is-anonymous="false"
                     />
                 </div>
@@ -83,7 +86,7 @@ import { useRoute } from 'vue-router';
 import BarChart from '@/components/BarChart.vue';
 import BarChartDifference from '@/components/BarChartDifference.vue';
 import { AxiosHelper } from '@/AxiosHelper';
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 const axiosHelper = new AxiosHelper();
 const route = useRoute();
@@ -92,6 +95,7 @@ const username = route.params.username;
 const active = ref();
 const session = ref(undefined);
 const singles = ref();
+
 const groups = ref();
 const singleData = ref();
 const yValuesSingles = ref();
@@ -102,6 +106,18 @@ const groupDifference = ref();
 const yValuesGroups = ref();
 const averageGroups = ref();
 const group = ref();
+const singlesAnonym = computed(() => {
+    return singles.value
+        ? singles.value.map((single, index) => {
+              return {
+                  _id: single._id,
+                  username: single.username === username ? username : index + 1,
+                  result: single.result,
+                  groupId: single.groupId,
+              };
+          })
+        : undefined;
+});
 
 start();
 
@@ -112,9 +128,9 @@ async function start() {
 }
 
 function handleSingle() {
-    singleData.value = singles.value.map((single) => {
+    singleData.value = singles.value.map((single, index) => {
         return {
-            x: single.username === username ? username : '',
+            x: single.username === username ? username : index + 1,
             y: single.result,
             groupId: single.groupId,
         };
@@ -129,9 +145,9 @@ function handleSingle() {
 }
 
 function handleGroup() {
-    groupData.value = groups.value.map((group) => {
+    groupData.value = groups.value.map((group, index) => {
         return {
-            x: group.groupname,
+            x: group._id === user.value.groupId ? group.groupname : index + 1,
             y: group.result,
             _id: group._id,
             members: group.members,

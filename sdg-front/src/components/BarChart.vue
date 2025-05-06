@@ -25,8 +25,8 @@ Chart.defaults.color = isDark.value ? 'white' : 'black';
 
 const canvas = ref<HTMLCanvasElement>();
 // TODO: User sieht seinen Namen
-// const labels = props.chart_data.map((label) => label.x);
-const labels = props.chart_data.map((label, index) => index + 1);
+const labels = props.chart_data.map((label) => label.x);
+// const labels = props.chart_data.map((label, index) => index + 1);
 const yValues = props.chart_data.map((data) => data.y);
 const average = Math.floor((yValues.reduce((a, b) => a + b) / yValues.length) * 10) / 10;
 const primaryColor = '#6913ff';

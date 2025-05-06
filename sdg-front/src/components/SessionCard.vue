@@ -1,41 +1,3 @@
-<script setup lang="ts">
-import { computed } from 'vue';
-
-const props = defineProps({
-    name: {
-        type: String,
-        required: true,
-    },
-    date: {
-        type: String,
-        required: true,
-    },
-    isActive: {
-        type: Boolean,
-        default: false,
-    },
-    singlesCount: {
-        type: Number,
-        default: 0,
-    },
-    groupCount: {
-        type: Number,
-        default: 0,
-    },
-});
-
-const newDate = new Date(props.date);
-const formattedDate = newDate.toLocaleDateString('de-DE', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-});
-
-const nameLength = computed(() => {
-    return props.name.length;
-});
-</script>
 <template>
     <div
         class="lg:w-74 hover:scale-102 bg-primary-900 hover:bg-primary-950 group relative flex h-40 w-full cursor-pointer flex-col items-center justify-between rounded-2xl transition"
@@ -79,5 +41,40 @@ const nameLength = computed(() => {
         <div class="text-primary-200 py-2 text-sm">{{ formattedDate }}</div>
     </div>
 </template>
+
+<script setup lang="ts">
+import { computed } from 'vue';
+
+const props = defineProps({
+    name: {
+        type: String,
+        required: true,
+    },
+    date: {
+        type: String,
+        required: true,
+    },
+    isActive: {
+        type: Boolean,
+        default: false,
+    },
+    singlesCount: {
+        type: Number,
+        default: 0,
+    },
+    groupCount: {
+        type: Number,
+        default: 0,
+    },
+});
+
+const newDate = new Date(props.date);
+const formattedDate = newDate.toLocaleDateString('de-DE', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+});
+</script>
 
 <style scoped></style>
