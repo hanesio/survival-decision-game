@@ -3,7 +3,7 @@
         class="grid grid-cols-1 gap-2 lg:gap-8 lg:gap-y-6"
         :class="[groupData.length > 2 ? 'lg:grid-cols-3' : `lg:grid-cols-${groupData.length}`]"
     >
-        <div class="h-86 w-full min-w-0" v-for="(group, index) in singlesByGroup">
+        <div class="h-76 w-full min-w-0" v-for="(group, index) in singlesByGroup">
             <div class="flex">
                 <div
                     class="bg-primary-200 flex justify-start gap-2 rounded-br-full rounded-tl-full px-8 py-1 text-2xl dark:bg-gray-900"

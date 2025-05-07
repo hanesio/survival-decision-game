@@ -3,7 +3,21 @@
 </template>
 <script setup lang="ts">
 import Chart, { type ChartConfiguration } from 'chart.js/auto';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
+import { useStoreDark } from '@/stores/storeDark';
+
+const storeDark = useStoreDark();
+let barchart;
+
+const updateDark = computed(() => {
+    return storeDark.dark;
+});
+
+watch(updateDark, () => {
+    barchart.options.scales.y.ticks.color = storeDark.dark ? 'white' : 'black';
+    barchart.options.scales.x.ticks.color = storeDark.dark ? 'white' : 'black';
+    barchart.update();
+});
 
 interface DifferenceSingle {
     username: string;
@@ -89,8 +103,6 @@ const groupLine = {
         // ctx.textAlign = 'left';
         // ctx.fillText(String(props.groupData.groupvalue), outside, groupY);
 
-        // add total number at the end of the bar
-
         datasets.forEach((set, index) => {
             if (set.order === 1) {
                 chart.getDatasetMeta(index).data.forEach((date, gindex) => {
@@ -153,12 +165,13 @@ const config: ChartConfiguration = {
         scales: {
             x: {
                 stacked: true,
-                grid: { drawTicks: false },
+                grid: { drawTicks: false, color: storeDark.dark ? '#777' : '#aaa' },
             },
             y: {
                 stacked: true,
                 grid: {
                     drawTicks: false,
+                    color: storeDark.dark ? '#777' : '#aaa',
                 },
             },
         },
@@ -182,7 +195,7 @@ function displayChart() {
         return;
     }
 
-    new Chart(canvas.value, config);
+    barchart = new Chart(canvas.value, config);
 }
 
 onMounted(() => {

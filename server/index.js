@@ -187,7 +187,6 @@ app.get('/api/presets/delete/:id', async function (req, res) {
         var fetchid = req.params.id;
         var result = await Preset.deleteOne({ _id: fetchid });
         console.log('Preset deleted');
-        res.send(result);
     } catch (err) {
         result = err.message;
         console.error('Error Message:', result);
@@ -199,7 +198,6 @@ app.get('/api/sessions/delete/:id', async function (req, res) {
         var fetchid = req.params.id;
         var result = await Session.deleteOne({ _id: fetchid });
         console.log('Session deleted');
-        res.send(result);
     } catch (err) {
         result = err.message;
         console.error('Error Message:', result);
@@ -211,7 +209,6 @@ app.get('/api/groups/delete/:id', async function (req, res) {
         var fetchid = req.params.id;
         var result = await Group.deleteOne({ _id: fetchid });
         console.log('Group deleted');
-        res.send(result);
     } catch (err) {
         result = err.message;
         console.error('Error Message:', result);

@@ -1,4 +1,12 @@
 <template>
+    <button
+        @click="router.push('/admin')"
+        class="hover:text-primary-400 flex cursor-pointer gap-2 text-gray-700 dark:text-gray-400"
+    >
+        <IconArrowRight class="w-4 rotate-180" />
+        <p>Sessions</p>
+    </button>
+
     <div class="flex flex-col justify-between gap-2 py-2 lg:flex-row">
         <div class="flex gap-2">
             <div>
@@ -195,13 +203,16 @@
                     v-if="singleData.length > 0"
                 >
                     <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                        <div class="rounded-t-md">
-                            <h4 class="py-2 text-lg">Ergebnis Einzel</h4>
+                        <div class="flex flex-col gap-2 rounded-t-md">
+                            <h4 class="text-lg">Ergebnis Einzel</h4>
+
                             <div class="h-64 w-full"><BarChart :chart_data="singleData" /></div>
+                            <SummaryText type="single" :single-data="singleData" />
                         </div>
-                        <div class="rounded-t-md" v-if="groupData.length > 0">
-                            <h4 class="py-2 text-lg">Ergebnis Gruppen</h4>
+                        <div class="flex flex-col gap-2 rounded-t-md" v-if="groupData.length > 0">
+                            <h4 class="text-lg">Ergebnis Gruppen</h4>
                             <div class="h-64 w-full"><BarChart :chart_data="groupData" /></div>
+                            <SummaryText type="group" :group-data="groupData" />
                         </div>
                     </div>
                     <div class="rounded-t-md" v-if="groupData.length > 0 && singlesAnonym">
@@ -209,8 +220,13 @@
                         <div class="w-full">
                             <BarChartDifference :groupData :singles="singlesAnonym" />
                         </div>
+                        <SummaryText
+                            type="compare"
+                            :single-data="singleData"
+                            :group-data="groupData"
+                        />
 
-                        <div class="flex flex-col">
+                        <div class="mt-2 flex flex-col">
                             <label for="comment">Kommentar:</label>
                             <textarea
                                 placeholder="Beobachtungen über die Gruppe"
@@ -288,6 +304,8 @@ import { useMediaQuery } from '@vueuse/core';
 import ButtonTrash from '@/components/ButtonTrash.vue';
 import IconDragHandle from '@/components/icons/IconDragHandle.vue';
 import { url } from 'inspector';
+import IconArrowRight from '@/components/icons/IconArrowRight.vue';
+import SummaryText from '@/components/SummaryText.vue';
 
 const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 
@@ -401,6 +419,10 @@ async function getGroups() {
 }
 
 async function updateGroups() {
+    console.log('counter');
+    ungrouped.value.forEach(async (id) => {
+        await axiosHelper.put('singles/update/' + id, { groupId: null });
+    });
     groups.value.forEach(async (group) => {
         const data = await axiosHelper.put('groups/update/' + group._id, {
             members: group.members,
@@ -409,7 +431,8 @@ async function updateGroups() {
             await axiosHelper.put('singles/update/' + member, { groupId: group._id });
         });
     });
-    await getGroups();
+
+    router.push('#');
 }
 
 async function setActiveSession() {
@@ -485,8 +508,6 @@ function exportCSV() {
         const result = group.result;
         data.push({ Name: name, Ergebnis: result, Gruppe: '', Unterschied: '' });
     });
-
-    console.log(data);
 
     const csvContent = convertToCSV(data);
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8' });

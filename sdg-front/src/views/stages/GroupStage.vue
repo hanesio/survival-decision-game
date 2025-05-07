@@ -92,6 +92,7 @@ const active = ref();
 const session = ref(undefined);
 const singles = ref();
 const groups = ref();
+const groupnameRegex = /^[a-zA-Z0-9.-_%]+$/;
 handleRequests();
 
 const groupApplied = useStorage('group-applied', false);
@@ -106,7 +107,7 @@ const showMemberValidation = ref(false);
 const showListValidation = ref(false);
 
 const nameIsValid = computed(() => {
-    return groupname.value.length > 0;
+    return groupname.value.length > 0 && groupname.value.match(groupnameRegex);
 });
 
 const nameIsFree = computed(() => {
@@ -114,7 +115,7 @@ const nameIsFree = computed(() => {
 });
 
 const nameValidationMessage = computed(() => {
-    if (!nameIsValid.value) return 'Gib einen Namen ein';
+    if (!nameIsValid.value) return 'Gib einen Namen (ohne Sonderzeichen) ein';
     if (!nameIsFree.value) return 'Der Name ist bereits vergeben';
     return 'sieht gut aus';
 });

@@ -61,6 +61,7 @@ const router = useRouter();
 const active = ref();
 const session = ref(undefined);
 const singles = ref();
+const usernameRegex = /^[a-zA-Z0-9.-_%]+$/;
 getActive();
 getSingles();
 
@@ -74,14 +75,14 @@ const showNameValidation = ref(false);
 const showListValidation = ref(false);
 
 const nameIsValid = computed(() => {
-    return username.value.length > 0;
+    return username.value.length > 0 && username.value.match(usernameRegex);
 });
 const nameIsFree = computed(() => {
     return singles.value.find((single) => single.username === username.value) === undefined;
 });
 
 const nameValidationMessage = computed(() => {
-    if (!nameIsValid.value) return 'Gib einen Namen ein';
+    if (!nameIsValid.value) return 'Gib einen Namen (ohne Sonderzeichen) ein';
     if (!nameIsFree.value) return 'Der Name ist bereits vergeben';
     return 'sieht gut aus';
 });

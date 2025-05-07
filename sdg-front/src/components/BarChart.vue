@@ -1,11 +1,16 @@
 <template>
-    <!-- <p class="text-primary-500">Ø {{ average }}</p> -->
-    <canvas ref="canvas"></canvas>
+    <p class="text-primary-500 text-2xl font-semibold">Ø {{ average }}</p>
+    <div class="h-58">
+        <canvas ref="canvas"></canvas>
+    </div>
 </template>
 
 <script setup lang="ts">
 import Chart, { type ChartConfiguration } from 'chart.js/auto';
-import { onMounted, ref, computed } from 'vue';
+import { onMounted, ref, computed, watch } from 'vue';
+import { useStoreDark } from '@/stores/storeDark';
+
+const storeDark = useStoreDark();
 
 const props = defineProps({
     chart_data: {
@@ -13,20 +18,23 @@ const props = defineProps({
         required: true,
     },
 });
-const isDark = computed(() => {
-    return (
-        localStorage.theme === 'dark' ||
-        (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
-    );
+let barchart;
+
+const updateDark = computed(() => {
+    return storeDark.dark;
+});
+
+watch(updateDark, () => {
+    barchart.options.scales.y.ticks.color = storeDark.dark ? 'white' : 'black';
+    barchart.options.scales.x.ticks.color = storeDark.dark ? 'white' : 'black';
+    barchart.update();
 });
 
 Chart.defaults.font.family = 'Inter, sans';
-Chart.defaults.color = isDark.value ? 'white' : 'black';
+Chart.defaults.color = storeDark.dark ? 'white' : 'black';
 
 const canvas = ref<HTMLCanvasElement>();
-// TODO: User sieht seinen Namen
 const labels = props.chart_data.map((label) => label.x);
-// const labels = props.chart_data.map((label, index) => index + 1);
 const yValues = props.chart_data.map((data) => data.y);
 const average = Math.floor((yValues.reduce((a, b) => a + b) / yValues.length) * 10) / 10;
 const primaryColor = '#6913ff';
@@ -97,7 +105,7 @@ const numbersOnTop = {
                 y: chart.getDatasetMeta(0).data[index].y - distanceToBar,
             };
 
-            ctx.fillStyle = isDark.value ? 'white' : 'black';
+            ctx.fillStyle = storeDark.dark ? 'white' : 'black';
             ctx.textAlign = 'center';
             ctx.font = ' normal 20px Inter';
             ctx.fillText(String(set.y), sumLabel.x, sumLabel.y);
@@ -118,12 +126,12 @@ const config: ChartConfiguration = {
         },
         scales: {
             x: {
-                grid: { drawTicks: false, color: isDark.value ? '#777' : '#ccc' },
+                grid: { drawTicks: false, color: storeDark.dark ? '#777' : '#aaa' },
             },
             y: {
                 grid: {
                     drawTicks: false,
-                    color: isDark.value ? '#777' : '#ccc',
+                    color: storeDark.dark ? '#777' : '#aaa',
                 },
             },
         },
@@ -147,7 +155,7 @@ function displayChart() {
         return;
     }
 
-    new Chart(canvas.value, config);
+    barchart = new Chart(canvas.value, config);
 }
 
 onMounted(() => {
