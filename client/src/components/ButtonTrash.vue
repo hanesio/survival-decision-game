@@ -1,5 +1,5 @@
 <template>
-    <button class="cursor-pointer text-rose-400 opacity-0 transition group-hover:opacity-100">
+    <button class="cursor-pointer text-rose-400">
         <IconTrash />
     </button>
 </template>

@@ -118,7 +118,10 @@
                         >
                             <div class="flex items-center justify-between gap-2">
                                 <h2 class="text-3xl font-semibold">{{ group.groupname }}</h2>
-                                <ButtonTrash @click="openGroupDialog(group._id)" />
+                                <ButtonTrash
+                                    class="opacity-0 transition group-hover:opacity-100"
+                                    @click="openGroupDialog(group._id)"
+                                />
                             </div>
                             <div class="mt-1 rounded-sm bg-gray-200 p-2 dark:bg-gray-700">
                                 <draggable
@@ -190,9 +193,15 @@
                 <div v-if="singles">
                     <h3 class="pb-2 text-2xl">Spielende</h3>
                     <div class="rounded-sm bg-gray-200 p-2 dark:bg-gray-700">
-                        <p class="text-lg" v-for="single in singles">
-                            {{ single.username }}
-                        </p>
+                        <div v-for="single in singles" class="group flex gap-2">
+                            <p class="text-lg">
+                                {{ single.username }}
+                            </p>
+                            <ButtonTrash
+                                class="opacity-0 transition group-hover:opacity-100"
+                                @click="openSingleDialog(single)"
+                            />
+                        </div>
                     </div>
                 </div>
             </section>
@@ -283,12 +292,20 @@
         text="Möchten Sie die Gruppe wirklich löschen?"
         :dialog-open="groupDialogOpen"
     />
+    <ModalDialog
+        class="m-auto"
+        @delete="deleteSingle(singleToDelete._id)"
+        @close="closeSingleDialog"
+        action-button-label="löschen"
+        :text="`Möchten Sie ${singleToDeleteUsername} wirklich löschen?`"
+        :dialog-open="singleDialogOpen"
+    />
 </template>
 
 <script setup lang="ts">
 import { useRoute, useRouter } from 'vue-router';
 import { computed, reactive, ref, watch } from 'vue';
-import { Stages } from '@/types';
+import { Single, Stages } from '@/types';
 import BarChart from '@/components/BarChart.vue';
 import BarChartDifference from '@/components/BarChartDifference.vue';
 import SessionTab from '@/components/SessionTab.vue';
@@ -303,7 +320,6 @@ import draggable from 'vuedraggable';
 import { useMediaQuery } from '@vueuse/core';
 import ButtonTrash from '@/components/ButtonTrash.vue';
 import IconDragHandle from '@/components/icons/IconDragHandle.vue';
-import { url } from 'inspector';
 import IconArrowRight from '@/components/icons/IconArrowRight.vue';
 import SummaryText from '@/components/SummaryText.vue';
 
@@ -321,8 +337,11 @@ const singles = ref();
 const groups = ref();
 const ungrouped = ref();
 const groupToDelete = ref();
+const singleToDelete = ref();
+const singleToDeleteUsername = ref('');
 const sessionDialogOpen = ref(false);
 const groupDialogOpen = ref(false);
+const singleDialogOpen = ref(false);
 
 start();
 
@@ -406,6 +425,7 @@ async function getActive() {
 async function getSingles() {
     const data = await axiosHelper.get('singles/find-by-session/' + id);
     singles.value = data.data;
+    console.log(singles.value);
 }
 
 async function getGroups() {
@@ -466,6 +486,18 @@ async function deleteGroup(grId: string) {
     await getGroups();
     await getSingles();
 }
+async function deleteSingle(sId: string) {
+    closeSingleDialog();
+    const response = axiosHelper.get('singles/delete/' + sId);
+    groups.value.forEach(async (group) => {
+        const data = await axiosHelper.put('groups/update/' + group._id, {
+            members: group.members.filter((member) => member != sId),
+        });
+    });
+
+    await getSingles();
+    await getGroups();
+}
 
 function openSessionDialog() {
     sessionDialogOpen.value = true;
@@ -477,8 +509,16 @@ function openGroupDialog(id: string) {
     groupDialogOpen.value = true;
     groupToDelete.value = id;
 }
+function openSingleDialog(single: Single) {
+    singleDialogOpen.value = true;
+    singleToDelete.value = single;
+    singleToDeleteUsername.value = single.username;
+}
 function closeGroupDialog() {
     groupDialogOpen.value = false;
+}
+function closeSingleDialog() {
+    singleDialogOpen.value = false;
 }
 
 function exportCSV() {
