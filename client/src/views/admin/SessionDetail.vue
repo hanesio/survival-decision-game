@@ -419,7 +419,6 @@ async function getGroups() {
 }
 
 async function updateGroups() {
-    console.log('counter');
     ungrouped.value.forEach(async (id) => {
         await axiosHelper.put('singles/update/' + id, { groupId: null });
     });

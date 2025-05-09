@@ -1,5 +1,8 @@
 <template>
-    <h1 class="py-4 text-4xl dark:text-gray-200">ADMIN DASHBOARD</h1>
+    <div class="py-4">
+        <h1 class="text-4xl dark:text-gray-200">ADMIN DASHBOARD</h1>
+        <button @click="logOut" class="text-primary-500 cursor-pointer underline">ausloggen</button>
+    </div>
     <div class="mt-4 flex flex-wrap gap-2">
         <div
             @click="router.push('/admin/new-session')"
@@ -26,11 +29,12 @@ import SessionCard from '@/components/SessionCard.vue';
 import { useRouter } from 'vue-router';
 import { AxiosHelper } from '@/AxiosHelper';
 import { ref } from 'vue';
+import { useStorage } from '@vueuse/core';
 
 const axiosHelper = new AxiosHelper();
 
 const router = useRouter();
-
+const loggedIn = useStorage('logged-in', false);
 let sessions = ref([]);
 const active = ref();
 const singles = ref();
@@ -61,5 +65,10 @@ async function getGroups() {
 }
 function openSession(id: number) {
     router.push(`/admin/sessions/${id}`);
+}
+
+function logOut() {
+    loggedIn.value = false;
+    router.push('/');
 }
 </script>

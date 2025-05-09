@@ -11,6 +11,7 @@ import Session from './models/Session.js';
 import Active from './models/Active.js';
 
 import path from 'path';
+import User from './models/User.js';
 
 const app = express();
 dotenv.config();
@@ -49,6 +50,12 @@ app.post('/api/presets/create', async (req, res) => {
 app.post('/api/actives/create', async (req, res) => {
     console.log(req.body);
     const data = await Active.create(req.body);
+    res.send(data);
+});
+
+app.post('/api/users/create', async (req, res) => {
+    console.log(req.body);
+    const data = await User.create(req.body);
     res.send(data);
 });
 
@@ -155,6 +162,16 @@ app.get('/api/actives/find/:id', async function (req, res) {
     }
     res.send(result);
 });
+app.get('/api/users/find/:username', async function (req, res) {
+    try {
+        var fetchname = req.params.username;
+        var result = await User.findOne({ username: fetchname });
+    } catch (err) {
+        result = err.message;
+        console.error('Error Message:', result);
+    }
+    res.send(result);
+});
 
 app.put('/api/singles/update/:id', async function (req, res) {
     console.log(req.body);
@@ -175,6 +192,30 @@ app.put('/api/groups/update/:id', async function (req, res) {
         var filter = { _id: req.params.id };
         var update = req.body;
         var result = await Group.findOneAndUpdate(filter, update);
+    } catch (err) {
+        result = err.message;
+        console.error('Error Message:', result);
+    }
+    res.send(result);
+});
+
+app.put('/api/users/update/:username', async function (req, res) {
+    console.log(req.body);
+    try {
+        var filter = { username: req.params.username };
+        var update = req.body;
+        var result = await User.findOneAndUpdate(filter, update);
+    } catch (err) {
+        result = err.message;
+        console.error('Error Message:', result);
+    }
+    res.send(result);
+});
+app.get('/api/singles/delete/:id', async function (req, res) {
+    try {
+        var fetchid = req.params.id;
+        var result = await Single.deleteOne({ _id: fetchid });
+        console.log('Single deleted');
     } catch (err) {
         result = err.message;
         console.error('Error Message:', result);
