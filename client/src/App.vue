@@ -73,7 +73,6 @@ async function getAdmin() {
     const data = await axiosHelper.get('users/find/' + adminUserName);
     adminUser.value = data.data;
     correctPassword.value = adminUser.value.password;
-    console.log(correctPassword.value);
 }
 
 function handleLoginRequest() {

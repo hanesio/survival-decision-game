@@ -87,6 +87,7 @@ import BarChart from '@/components/BarChart.vue';
 import BarChartDifference from '@/components/BarChartDifference.vue';
 import { AxiosHelper } from '@/AxiosHelper';
 import { computed, ref } from 'vue';
+import { useTitle } from '@vueuse/core';
 
 const axiosHelper = new AxiosHelper();
 const route = useRoute();
@@ -95,6 +96,7 @@ const username = route.params.username;
 const active = ref();
 const session = ref(undefined);
 const singles = ref();
+const title = useTitle();
 
 const groups = ref();
 const singleData = ref();
@@ -181,6 +183,7 @@ async function getActive() {
 async function getSession() {
     const sessionData = await axiosHelper.get('sessions/find/' + active.value.sessionId);
     session.value = sessionData.data;
+    title.value = session.value.title + ' | Auswertung';
 }
 async function getSinglesBySession() {
     const data = await axiosHelper.get('singles/find-by-session/' + active.value.sessionId);

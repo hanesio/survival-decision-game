@@ -1,7 +1,20 @@
 <template>
     <div class="py-4">
         <h1 class="text-4xl dark:text-gray-200">ADMIN DASHBOARD</h1>
-        <button @click="logOut" class="text-primary-500 cursor-pointer underline">ausloggen</button>
+        <div class="flex gap-8">
+            <button
+                @click="openChangePasswordDialog"
+                class="dark:text-primary-300 hover:text-primary-500 cursor-pointer underline"
+            >
+                Passwort ändern
+            </button>
+            <button
+                @click="logOut"
+                class="dark:text-primary-300 hover:text-primary-500 cursor-pointer underline"
+            >
+                ausloggen
+            </button>
+        </div>
     </div>
     <div class="mt-4 flex flex-wrap gap-2">
         <div
@@ -22,6 +35,14 @@
             :singles-count="singles.filter((single) => single.sessionId === session._id).length"
         />
     </div>
+    <ModalChangePassword
+        class="m-auto"
+        :dialog-open="changePasswordDialogOpen"
+        :current-password="currentPassword"
+        @save="updatePassword"
+        @close="closeChangePasswordDialog"
+        v-model="newPassword"
+    />
 </template>
 
 <script setup lang="ts">
@@ -30,6 +51,7 @@ import { useRouter } from 'vue-router';
 import { AxiosHelper } from '@/AxiosHelper';
 import { ref } from 'vue';
 import { useStorage } from '@vueuse/core';
+import ModalChangePassword from '@/components/ModalChangePassword.vue';
 
 const axiosHelper = new AxiosHelper();
 
@@ -39,11 +61,17 @@ let sessions = ref([]);
 const active = ref();
 const singles = ref();
 const groups = ref();
+const adminUserName = 'admin';
+const adminUser = ref();
+const currentPassword = ref();
+const newPassword = ref();
+const changePasswordDialogOpen = ref(false);
 
 getActive(); // Reihenfolge ist wichtig
 getSessions();
 getSingles();
 getGroups();
+getAdmin();
 
 async function getSessions() {
     const sessionData = await axiosHelper.get('sessions/find');
@@ -70,5 +98,22 @@ function openSession(id: number) {
 function logOut() {
     loggedIn.value = false;
     router.push('/');
+}
+
+async function getAdmin() {
+    const data = await axiosHelper.get('users/find/' + adminUserName);
+    adminUser.value = data.data;
+    currentPassword.value = adminUser.value.password;
+}
+
+function openChangePasswordDialog() {
+    changePasswordDialogOpen.value = true;
+}
+function closeChangePasswordDialog() {
+    changePasswordDialogOpen.value = false;
+}
+async function updatePassword() {
+    await axiosHelper.put('users/update/' + adminUserName, { password: newPassword.value });
+    await getAdmin();
 }
 </script>

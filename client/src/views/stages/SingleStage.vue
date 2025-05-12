@@ -50,7 +50,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useStorage } from '@vueuse/core';
+import { useStorage, useTitle } from '@vueuse/core';
 import SubmitSolution from '@/components/SubmitSolution.vue';
 import { AxiosHelper } from '@/AxiosHelper';
 
@@ -62,6 +62,7 @@ const active = ref();
 const session = ref(undefined);
 const singles = ref();
 const usernameRegex = /^[a-zA-Z0-9.-_%]+$/;
+const title = useTitle();
 getActive();
 getSingles();
 
@@ -94,12 +95,13 @@ const listIsValid = computed(() => {
 async function getSession() {
     const sessionData = await axiosHelper.get('sessions/find/' + active.value.sessionId);
     session.value = sessionData.data;
+    title.value = session.value.title + ' | Abgabe';
 }
 async function getActive() {
     const activeData = await axiosHelper.get('actives/find');
     active.value = activeData.data;
 
-    getSession();
+    await getSession();
 }
 async function getSingles() {
     const data = await axiosHelper.get('singles/find');

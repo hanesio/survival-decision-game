@@ -78,7 +78,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useStorage } from '@vueuse/core';
+import { useStorage, useTitle } from '@vueuse/core';
 import SubmitSolution from '@/components/SubmitSolution.vue';
 import SinglePill from '@/components/SinglePill.vue';
 import { AxiosHelper } from '@/AxiosHelper';
@@ -93,6 +93,7 @@ const session = ref(undefined);
 const singles = ref();
 const groups = ref();
 const groupnameRegex = /^[a-zA-Z0-9.-_%]+$/;
+const title = useTitle();
 handleRequests();
 
 const groupApplied = useStorage('group-applied', false);
@@ -198,6 +199,7 @@ async function getActive() {
 async function getSession() {
     const sessionData = await axiosHelper.get('sessions/find/' + active.value.sessionId);
     session.value = sessionData.data;
+    title.value = session.value.title + ' | Gruppe';
 }
 async function getSinglesBySession() {
     const data = await axiosHelper.get('singles/find-by-session/' + active.value.sessionId);
