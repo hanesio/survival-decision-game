@@ -215,12 +215,25 @@
                         <div class="flex flex-col gap-2 rounded-t-md">
                             <h4 class="text-lg">Ergebnis Einzel</h4>
 
-                            <div class="h-64 w-full"><BarChart :chart_data="singleData" /></div>
-                            <SummaryText type="single" :single-data="singleData" />
+                            <div class="h-64 w-full">
+                                <BarChart :chart_data="singleData" :tolerance />
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <label>Toleranz</label>
+                                <input
+                                    type="number"
+                                    class="rounded-xs w-14 bg-gray-200 px-2 py-1 dark:bg-gray-700"
+                                    name="tolerance"
+                                    v-model="tolerance"
+                                />
+                            </div>
+                            <SummaryText type="single" :single-data="singleData" :tolerance />
                         </div>
                         <div class="flex flex-col gap-2 rounded-t-md" v-if="groupData.length > 0">
                             <h4 class="text-lg">Ergebnis Gruppen</h4>
-                            <div class="h-64 w-full"><BarChart :chart_data="groupData" /></div>
+                            <div class="h-64 w-full">
+                                <BarChart :chart_data="groupData" :tolerance />
+                            </div>
                             <SummaryText type="group" :group-data="groupData" />
                         </div>
                     </div>
@@ -342,6 +355,7 @@ const singleToDeleteUsername = ref('');
 const sessionDialogOpen = ref(false);
 const groupDialogOpen = ref(false);
 const singleDialogOpen = ref(false);
+const tolerance = ref(30);
 
 start();
 

@@ -67,7 +67,7 @@
         <template v-if="tabindex === -1" v-slot:button>
             <button
                 @click="submitSolution"
-                class="bg-primary-600 hover:bg-primary-700 cursor-pointer rounded-sm p-4 text-white"
+                class="bg-primary-600 hover:bg-primary-700 cursor-pointer rounded-sm p-4 text-white transition active:scale-90"
             >
                 abgeben
             </button>

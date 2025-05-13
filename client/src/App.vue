@@ -20,7 +20,7 @@
     />
 </template>
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { RouterLink, RouterView } from 'vue-router';
 import ButtonDarkMode from './components/ButtonDarkMode.vue';
 import { watch } from 'vue';
@@ -69,6 +69,10 @@ watch(mode, (newMode) => {
         (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
 });
 
+onMounted(() => {
+    getAdmin();
+});
+
 async function getAdmin() {
     const data = await axiosHelper.get('users/find/' + adminUserName);
     adminUser.value = data.data;
@@ -76,7 +80,6 @@ async function getAdmin() {
 }
 
 function handleLoginRequest() {
-    console.log(loggedIn.value);
     if (loggedIn.value) {
         router.push('/admin');
     } else {
@@ -90,8 +93,6 @@ function closeLoginDialog() {
 }
 
 function login() {
-    console.log(inputPassword.value);
-
     if (correctPassword.value === inputPassword.value) {
         closeLoginDialog();
         loggedIn.value = true;

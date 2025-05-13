@@ -17,6 +17,10 @@ const props = defineProps({
         type: Array<{ x: string; y: number }>,
         required: true,
     },
+    tolerance: {
+        type: Number,
+        default: 0,
+    },
 });
 let barchart;
 
@@ -24,9 +28,16 @@ const updateDark = computed(() => {
     return storeDark.dark;
 });
 
+const tol = computed(() => {
+    return props.tolerance;
+});
 watch(updateDark, () => {
     barchart.options.scales.y.ticks.color = storeDark.dark ? 'white' : 'black';
     barchart.options.scales.x.ticks.color = storeDark.dark ? 'white' : 'black';
+    barchart.update();
+});
+
+watch(tol, () => {
     barchart.update();
 });
 
@@ -72,21 +83,26 @@ const data = {
 
 const averageLine = {
     id: 'averageLine',
-    afterDatasetsDraw(chart: Chart) {
+    beforeDatasetsDraw(chart: Chart) {
         const {
             ctx,
             chartArea: { bottom, left, right, height },
             scales: { y },
         } = chart;
 
-        const averageY = bottom - (height / y.ticks[y.ticks.length - 1].value) * average;
+        const unit = height / y.ticks[y.ticks.length - 1].value;
+        const averageY = bottom - unit * average;
 
         ctx.beginPath();
         ctx.moveTo(left, averageY);
         ctx.lineTo(right, averageY);
+        ctx.strokeStyle = primaryColor + '40'; //25% opacity
+        ctx.lineWidth = props.tolerance * unit;
+        ctx.stroke();
         ctx.strokeStyle = primaryColor;
         ctx.lineWidth = 3;
         ctx.stroke();
+
         ctx.font = '600 20px Inter';
         ctx.fillStyle = primaryColor;
         ctx.textBaseline = 'middle';
