@@ -234,7 +234,12 @@
                             <div class="h-64 w-full">
                                 <BarChart :chart_data="groupData" :tolerance />
                             </div>
-                            <SummaryText type="group" :group-data="groupData" />
+                            <SummaryText
+                                type="group"
+                                :group-data="groupData"
+                                :single-data="singleData"
+                                :tolerance
+                            />
                         </div>
                     </div>
                     <div class="rounded-t-md" v-if="groupData.length > 0 && singlesAnonym">
@@ -368,7 +373,7 @@ const comment = ref('');
 const singleData = computed(() => {
     return singles.value
         ? singles.value.map((single, index) => {
-              return { x: index + 1, y: single.result, groupId: single.groupId };
+              return { x: index + 1, y: single.result, groupId: single.groupId, _id: single._id };
           })
         : undefined;
 });
