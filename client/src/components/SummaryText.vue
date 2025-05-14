@@ -53,7 +53,10 @@ function analyzeSingles(): string {
     });
 
     if (outlierHigh + outlierLow < props.singleData.length / 2) {
-        outputtext = 'Die Ergebnisse verteilen sich um den Durchschnitt mit';
+        outputtext = 'Die Ergebnisse verteilen sich um den Durchschnitt';
+        if (outlierHigh + outlierLow > 0) {
+            outputtext += ' mit';
+        }
         if (outlierHigh === 1) outputtext += ` einer Abweichung nach oben`;
         if (outlierHigh > 1) outputtext += ` ${outlierHigh} Abweichungen nach oben`;
 
@@ -62,13 +65,19 @@ function analyzeSingles(): string {
         if (outlierLow === 1) outputtext += ` einer Abweichung nach unten`;
         if (outlierLow > 1) outputtext += ` ${outlierLow} Abweichungen nach unten`;
         outputtext += '.';
-    } else
-        outputtext =
-            'Die Ergebnisse unterscheiden sich stark. ' +
-            outlierLow +
-            ' Spieler*innen sind deutlich besser als der Durchschnitt, ' +
-            outlierHigh +
-            ' sind schlechter.';
+    } else {
+        outputtext = 'Die Ergebnisse unterscheiden sich stark. ';
+
+        if (outlierLow === 0) outputtext += 'Kein*e Spieler*in ist';
+        if (outlierLow === 1) outputtext += 'Ein*e Spieler*in ist';
+        if (outlierLow > 1) outputtext += outlierLow + ' Spieler*innen sind';
+        outputtext += ' deutlich besser als der Durchschnitt, ';
+
+        if (outlierHigh === 0) outputtext += 'kein*e Spieler*in ist';
+        if (outlierHigh === 1) outputtext += 'ein*e Spieler*in ist';
+        if (outlierHigh > 1) outputtext += outlierLow + ' Spieler*innen sind';
+        outputtext += ' schlechter.';
+    }
 
     return outputtext;
 }
@@ -105,7 +114,10 @@ function analyzeGroups(): string {
 
     if (highGroups > 0) {
         if (highGroups === 1) outputtext += ' Eine Gruppe ist ';
-        if (highGroups > 1) outputtext += ` ${highGroups} Gruppen sind `;
+        if (highGroups > 1) {
+            if (highGroups === props.groupData.length) outputtext += ' Alle Gruppen sind';
+            else outputtext += ` ${highGroups} Gruppen sind `;
+        }
     } else {
         outputtext += ' Keine Gruppe ist';
     }
@@ -117,39 +129,56 @@ function analyzeComparison(): string {
     const border = 10;
     let outputtext = '';
     let higherThanGroup = 0;
+    let lowerThanGroup = 0;
     let strong = 0;
     props.groupData.forEach((group) => {
         group.members.forEach((member) => {
             const memberResult = props.singleData.find((single) => single._id === member).y;
             const difference = memberResult - group.y;
-            difference > 0 && higherThanGroup++;
+            difference >= 0 && higherThanGroup++;
+            difference < 0 && lowerThanGroup++;
             difference > border && strong++;
         });
     });
 
+    const allThePeople = props.singleData.length;
     const halfThePeople = props.singleData.length / 2;
     const mostImproved = halfThePeople < higherThanGroup;
     if (higherThanGroup === 0) {
         outputtext += 'Niemand hat';
     } else {
-        if (mostImproved) outputtext += 'Die meisten haben';
-        else outputtext += 'Weniger als die Hälfte haben';
+        if (allThePeople === higherThanGroup) outputtext += 'Alle haben';
+        else {
+            if (mostImproved) outputtext += 'Die meisten haben';
+            else outputtext += 'Weniger als die Hälfte haben';
+        }
+    }
+    outputtext += ' sich in der Gruppe verbessert oder sind gleich geblieben.';
+
+    if (higherThanGroup > 0) {
+        switch (strong) {
+            case 0:
+                outputtext += ' Niemand hat';
+                break;
+            case 1:
+                outputtext += ' Eine*r hat';
+                break;
+            default:
+                outputtext += ` ${strong} haben`;
+        }
+        outputtext += ` sich sehr stark verbessert (um mehr als ${border} Punkte).`;
+    }
+    if (lowerThanGroup > 0) {
+        switch (lowerThanGroup) {
+            case 1:
+                outputtext += ' Eine*r hat';
+                break;
+            default:
+                outputtext += ` ${lowerThanGroup} haben`;
+        }
+        outputtext += ' sich verschlechtert.';
     }
 
-    outputtext += ' sich in der Gruppe verbessert.';
-
-    switch (strong) {
-        case 0:
-            outputtext += ' Keiner';
-            break;
-        case 1:
-            outputtext += ' Einer';
-            break;
-        default:
-            outputtext += ' ' + strong;
-    }
-    outputtext += ` sehr stark (mehr als ${border} Punkte).`;
-    // ' Die Gruppe ist besser als oder gleich wie der Einzelne dieser Gruppe.'
     return outputtext;
 }
 function calculateAverage(array: Record<string, any>): number {

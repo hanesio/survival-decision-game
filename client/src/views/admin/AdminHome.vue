@@ -34,6 +34,7 @@
             :group-count="groups.filter((group) => group.sessionId === session._id).length"
             :singles-count="singles.filter((single) => single.sessionId === session._id).length"
         />
+        <SessionCardLoading v-else />
     </div>
     <ModalChangePassword
         class="m-auto"
@@ -52,6 +53,8 @@ import { AxiosHelper } from '@/AxiosHelper';
 import { ref } from 'vue';
 import { useStorage } from '@vueuse/core';
 import ModalChangePassword from '@/components/ModalChangePassword.vue';
+import IconSpinner from '@/components/icons/IconSpinner.vue';
+import SessionCardLoading from '@/components/SessionCardLoading.vue';
 
 const axiosHelper = new AxiosHelper();
 
