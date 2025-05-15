@@ -17,7 +17,7 @@ const props = defineProps({
         >
             +
         </button>
-        <p class="pr-2">{{ label }}</p>
+        <p class="flex items-center pr-2" v-html="label"></p>
     </div>
 </template>
 

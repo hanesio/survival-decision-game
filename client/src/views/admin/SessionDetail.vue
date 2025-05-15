@@ -284,7 +284,7 @@
                                 class="hover:bg-primary-400 dark:hover:bg-primary-900 bg-gray-50 odd:bg-gray-200 hover:text-white dark:bg-gray-600 dark:text-gray-300 dark:odd:bg-gray-700"
                             >
                                 <td class="text-center">{{ item.rank + 1 }}</td>
-                                <td>{{ item.description }}</td>
+                                <td v-html="item.description"></td>
                                 <td>{{ item.explanation }}</td>
                             </tr>
                         </tbody>

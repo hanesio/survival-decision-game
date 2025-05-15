@@ -28,7 +28,7 @@
                     {{ membersValidationMessage }}
                 </p>
             </div>
-            <div class="overflow flex w-screen overflow-scroll">
+            <div class="overflow no-scrollbar flex w-screen overflow-scroll">
                 <UserTab @click="tabindex = -1" label="Gruppe" :is-active="tabindex === -1" />
                 <UserTab
                     @click="showSingleDecisions(index)"
@@ -225,3 +225,9 @@ function showSingleDecisions(index: number) {
     ).items;
 }
 </script>
+
+<style>
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+</style>

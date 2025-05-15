@@ -4,7 +4,7 @@
         <h2 class="text-4xl lg:text-6xl dark:text-gray-300">{{ stage }}</h2>
     </article>
     <article>
-        <details class="p-2 dark:text-gray-300 flex ">
+        <details class="p-2 dark:text-gray-300 flex flex-col ">
             <summary class="cursor-pointer bg-primary-200 pl-4 w-32 rounded-full dark:bg-primary-600">Szenario</summary>
             <p class="dark:text-gray-400">{{ description }}</p>
         </details>
@@ -16,7 +16,7 @@
               <div v-if="!showGroupDecision" class="flex flex-col gap-1 p-1 dark:text-gray-200 text-sm">
                 <div v-for="item,index in singleItems" class="grid grid-cols-[16px_1fr] gap-3 dark:bg-gray-700 bg-gray-200 px-2 py-1.5 rounded-full">
                   <p class="w-6 flex justify-center font-bold items-center">{{ index + 1 }}</p>
-                  <p class=" ">{{item.description}}</p>
+                  <p v-html="item.description"></p>
                 </div>
               </div>
             </slot>
@@ -59,8 +59,8 @@
                     >
                         <IconDelete class="w-5" />
                     </button>
-                    <span class="w-full border-l-2 border-white dark:border-gray-900  p-1 px-2">
-                        {{ item.description }}
+                    <span v-html="item.description" class="w-full border-l-2 border-white dark:border-gray-900  p-1 px-2">
+
                     </span>
                     <div
                         class="mr-1 flex w-10 cursor-grab items-center justify-center rounded-sm handle"
