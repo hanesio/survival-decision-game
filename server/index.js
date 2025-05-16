@@ -173,6 +173,7 @@ app.get('/api/users/find/:username', async function (req, res) {
     res.send(result);
 });
 
+// UPDATE ROUTES
 app.put('/api/singles/update/:id', async function (req, res) {
     console.log(req.body);
     try {
@@ -211,6 +212,20 @@ app.put('/api/users/update/:username', async function (req, res) {
     }
     res.send(result);
 });
+app.put('/api/sessions/update/:id', async function (req, res) {
+    console.log(req.body);
+    try {
+        var filter = { _id: req.params.id };
+        var update = req.body;
+        var result = await Session.findOneAndUpdate(filter, update);
+    } catch (err) {
+        result = err.message;
+        console.error('Error Message:', result);
+    }
+    res.send(result);
+});
+
+// DELETE ROUTES
 app.get('/api/singles/delete/:id', async function (req, res) {
     try {
         var fetchid = req.params.id;

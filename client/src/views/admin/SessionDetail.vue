@@ -206,30 +206,19 @@
                 </div>
             </section>
 
-            <section v-if="tabindex === 2" name="analyzation">
-                <div
-                    class="flex flex-col gap-8 rounded-lg dark:text-gray-300"
-                    v-if="singleData.length > 0"
-                >
+            <section v-if="tabindex === 2" name="analyzation" class="dark:text-gray-300">
+                <div class="flex flex-col gap-8 rounded-lg" v-if="singleData.length > 0">
                     <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                        <div class="flex flex-col gap-2 rounded-t-md">
+                        <div class="flex flex-col gap-4 rounded-t-md">
                             <h4 class="text-lg">Ergebnis Einzel</h4>
 
                             <div class="h-64 w-full">
                                 <BarChart :chart_data="singleData" :tolerance />
                             </div>
-                            <div class="flex items-center gap-2">
-                                <label>Toleranz</label>
-                                <input
-                                    type="number"
-                                    class="rounded-xs w-14 bg-gray-200 px-2 py-1 dark:bg-gray-700"
-                                    name="tolerance"
-                                    v-model="tolerance"
-                                />
-                            </div>
+
                             <SummaryText type="single" :single-data="singleData" :tolerance />
                         </div>
-                        <div class="flex flex-col gap-2 rounded-t-md" v-if="groupData.length > 0">
+                        <div class="flex flex-col gap-4 rounded-t-md" v-if="groupData.length > 0">
                             <h4 class="text-lg">Ergebnis Gruppen</h4>
                             <div class="h-64 w-full">
                                 <BarChart :chart_data="groupData" :tolerance />
@@ -252,18 +241,26 @@
                             :single-data="singleData"
                             :group-data="groupData"
                         />
-
-                        <div class="mt-2 flex flex-col">
-                            <label for="comment">Kommentar:</label>
-                            <textarea
-                                placeholder="Beobachtungen über die Gruppe"
-                                class="h-24 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-600 dark:text-gray-200"
-                                name="comment"
-                                v-model="comment"
-                                type="text"
-                            />
-                        </div>
                     </div>
+                </div>
+                <div v-if="loadingComment" class="flex items-center justify-center p-4">
+                    <IconSpinner class="text-primary-500 size-10 animate-spin" />
+                </div>
+                <div v-else class="mt-2 flex flex-col gap-1">
+                    <label for="comment">Kommentar:</label>
+                    <textarea
+                        placeholder="Beobachtungen über die Gruppe"
+                        class="h-24 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-600 dark:text-gray-200"
+                        name="comment"
+                        v-model="comment"
+                        type="text"
+                    />
+                    <button
+                        @click="saveComment"
+                        class="border-primary-500 bg-primary-50 hover:bg-primary-600 flex h-12 cursor-pointer items-center justify-center self-start rounded border-2 p-4 hover:text-white dark:bg-gray-900 dark:text-gray-200"
+                    >
+                        Kommentar speichern
+                    </button>
                 </div>
             </section>
             <section v-if="tabindex === 3" name="solution">
@@ -340,6 +337,7 @@ import ButtonTrash from '@/components/ButtonTrash.vue';
 import IconDragHandle from '@/components/icons/IconDragHandle.vue';
 import IconArrowRight from '@/components/icons/IconArrowRight.vue';
 import SummaryText from '@/components/SummaryText.vue';
+import IconSpinner from '@/components/icons/IconSpinner.vue';
 
 const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 
@@ -368,7 +366,7 @@ const originURL = shallowRef(window.location.origin); // getting the current bas
 // const qrcode = useQRCode(originURL);
 const tabindex = ref(0);
 
-const comment = ref('');
+const comment = ref();
 
 const singleData = computed(() => {
     return singles.value
@@ -418,6 +416,7 @@ const formattedDate = computed(() => {
 const stage = ref('results');
 
 const isActive = ref(false);
+const loadingComment = ref();
 
 watch(isActive, () => {
     setActiveSession();
@@ -432,6 +431,7 @@ async function start() {
 async function getSession() {
     const sessionData = await axiosHelper.get('sessions/find/' + id);
     session.value = sessionData.data;
+    comment.value = session.value.comment;
 }
 
 async function getActive() {
@@ -516,6 +516,12 @@ async function deleteSingle(sId: string) {
 
     await getSingles();
     await getGroups();
+}
+
+async function saveComment() {
+    loadingComment.value = true;
+    const response = await axiosHelper.put('sessions/update/' + id, { comment: comment.value });
+    loadingComment.value = false;
 }
 
 function openSessionDialog() {

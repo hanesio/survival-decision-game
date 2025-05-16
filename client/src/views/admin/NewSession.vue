@@ -41,97 +41,103 @@
         </p>
     </div>
 
-    <div
-        v-if="presets"
-        class="mx-auto mt-2 flex flex-col gap-2 rounded bg-gray-200 p-4 dark:bg-gray-800"
-    >
-        <div class="flex gap-2">
-            <select
-                @change="getPreset"
-                class="bg-primary-300 rounded p-2"
-                v-model="selectedPresetId"
-                name="presets"
-            >
-                <option class="p-4" v-for="preset in presets" :value="preset._id">
-                    {{ preset.title }}
-                </option>
-            </select>
-            <div class="flex w-full justify-between">
-                <div>
-                    <button
-                        v-if="savePresetEnabled"
-                        @click="savePreset"
-                        class="border-primary-500 bg-primary-50 hover:bg-primary-600 flex h-12 cursor-pointer items-center justify-center rounded border-2 p-4 hover:text-white dark:bg-gray-900 dark:text-gray-200"
-                    >
-                        Preset speichern
-                    </button>
-                    <button
-                        v-else
-                        class="flex h-12 items-center justify-center rounded border-2 border-transparent bg-gray-300 p-4 text-gray-400 dark:bg-gray-700 dark:text-gray-800"
-                    >
-                        Preset speichern
-                    </button>
-                </div>
-                <div>
-                    <button
-                        v-if="savePresetEnabled"
-                        class="flex h-12 items-center justify-center rounded bg-gray-300 p-4 text-gray-400 dark:bg-gray-700 dark:text-gray-800"
-                    >
-                        Preset löschen
-                    </button>
-                    <button
-                        v-else
-                        @click="openDialog"
-                        class="flex h-12 cursor-pointer items-center justify-center rounded border-2 border-rose-300 bg-rose-50 p-4 hover:bg-rose-400 dark:bg-gray-900 dark:text-gray-200"
-                    >
-                        Preset löschen
-                    </button>
+    <div v-if="loading" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        <IconSpinner class="size-10 animate-spin text-white" />
+    </div>
+
+    <div v-else>
+        <div
+            v-if="presets"
+            class="mx-auto mt-2 flex flex-col gap-2 rounded bg-gray-200 p-4 dark:bg-gray-800"
+        >
+            <div class="flex gap-2">
+                <select
+                    @change="getPreset"
+                    class="bg-primary-300 rounded p-2"
+                    v-model="selectedPresetId"
+                    name="presets"
+                >
+                    <option class="p-4" v-for="preset in presets" :value="preset._id">
+                        {{ preset.title }}
+                    </option>
+                </select>
+                <div class="flex w-full justify-between">
+                    <div>
+                        <button
+                            v-if="savePresetEnabled"
+                            @click="savePreset"
+                            class="border-primary-500 bg-primary-50 hover:bg-primary-600 flex h-12 cursor-pointer items-center justify-center rounded border-2 p-4 hover:text-white dark:bg-gray-900 dark:text-gray-200"
+                        >
+                            Preset speichern
+                        </button>
+                        <button
+                            v-else
+                            class="flex h-12 items-center justify-center rounded border-2 border-transparent bg-gray-300 p-4 text-gray-400 dark:bg-gray-700 dark:text-gray-800"
+                        >
+                            Preset speichern
+                        </button>
+                    </div>
+                    <div>
+                        <button
+                            v-if="savePresetEnabled"
+                            class="flex h-12 items-center justify-center rounded bg-gray-300 p-4 text-gray-400 dark:bg-gray-700 dark:text-gray-800"
+                        >
+                            Preset löschen
+                        </button>
+                        <button
+                            v-else
+                            @click="openDialog"
+                            class="flex h-12 cursor-pointer items-center justify-center rounded border-2 border-rose-300 bg-rose-50 p-4 hover:bg-rose-400 dark:bg-gray-900 dark:text-gray-200"
+                        >
+                            Preset löschen
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div>
-            <div class="flex gap-2">
-                <div
-                    class="flex w-2/3 flex-col justify-between gap-2 rounded-md p-2 dark:bg-gray-700 dark:text-gray-200"
-                >
-                    <label for="">Gegenstände:</label>
-                    <div class="flex" v-for="(item, index) in items">
-                        <label
-                            class="py flex h-full w-4 items-center justify-center rounded px-3"
-                            >{{ index + 1 }}</label
-                        >
-                        <div class="flex w-full gap-0.5">
-                            <input
-                                class="w-2/5 rounded-l bg-white p-1 px-2 text-sm dark:bg-gray-500"
-                                v-model="item.description"
-                                type="text"
-                            />
-                            <input
-                                class="w-3/5 rounded-r bg-gray-50 p-1 px-2 text-sm dark:bg-gray-600"
-                                v-model="item.explanation"
-                                type="text"
-                            />
+            <div>
+                <div class="flex gap-2">
+                    <div
+                        class="flex w-2/3 flex-col justify-between gap-2 rounded-md p-2 dark:bg-gray-700 dark:text-gray-200"
+                    >
+                        <label for="">Gegenstände:</label>
+                        <div class="flex" v-for="(item, index) in items">
+                            <label
+                                class="py flex h-full w-4 items-center justify-center rounded px-3"
+                                >{{ index + 1 }}</label
+                            >
+                            <div class="flex w-full gap-0.5">
+                                <input
+                                    class="w-2/5 rounded-l bg-white p-1 px-2 text-sm dark:bg-gray-500"
+                                    v-model="item.description"
+                                    type="text"
+                                />
+                                <input
+                                    class="w-3/5 rounded-r bg-gray-50 p-1 px-2 text-sm dark:bg-gray-600"
+                                    v-model="item.explanation"
+                                    type="text"
+                                />
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="flex w-1/3 flex-col gap-2">
-                    <div
-                        class="flex flex-col gap-1 rounded-md bg-gray-300 p-2 dark:bg-gray-700 dark:text-gray-200"
-                    >
-                        <label for="title">Titel: </label>
-                        <input
-                            class="block w-full rounded bg-white p-2 text-lg dark:bg-gray-600"
-                            v-model="presetTitle"
-                        />
-                    </div>
-                    <div
-                        class="flex h-full flex-col gap-1 rounded-md bg-gray-300 p-2 dark:bg-gray-700 dark:text-gray-200"
-                    >
-                        <label class="" for="description">Beschreibung: </label>
-                        <textarea
-                            class="block h-full w-full rounded bg-white p-4 text-sm dark:bg-gray-600"
-                            v-model="presetDescription"
-                        ></textarea>
+                    <div class="flex w-1/3 flex-col gap-2">
+                        <div
+                            class="flex flex-col gap-1 rounded-md bg-gray-300 p-2 dark:bg-gray-700 dark:text-gray-200"
+                        >
+                            <label for="title">Titel: </label>
+                            <input
+                                class="block w-full rounded bg-white p-2 text-lg dark:bg-gray-600"
+                                v-model="presetTitle"
+                            />
+                        </div>
+                        <div
+                            class="flex h-full flex-col gap-1 rounded-md bg-gray-300 p-2 dark:bg-gray-700 dark:text-gray-200"
+                        >
+                            <label class="" for="description">Beschreibung: </label>
+                            <textarea
+                                class="block h-full w-full rounded bg-white p-4 text-sm dark:bg-gray-600"
+                                v-model="presetDescription"
+                            ></textarea>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -146,13 +152,14 @@ import { useRouter } from 'vue-router';
 import { AxiosHelper } from '@/AxiosHelper';
 import IconArrowRight from '@/components/icons/IconArrowRight.vue';
 import ModalDialog from '@/components/ModalDialog.vue';
+import IconSpinner from '@/components/icons/IconSpinner.vue';
 
 const axiosHelper = new AxiosHelper();
 const router = useRouter();
 
+const loading = ref();
 const presets = ref();
 const sessions = ref();
-const dialog = ref<HTMLDialogElement>();
 const dialogOpen = ref(false);
 
 const selectedPresetId = ref('');
@@ -213,6 +220,7 @@ function getPreset() {
 
 async function applySession() {
     if (nameIsFree.value && nameIsValid.value) {
+        loading.value = true;
         const data = {
             sessionname: sessionName.value,
             date: currentDate,
@@ -260,10 +268,12 @@ async function getSessions() {
 }
 
 async function start() {
+    loading.value = true;
     await getPresets();
     selectedPresetId.value = presets.value[0]._id;
-    getPreset();
-    getSessions();
+    await getPreset();
+    await getSessions();
+    loading.value = false;
 }
 
 function openDialog() {
