@@ -263,7 +263,7 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // Handle SPA
-app.get('/{*splat}', (req, res) => res.sendFile(path.resolve(process.cwd(), '/index.html')));
+app.get('/*splat', (req, res) => res.sendFile(path.resolve() + '/public/index.html'));
 
 const PORT = process.env.PORT || 5000;
 
