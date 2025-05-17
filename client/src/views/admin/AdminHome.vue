@@ -37,6 +37,7 @@
         <SessionCardLoading v-else />
     </div>
     <ModalChangePassword
+        v-if="currentPassword"
         class="m-auto"
         :dialog-open="changePasswordDialogOpen"
         :current-password="currentPassword"

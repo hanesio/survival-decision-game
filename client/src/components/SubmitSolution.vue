@@ -40,6 +40,7 @@
         </p>
 
         <draggable v-if="showGroupDecision"
+        @change="$emit('update:modelValue', dragListItems);"
             v-model="dragListItems"
             tag="ul"
             handle=".handle"

@@ -119,7 +119,7 @@
                             <div class="flex items-center justify-between gap-2">
                                 <h2 class="text-3xl font-semibold">{{ group.groupname }}</h2>
                                 <ButtonTrash
-                                    class="opacity-0 transition group-hover:opacity-100"
+                                    class="transition group-hover:opacity-100 lg:opacity-0"
                                     @click="openGroupDialog(group._id)"
                                 />
                             </div>
@@ -198,7 +198,7 @@
                                 {{ single.username }}
                             </p>
                             <ButtonTrash
-                                class="opacity-0 transition group-hover:opacity-100"
+                                class="transition group-hover:opacity-100 lg:opacity-0"
                                 @click="openSingleDialog(single)"
                             />
                         </div>
