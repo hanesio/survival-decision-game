@@ -153,7 +153,7 @@
                                 </draggable>
                             </div>
                         </div>
-                        <div class="group flex flex-col rounded border border-gray-300 p-2">
+                        <div class="group flex flex-col rounded border border-gray-500 p-2">
                             <div class="flex items-center gap-2">
                                 <h2 class="text-3xl text-gray-500">nicht zugeordnet</h2>
                             </div>
@@ -173,7 +173,7 @@
                                             <div
                                                 class="handle mb-1 flex cursor-grab justify-between gap-2 rounded-sm bg-gray-300 p-1 dark:bg-gray-600"
                                             >
-                                                <p class="text-lg">
+                                                <p class="text-lg text-gray-400">
                                                     {{
                                                         singles.find(
                                                             (single) => single._id === item,

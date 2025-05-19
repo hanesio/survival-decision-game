@@ -58,6 +58,5 @@ props.groupData.forEach((group) => {
             }),
     };
     singlesByGroup.push(compareGroup);
-    console.log(singlesByGroup);
 });
 </script>
