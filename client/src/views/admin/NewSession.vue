@@ -233,7 +233,7 @@ async function applySession() {
         const activityData = { sessionId: sessionId, stage: 'single' };
         const responseActive = await axiosHelper.post('actives/create', activityData);
 
-        router.push('/admin');
+        router.push('/admin/sessions/' + sessionId);
     } else {
         showNameValidation.value = true;
     }

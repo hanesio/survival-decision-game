@@ -5,7 +5,7 @@
         <nav class="flex w-full items-center justify-between gap-2">
             <RouterLink to="/">Home</RouterLink>
 
-            <ButtonDarkMode v-model="mode" class="text-primary-900" />
+            <ButtonDarkMode v-model="mode" class="text-primary-900" title="darkmode" />
             <button class="cursor-pointer underline" @click="handleLoginRequest">Admin</button>
         </nav>
     </header>

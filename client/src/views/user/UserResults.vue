@@ -94,11 +94,11 @@
             v-if="user"
             class="mt-2 flex flex-col rounded-lg bg-gray-50 p-4 dark:bg-gray-800 dark:text-gray-200"
         >
-            <h4 class="px-4 py-2 text-lg">Ergebnisberechnung</h4>
+            <h4 class="px-4 py-2 text-lg">Deine Rangliste</h4>
             <div class="flex flex-col gap-1 p-1 text-sm dark:text-gray-200">
                 <div
                     v-for="(item, index) in user.items"
-                    class="00 grid grid-cols-[16px_48px_1fr] gap-3 rounded-full px-2 py-1.5"
+                    class="hover:bg-primary-500 grid grid-cols-[16px_48px_1fr] gap-3 rounded-full px-2 py-1.5 transition"
                     :class="[
                         item.rank === index
                             ? 'bg-gray-200 dark:bg-gray-700'
@@ -111,7 +111,9 @@
                         :class="[
                             item.rank === index
                                 ? 'text-green-600 dark:text-green-400'
-                                : 'text-rose-400 dark:text-rose-700',
+                                : Math.abs(item.rank - index) > 0 && Math.abs(item.rank - index) < 5
+                                  ? 'text-yellow-500 dark:text-yellow-400'
+                                  : 'text-rose-400 dark:text-rose-700',
                         ]"
                     >
                         <span class="font-bold"> {{ item.rank + 1 }} </span> &nbsp;
