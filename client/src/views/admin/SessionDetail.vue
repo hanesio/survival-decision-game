@@ -137,16 +137,16 @@
                                     <template #item="{ element: item }">
                                         <li>
                                             <div
-                                                class="handle mb-1 flex cursor-grab justify-between gap-2 rounded-sm bg-gray-300 p-1 dark:bg-gray-600"
+                                                class="handle mb-1 flex cursor-grab justify-between gap-2 rounded-sm bg-gray-300 p-0.5 dark:bg-gray-600"
                                             >
-                                                <p class="text-lg">
+                                                <p class="px-2 text-lg">
                                                     {{
                                                         singles.find(
                                                             (single) => single._id === item,
                                                         ).username
                                                     }}
                                                 </p>
-                                                <IconDragHandle class="text-gray-500" />
+                                                <IconDragHandle class="mr-1 text-gray-500" />
                                             </div>
                                         </li>
                                     </template>
@@ -171,16 +171,16 @@
                                     <template #item="{ element: item }">
                                         <li>
                                             <div
-                                                class="handle mb-1 flex cursor-grab justify-between gap-2 rounded-sm bg-gray-300 p-1 dark:bg-gray-600"
+                                                class="handle mb-1 flex cursor-grab justify-between gap-2 rounded-sm bg-gray-300 p-0.5 dark:bg-gray-600"
                                             >
-                                                <p class="text-lg text-gray-400">
+                                                <p class="px-2 text-lg text-gray-400">
                                                     {{
                                                         singles.find(
                                                             (single) => single._id === item,
                                                         ).username
                                                     }}
                                                 </p>
-                                                <IconDragHandle class="text-gray-500" />
+                                                <IconDragHandle class="mr-1 text-gray-500" />
                                             </div>
                                         </li>
                                     </template>

@@ -1,12 +1,20 @@
 <template>
     <header
-        class="bg-primary-400 fixed top-0 z-20 flex w-screen items-center justify-between px-6 py-2"
+        class="bg-primary-500 fixed top-0 z-20 flex w-screen items-center justify-between px-6 py-2"
     >
         <nav class="flex w-full items-center justify-between gap-2">
-            <RouterLink to="/">Home</RouterLink>
+            <RouterLink title="home" to="/"
+                ><IconHome class="hover:text-secondary-400 size-8 text-white"
+            /></RouterLink>
 
-            <ButtonDarkMode v-model="mode" class="text-primary-900" title="darkmode" />
-            <button class="cursor-pointer underline" @click="handleLoginRequest">Admin</button>
+            <ButtonDarkMode
+                v-model="mode"
+                class="text-primary-950 hover:text-primary-900"
+                title="darkmode"
+            />
+            <button title="admin" class="cursor-pointer" @click="handleLoginRequest">
+                <IconAdmin class="hover:text-secondary-400 size-8 text-white" />
+            </button>
         </nav>
     </header>
     <div class="mt-20 h-full w-full px-2 lg:px-20"><RouterView /></div>
@@ -29,6 +37,8 @@ import { useStorage } from '@vueuse/core';
 import ModalLogin from './components/ModalLogin.vue';
 import router from './router';
 import { AxiosHelper } from '@/AxiosHelper';
+import IconHome from './components/icons/IconHome.vue';
+import IconAdmin from './components/icons/IconAdmin.vue';
 
 const axiosHelper = new AxiosHelper();
 

@@ -12,13 +12,13 @@ function login() {
 
 <template>
     <form
-        class="h-54 hover:bg-secondary-600-2 border-secondary-400 absolute left-1/2 top-1/2 m-auto flex w-96 -translate-x-1/2 -translate-y-1/2 flex-col items-center rounded-lg border-2 bg-gray-100 p-8 dark:border-0 dark:bg-gray-800 dark:text-gray-400"
+        class="h-54 hover:bg-secondary-600-2 border-secondary-400 w-9/10 absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center rounded-lg border-2 bg-gray-100 p-8 sm:w-96 lg:m-auto dark:border-0 dark:bg-gray-800 dark:text-gray-400"
     >
         <div class="flex flex-col items-center">
             <p class="py-4">Auswertung ansehen</p>
             <input
                 placeholder="Benutzername"
-                class="focus:border-secondary-500 rounded-md border-2 border-gray-200 p-2 focus:outline-none dark:border-gray-700"
+                class="focus:border-secondary-500 w-full rounded-md border-2 border-gray-200 p-2 focus:outline-none dark:border-gray-700"
                 v-model="username"
                 name="username"
                 type="text"
