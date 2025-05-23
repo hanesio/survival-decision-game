@@ -1,7 +1,7 @@
 <template>
     <dialog
         ref="dialog"
-        class="w-140 flex flex-col justify-between gap-2 rounded-md p-8 px-12 dark:bg-gray-900 dark:text-gray-200"
+        class="lg:w-140 flex flex-col justify-between gap-2 rounded-md p-8 px-12 dark:bg-gray-900 dark:text-gray-200"
         :class="[dialogOpen ? 'visible' : 'invisible']"
     >
         <p

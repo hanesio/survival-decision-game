@@ -8,23 +8,25 @@
     </button>
 
     <div class="flex flex-col justify-between gap-2 py-2 lg:flex-row">
-        <div class="flex gap-2">
+        <div class="flex flex-col gap-2 lg:flex-row">
             <div>
                 <h1 class="text-2xl lg:text-4xl dark:text-gray-200" v-if="session">
                     {{ session.sessionname }}
                 </h1>
                 <h2 class="lg:text-left dark:text-gray-300">{{ formattedDate }}</h2>
             </div>
-            <Switch v-model="isActive" />
-            <button
-                class="h-10 cursor-pointer self-center rounded-full border-2 border-green-600 bg-green-300 px-3 transition active:scale-90"
-                @click="exportCSV"
-            >
-                CSV-Export
-            </button>
+            <div class="flex justify-between gap-2">
+                <Switch v-model="isActive" />
+                <button
+                    class="h-10 cursor-pointer self-center rounded-full border-2 border-green-600 bg-green-300 px-3 transition active:scale-90"
+                    @click="exportCSV"
+                >
+                    CSV-Export
+                </button>
+            </div>
         </div>
         <button
-            class="cursor-pointer rounded-sm border-2 border-rose-300 p-2 transition hover:bg-rose-400 hover:text-black active:scale-95 dark:bg-gray-800 dark:text-rose-400"
+            class="mt-10 cursor-pointer rounded-sm border-2 border-rose-300 p-2 transition hover:bg-rose-400 hover:text-black active:scale-95 lg:mt-0 dark:bg-gray-800 dark:text-rose-400"
             @click="openSessionDialog"
         >
             Session löschen
@@ -208,6 +210,17 @@
 
             <section v-if="tabindex === 2" name="analyzation" class="dark:text-gray-300">
                 <div class="flex flex-col gap-8 rounded-lg" v-if="singleData.length > 0">
+                    <div class="flex items-center gap-2">
+                        <label>Toleranz</label>
+
+                        <input
+                            type="number"
+                            class="rounded-xs w-14 bg-gray-200 px-2 py-1 dark:bg-gray-700"
+                            name="tolerance"
+                            v-model="tolerance"
+                        />
+                    </div>
+
                     <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
                         <div class="flex flex-col gap-4 rounded-t-md">
                             <h4 class="text-lg">Ergebnis Einzel</h4>
@@ -250,7 +263,7 @@
                     <label for="comment">Kommentar:</label>
                     <textarea
                         placeholder="Beobachtungen über die Gruppe"
-                        class="h-24 rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-600 dark:text-gray-200"
+                        class="h-24 w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-600 dark:text-gray-200"
                         name="comment"
                         v-model="comment"
                         type="text"
@@ -264,7 +277,7 @@
                 </div>
             </section>
             <section v-if="tabindex === 3" name="solution">
-                <div class="overlow overflow-clip rounded-lg">
+                <div class="overflow w-full overflow-scroll rounded-lg sm:w-full lg:overflow-clip">
                     <table class="table-auto border-collapse lg:w-full">
                         <thead>
                             <tr
@@ -282,7 +295,9 @@
                             >
                                 <td class="text-center">{{ item.rank + 1 }}</td>
                                 <td v-html="item.description"></td>
-                                <td>{{ item.explanation }}</td>
+                                <td class="break-all sm:break-normal sm:break-words">
+                                    {{ item.explanation }}
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -596,5 +611,11 @@ function convertToCSV(data) {
 td,
 th {
     padding: 8px 16px;
+}
+@media (max-width: 500px) {
+    td,
+    th {
+        padding: 2px 4px;
+    }
 }
 </style>

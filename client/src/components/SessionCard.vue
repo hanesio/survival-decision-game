@@ -1,6 +1,6 @@
 <template>
     <div
-        class="lg:w-74 hover:scale-102 bg-primary-900 hover:bg-primary-950 group relative flex h-40 w-full cursor-pointer flex-col items-center justify-between rounded-2xl transition"
+        class="shutter-in lg:w-74 hover:scale-102 bg-primary-900 hover:bg-primary-950 group relative flex h-40 w-full cursor-pointer flex-col items-center justify-between rounded-2xl transition"
     >
         <div
             class="absolute -top-0 flex h-6 w-14 items-center justify-center rounded-b-xl border-2 border-t-0 border-green-600 bg-green-300 p-2 text-center text-sm font-semibold"
@@ -77,4 +77,29 @@ const formattedDate = newDate.toLocaleDateString('de-DE', {
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.shutter-in {
+    opacity: 1;
+    animation-name: shutterInOpacity;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-out;
+    animation-duration: 0.5s;
+}
+
+@keyframes shutterInOpacity {
+    0% {
+        opacity: 0;
+        scale: 95%;
+    }
+    40% {
+        translate: 0 10px;
+    }
+    60% {
+        scale: 100%;
+    }
+    100% {
+        opacity: 1;
+        translate: 0 0;
+    }
+}
+</style>
