@@ -1,12 +1,12 @@
 <template>
     <article class="flex flex-col border-l-4 border-primary-500 px-4">
-        <h3 class="text-xl dark:text-gray-500">{{ title }}</h3>
+        <h3 class="text-xl text-gray-500" v-html="title"></h3>
         <h2 class="text-4xl lg:text-6xl dark:text-gray-300">{{ stage }}</h2>
     </article>
     <article>
         <details class="p-2 dark:text-gray-300 flex flex-col ">
             <summary class="cursor-pointer bg-primary-200 pl-4 w-32 rounded-full dark:bg-primary-600">Szenario</summary>
-            <p class="dark:text-gray-400">{{ description }}</p>
+            <p class="dark:text-gray-400" v-html="description"></p>
         </details>
     </article>
     <slot name="members"></slot>
@@ -40,7 +40,7 @@
         </p>
 
         <draggable v-if="showGroupDecision"
-        @change="$emit('update:modelValue', dragListItems);"
+        @change="doit();"
             v-model="dragListItems"
             tag="ul"
             handle=".handle"
@@ -151,6 +151,18 @@ function deleteFromList(item: RankItem) {
     dragListItems.value = dragListItems.value.filter((listitem) => listitem.rank != item.rank);
     shuffledItems.value.push(item);
     emit('update:modelValue', dragListItems.value);
+}
+
+function calculateResult() {
+    let result = 0;
+    dragListItems.value.forEach((item, index) => {
+        result += Math.abs(item.rank - index);
+    });
+    console.log(result);
+}
+function doit(){
+  emit('update:modelValue', dragListItems.value)
+  calculateResult()
 }
 </script>
 

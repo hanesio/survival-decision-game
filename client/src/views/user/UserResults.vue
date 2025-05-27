@@ -19,7 +19,9 @@
                         >
                             {{ user.result }}
                         </p>
-                        <p class="text-primary-500 dark:text-primary-400">Punkte Abstand</p>
+                        <p class="text-primary-500 dark:text-primary-400">
+                            Fehlerpunkte Abweichung
+                        </p>
                     </div>
                     <div class="grid h-full w-full grid-cols-2 gap-1 lg:w-1/2">
                         <div
@@ -97,8 +99,16 @@
             <h4 class="px-4 py-2 text-lg">Deine Rangliste</h4>
             <div class="flex flex-col gap-1 p-1 text-sm dark:text-gray-200">
                 <div
+                    class="flex items-center justify-between gap-3 rounded-full px-2 py-1.5 font-bold transition"
+                >
+                    <p class="flex items-center justify-center">Dein Rang</p>
+
+                    <p>Gegenstand</p>
+                    <p class="flex items-center text-right">NASA-Rang (Abweichung)</p>
+                </div>
+                <div
                     v-for="(item, index) in user.items"
-                    class="hover:bg-primary-500 grid grid-cols-[16px_48px_1fr] gap-3 rounded-full px-2 py-1.5 transition"
+                    class="hover:bg-primary-500 grid grid-cols-[60px_1fr_60px] gap-3 rounded-full px-2 py-1.5 transition"
                     :class="[
                         item.rank === index
                             ? 'bg-gray-200 dark:bg-gray-700'
@@ -106,6 +116,8 @@
                     ]"
                 >
                     <p class="flex w-6 items-center justify-center font-bold">{{ index + 1 }}</p>
+
+                    <p v-html="item.description"></p>
                     <p
                         class="flex items-center text-center"
                         :class="[
@@ -119,7 +131,6 @@
                         <span class="font-bold"> {{ item.rank + 1 }} </span> &nbsp;
                         <span>{{ ' (' + Math.abs(item.rank - index) + 'P)' }}</span>
                     </p>
-                    <p v-html="item.description"></p>
                 </div>
             </div>
         </section>

@@ -42,7 +42,7 @@
     </div>
 
     <div v-if="loading" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-        <IconSpinner class="size-10 animate-spin text-white" />
+        <IconSpinner class="text-primary-500 size-10 animate-spin" />
     </div>
 
     <div v-else>
@@ -240,6 +240,7 @@ async function applySession() {
 }
 
 async function savePreset() {
+    loading.value = true;
     const data = {
         title: presetTitle.value,
         description: presetDescription.value,
@@ -248,14 +249,17 @@ async function savePreset() {
     const response = await axiosHelper.post('presets/create', data);
     await getPresets();
     selectedPresetId.value = response.data._id;
+    loading.value = false;
 }
 
 async function deletePreset() {
+    loading.value = true;
     closeDialog();
     const response = await axiosHelper.get('presets/delete/' + selectedPresetId.value);
     await getPresets();
     selectedPresetId.value = presets.value[0]._id;
-    getPreset();
+    await getPreset();
+    loading.value = false;
 }
 
 async function getPresets() {

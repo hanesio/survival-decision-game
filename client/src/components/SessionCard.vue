@@ -26,13 +26,15 @@
         >
             {{ name }}
         </div>
-        <div class="bg-primary-700 group-hover:bg-primary-800 flex w-full justify-center gap-4 p-1">
-            <div class="flex gap-1.5">
-                <p class="text-secondary-500 font-semibold">{{ singlesCount }}</p>
+        <div
+            class="bg-primary-700 group-hover:bg-primary-800 flex w-full items-center justify-center gap-4 p-1"
+        >
+            <div class="flex items-center gap-1.5">
+                <p class="text-secondary-400 text-lg font-semibold">{{ singlesCount }}</p>
                 <p class="text-white">Spielende</p>
             </div>
-            <div class="flex gap-1.5">
-                <p class="text-secondary-500 font-semibold">{{ groupCount }}</p>
+            <div class="flex items-center gap-1.5">
+                <p class="text-secondary-400 text-lg font-semibold">{{ groupCount }}</p>
                 <p v-if="groupCount === 1" class="text-white">Gruppe</p>
                 <p v-else class="text-white">Gruppen</p>
             </div>

@@ -97,12 +97,12 @@
                 <div class="lg:w-3/4 lg:p-4 lg:pr-6" v-if="session">
                     <h2
                         class="dark:decoration-secondary-400 decoration-secondary-500 pb-8 text-center text-3xl underline lg:text-left lg:text-6xl dark:text-gray-300"
-                    >
-                        {{ session.title }}
-                    </h2>
-                    <p class="text-justify lg:text-2xl dark:text-gray-300">
-                        {{ session.description }}
-                    </p>
+                        v-html="session.title"
+                    ></h2>
+                    <p
+                        class="text-justify lg:text-2xl dark:text-gray-300"
+                        v-html="session.description"
+                    ></p>
                 </div>
             </section>
 
