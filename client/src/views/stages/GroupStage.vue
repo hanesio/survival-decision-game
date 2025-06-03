@@ -10,6 +10,7 @@
         :show-validation="showListValidation"
         :show-group-decision="tabindex === -1"
         :single-items="singleItems"
+        :loading
     >
         <template v-slot:members>
             <div class="flex flex-col gap-1 p-4">
@@ -87,12 +88,13 @@ import UserTab from '@/components/UserTab.vue';
 const axiosHelper = new AxiosHelper();
 const router = useRouter();
 const tabindex = ref(-1);
+const loading = ref();
 
 const active = ref();
 const session = ref(undefined);
 const singles = ref();
 const groups = ref();
-const groupnameRegex = /^[a-zA-Z0-9.-_%]+$/;
+const groupnameRegex = /^[\u00C0-\u017Fa-zA-Z0-9.-_%\-]+$/;
 const title = useTitle();
 handleRequests();
 
@@ -116,7 +118,7 @@ const nameIsFree = computed(() => {
 });
 
 const nameValidationMessage = computed(() => {
-    if (!nameIsValid.value) return 'Gib einen Namen (ohne Sonderzeichen) ein';
+    if (!nameIsValid.value) return 'Gib einen Namen (ohne Sonderzeichen oder Leerzeichen) ein';
     if (!nameIsFree.value) return 'Der Name ist bereits vergeben';
     return 'sieht gut aus';
 });
@@ -135,6 +137,7 @@ const listIsValid = computed(() => {
 });
 
 async function submitSolution() {
+    loading.value = true;
     if (nameIsValid.value && nameIsFree.value && membersChosen.value && listIsValid.value) {
         calculateResult();
         if (session != undefined) {
@@ -159,6 +162,7 @@ async function submitSolution() {
         if (!listIsValid.value) showListValidation.value = true;
         window.scrollTo(0, 0);
     }
+    loading.value = false;
 }
 
 async function sendData(data) {

@@ -111,98 +111,117 @@
                 name="group organization"
                 class="flex flex-col gap-4 dark:text-gray-200"
             >
-                <div v-if="groups">
-                    <h3 class="pb-2 text-2xl">Gruppen</h3>
-                    <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:gap-4">
+                <div v-if="loadingGroups" class="flex items-center justify-center p-4">
+                    <IconSpinner class="text-primary-500 size-10 animate-spin" />
+                </div>
+                <div v-else class="flex flex-col gap-3">
+                    <div v-if="groups">
+                        <h3 class="pb-2 text-2xl">
+                            <span class="text-primary-400 font-bold">{{ groups.length }} </span>
+                            Gruppen
+                        </h3>
                         <div
-                            class="group flex flex-col rounded border border-gray-300 p-2"
-                            v-for="group in groups"
+                            class="flex flex-col flex-wrap gap-4 lg:flex-row lg:items-start lg:gap-4"
                         >
-                            <div class="flex items-center justify-between gap-2">
-                                <h2 class="text-3xl font-semibold">{{ group.groupname }}</h2>
-                                <ButtonTrash
-                                    class="transition group-hover:opacity-100 lg:opacity-0"
-                                    @click="openGroupDialog(group._id)"
-                                />
+                            <div
+                                class="group flex flex-col rounded border border-gray-300 p-2"
+                                v-for="group in groups"
+                            >
+                                <div class="flex items-center justify-between gap-2">
+                                    <h2 class="text-3xl font-semibold">{{ group.groupname }}</h2>
+                                    <ButtonTrash
+                                        class="transition group-hover:opacity-100 lg:opacity-0"
+                                        @click="openGroupDialog(group._id)"
+                                    />
+                                </div>
+                                <div class="mt-1 rounded-sm bg-gray-200 p-2 dark:bg-gray-700">
+                                    <draggable
+                                        v-model="group.members"
+                                        tag="ul"
+                                        handle=".handle"
+                                        animation="300"
+                                        :force-fallback="true"
+                                        item-key="id"
+                                        group="people"
+                                        @change="updateGroups"
+                                    >
+                                        <template #item="{ element: item }">
+                                            <li>
+                                                <div
+                                                    class="handle mb-1 flex cursor-grab justify-between gap-2 rounded-sm bg-gray-300 p-0.5 dark:bg-gray-600"
+                                                >
+                                                    <button
+                                                        @click="deleteFromGroup(item, group._id)"
+                                                        class="w-6 shrink-0 cursor-pointer px-2 text-gray-400"
+                                                    >
+                                                        <IconDelete class="w-5" />
+                                                    </button>
+                                                    <p class="px-2 text-lg">
+                                                        {{
+                                                            singles.find(
+                                                                (single) => single._id === item,
+                                                            ).username
+                                                        }}
+                                                    </p>
+                                                    <IconDragHandle class="mr-1 text-gray-500" />
+                                                </div>
+                                            </li>
+                                        </template>
+                                    </draggable>
+                                </div>
                             </div>
-                            <div class="mt-1 rounded-sm bg-gray-200 p-2 dark:bg-gray-700">
-                                <draggable
-                                    v-model="group.members"
-                                    tag="ul"
-                                    handle=".handle"
-                                    animation="300"
-                                    :force-fallback="true"
-                                    item-key="id"
-                                    group="people"
-                                    @change="updateGroups"
-                                >
-                                    <template #item="{ element: item }">
-                                        <li>
-                                            <div
-                                                class="handle mb-1 flex cursor-grab justify-between gap-2 rounded-sm bg-gray-300 p-0.5 dark:bg-gray-600"
-                                            >
-                                                <p class="px-2 text-lg">
-                                                    {{
-                                                        singles.find(
-                                                            (single) => single._id === item,
-                                                        ).username
-                                                    }}
-                                                </p>
-                                                <IconDragHandle class="mr-1 text-gray-500" />
-                                            </div>
-                                        </li>
-                                    </template>
-                                </draggable>
-                            </div>
-                        </div>
-                        <div class="group flex flex-col rounded border border-gray-500 p-2">
-                            <div class="flex items-center gap-2">
-                                <h2 class="text-3xl text-gray-500">nicht zugeordnet</h2>
-                            </div>
-                            <div class="mt-1 rounded-sm bg-gray-200 p-2 dark:bg-gray-700">
-                                <draggable
-                                    v-model="ungrouped"
-                                    tag="ul"
-                                    handle=".handle"
-                                    animation="300"
-                                    :force-fallback="true"
-                                    item-key="id"
-                                    group="people"
-                                    @change="updateGroups"
-                                >
-                                    <template #item="{ element: item }">
-                                        <li>
-                                            <div
-                                                class="handle mb-1 flex cursor-grab justify-between gap-2 rounded-sm bg-gray-300 p-0.5 dark:bg-gray-600"
-                                            >
-                                                <p class="px-2 text-lg text-gray-400">
-                                                    {{
-                                                        singles.find(
-                                                            (single) => single._id === item,
-                                                        ).username
-                                                    }}
-                                                </p>
-                                                <IconDragHandle class="mr-1 text-gray-500" />
-                                            </div>
-                                        </li>
-                                    </template>
-                                </draggable>
+                            <div class="group flex flex-col rounded border border-gray-500 p-2">
+                                <div class="flex items-center gap-2">
+                                    <h2 class="text-3xl text-gray-500">nicht zugeordnet</h2>
+                                </div>
+                                <div class="mt-1 rounded-sm bg-gray-200 p-2 dark:bg-gray-700">
+                                    <draggable
+                                        v-model="ungrouped"
+                                        tag="ul"
+                                        handle=".handle"
+                                        animation="300"
+                                        :force-fallback="true"
+                                        item-key="id"
+                                        group="people"
+                                        @change="updateGroups"
+                                    >
+                                        <template #item="{ element: item }">
+                                            <li>
+                                                <div
+                                                    class="handle mb-1 flex cursor-grab justify-between gap-2 rounded-sm bg-gray-300 p-0.5 dark:bg-gray-600"
+                                                >
+                                                    <p class="px-2 text-lg text-gray-400">
+                                                        {{
+                                                            singles.find(
+                                                                (single) => single._id === item,
+                                                            ).username
+                                                        }}
+                                                    </p>
+                                                    <IconDragHandle class="mr-1 text-gray-500" />
+                                                </div>
+                                            </li>
+                                        </template>
+                                    </draggable>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div v-if="singles">
-                    <h3 class="pb-2 text-2xl">Spielende</h3>
-                    <div class="rounded-sm bg-gray-200 p-2 dark:bg-gray-700">
-                        <div v-for="single in singles" class="group flex gap-2">
-                            <p class="text-lg">
-                                {{ single.username }}
-                            </p>
-                            <ButtonTrash
-                                class="transition group-hover:opacity-100 lg:opacity-0"
-                                @click="openSingleDialog(single)"
-                            />
+                    <div v-if="singles">
+                        <h3 class="pb-2 text-2xl">
+                            <span class="text-primary-400 font-bold">{{ singles.length }} </span>
+                            Spielende
+                        </h3>
+                        <div class="rounded-sm bg-gray-200 p-2 dark:bg-gray-700">
+                            <div v-for="single in singles" class="group flex gap-2">
+                                <p class="text-lg">
+                                    {{ single.username }}
+                                </p>
+                                <ButtonTrash
+                                    class="transition group-hover:opacity-100 lg:opacity-0"
+                                    @click="openSingleDialog(single)"
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -210,20 +229,40 @@
 
             <section v-if="tabindex === 2" name="analyzation" class="dark:text-gray-300">
                 <div class="flex flex-col gap-8 rounded-lg" v-if="singleData.length > 0">
-                    <div class="flex items-center gap-2">
-                        <label>Toleranz</label>
+                    <fieldset class="flex gap-10 rounded bg-gray-200 p-2 dark:bg-gray-900">
+                        <legend class="rounded bg-gray-300 px-2 py-1 dark:bg-gray-950">
+                            Einstellungen
+                        </legend>
+                        <div class="flex items-center gap-2">
+                            <label class="text-secondary-700 dark:text-secondary-500"
+                                >Abweichungstoleranz</label
+                            >
 
-                        <input
-                            type="number"
-                            class="rounded-xs w-14 bg-gray-200 px-2 py-1 dark:bg-gray-700"
-                            name="tolerance"
-                            v-model="tolerance"
-                        />
-                    </div>
+                            <input
+                                type="number"
+                                class="rounded-xs w-14 bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                                name="tolerance"
+                                v-model="tolerance"
+                            />
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <label class="text-secondary-700 dark:text-secondary-500"
+                                >Stark verbessert ab</label
+                            >
+
+                            <input
+                                type="number"
+                                class="rounded-xs w-14 bg-gray-100 px-2 py-1 dark:bg-gray-700"
+                                name="tolerance"
+                                v-model="strongThreshold"
+                            />
+                            <p class="text-secondary-700 dark:text-secondary-500">Punkte</p>
+                        </div>
+                    </fieldset>
 
                     <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
                         <div class="flex flex-col gap-4 rounded-t-md">
-                            <h4 class="text-lg">Ergebnis Einzel</h4>
+                            <h4 class="text-lg font-bold">Ergebnis Einzel</h4>
 
                             <div class="h-64 w-full">
                                 <BarChart :chart_data="singleData" :tolerance />
@@ -232,7 +271,7 @@
                             <SummaryText type="single" :single-data="singleData" :tolerance />
                         </div>
                         <div class="flex flex-col gap-4 rounded-t-md" v-if="groupData.length > 0">
-                            <h4 class="text-lg">Ergebnis Gruppen</h4>
+                            <h4 class="text-lg font-bold">Ergebnis Gruppen</h4>
                             <div class="h-64 w-full">
                                 <BarChart :chart_data="groupData" :tolerance />
                             </div>
@@ -245,7 +284,7 @@
                         </div>
                     </div>
                     <div class="rounded-t-md" v-if="groupData.length > 0 && singlesAnonym">
-                        <h4 class="py-2 text-lg">Ergebnisunterschied zur Gruppe</h4>
+                        <h4 class="py-2 text-lg font-bold">Ergebnisunterschied zur Gruppe</h4>
                         <div class="w-full">
                             <BarChartDifference :groupData :singles="singlesAnonym" />
                         </div>
@@ -253,6 +292,7 @@
                             type="compare"
                             :single-data="singleData"
                             :group-data="groupData"
+                            :strongThreshold
                         />
                     </div>
                 </div>
@@ -353,6 +393,7 @@ import IconDragHandle from '@/components/icons/IconDragHandle.vue';
 import IconArrowRight from '@/components/icons/IconArrowRight.vue';
 import SummaryText from '@/components/SummaryText.vue';
 import IconSpinner from '@/components/icons/IconSpinner.vue';
+import IconDelete from '@/components/icons/IconDelete.vue';
 
 const isLargeScreen = useMediaQuery('(min-width: 1024px)');
 
@@ -374,6 +415,7 @@ const sessionDialogOpen = ref(false);
 const groupDialogOpen = ref(false);
 const singleDialogOpen = ref(false);
 const tolerance = ref(30);
+const strongThreshold = ref(10);
 
 start();
 
@@ -432,6 +474,7 @@ const stage = ref('results');
 
 const isActive = ref(false);
 const loadingComment = ref();
+const loadingGroups = ref();
 
 watch(isActive, () => {
     setActiveSession();
@@ -442,6 +485,7 @@ async function start() {
     await getActive();
     await getSingles();
     await getGroups();
+    getUngrouped();
 }
 async function getSession() {
     const sessionData = await axiosHelper.get('sessions/find/' + id);
@@ -465,11 +509,12 @@ async function getSingles() {
 async function getGroups() {
     const data = await axiosHelper.get('groups/find-by-session/' + id);
     groups.value = data.data;
+}
+
+async function getUngrouped() {
     ungrouped.value = singles.value
         .filter((single) => single.groupId === null)
         .map((single) => single._id);
-    console.log(ungrouped.value);
-    console.log(groups.value);
 }
 
 async function updateGroups() {
@@ -511,18 +556,22 @@ async function deleteSession() {
     router.push('/admin');
 }
 async function deleteGroup(grId: string) {
+    loadingGroups.value = true;
     closeGroupDialog();
     singles.value.forEach(async (single) => {
         if (single.groupId === grId)
             await axiosHelper.put('singles/update/' + single._id, { groupId: null });
     });
-    const response = axiosHelper.get('groups/delete/' + grId);
+    const response = await axiosHelper.get('groups/delete/' + grId);
     await getGroups();
     await getSingles();
+    getUngrouped();
+    loadingGroups.value = false;
 }
 async function deleteSingle(sId: string) {
+    loadingGroups.value = true;
     closeSingleDialog();
-    const response = axiosHelper.get('singles/delete/' + sId);
+    const response = await axiosHelper.get('singles/delete/' + sId);
     groups.value.forEach(async (group) => {
         const data = await axiosHelper.put('groups/update/' + group._id, {
             members: group.members.filter((member) => member != sId),
@@ -531,6 +580,30 @@ async function deleteSingle(sId: string) {
 
     await getSingles();
     await getGroups();
+    getUngrouped();
+    loadingGroups.value = false;
+}
+
+async function deleteFromGroup(sId: string, grId: string) {
+    loadingGroups.value = true;
+    const group = groups.value.find((group) => group._id === grId);
+
+    const data = await axiosHelper.put('groups/update/' + grId, {
+        members: group.members.filter((member) => member != sId),
+    });
+    await getGroups();
+    let otherGroupId = null;
+    groups.value.forEach((group) => {
+        if (group.members.includes(sId)) {
+            otherGroupId = group._id;
+        }
+    });
+
+    await axiosHelper.put('singles/update/' + sId, { groupId: otherGroupId });
+
+    await getSingles();
+    getUngrouped();
+    loadingGroups.value = false;
 }
 
 async function saveComment() {

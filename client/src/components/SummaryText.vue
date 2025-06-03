@@ -11,12 +11,19 @@ const props = defineProps({
     singleData: Object,
     groupData: Object,
     tolerance: { type: Number, default: 0 },
+    strongThreshold: { type: Number, default: 10 },
 });
 
 const tol = computed(() => {
     return props.tolerance;
 });
+const stro = computed(() => {
+    return props.strongThreshold;
+});
 watch(tol, () => {
+    analyze();
+});
+watch(stro, () => {
     analyze();
 });
 
@@ -126,7 +133,6 @@ function analyzeGroups(): string {
     return outputtext;
 }
 function analyzeComparison(): string {
-    const border = 10;
     let outputtext = '';
     let higherThanGroup = 0;
     let lowerThanGroup = 0;
@@ -137,7 +143,7 @@ function analyzeComparison(): string {
             const difference = memberResult - group.y;
             difference >= 0 && higherThanGroup++;
             difference < 0 && lowerThanGroup++;
-            difference > border && strong++;
+            difference > props.strongThreshold && strong++;
         });
     });
 
@@ -166,7 +172,7 @@ function analyzeComparison(): string {
             default:
                 outputtext += ` ${strong} haben`;
         }
-        outputtext += ` sich sehr stark verbessert (um mehr als ${border} Punkte).`;
+        outputtext += ` sich sehr stark verbessert (um mehr als ${props.strongThreshold} Punkte).`;
     }
     if (lowerThanGroup > 0) {
         switch (lowerThanGroup) {

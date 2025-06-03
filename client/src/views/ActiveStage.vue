@@ -12,25 +12,28 @@
         />
 
         <div
-            class="bg-primary-50 absolute left-1/2 top-1/2 flex w-96 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-2 rounded-lg p-4 dark:bg-gray-700 dark:text-gray-200"
+            class="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center gap-2 rounded-lg p-2 dark:text-gray-200"
         >
-            <p
-                class="absolute -top-14 left-1/2 w-full -translate-x-1/2 text-center text-4xl dark:text-gray-300"
-                v-if="username"
-            >
+            <p class="text-center text-4xl dark:text-gray-300" v-if="username">
                 Danke
                 <span class="dark:text-secondary-400 text-secondary-600">{{ username }}</span> !
             </p>
-            <p class="p-4">
-                Es ist keine Spiel-Session aktiv oder du hast dein Ergebnis bereits abgegeben. Warte
-                auf die Anweisungen des Spielleiters.
+
+            <p v-if="active.sessionId === null" class="p-2 text-center">
+                Es ist keine Spiel-Session aktiv
             </p>
-            <button
-                @click="resetApply"
-                class="bg-primary-500 hover:bg-primary-600 cursor-pointer rounded-md p-2 text-white"
-            >
-                erneut abgeben
-            </button>
+            <div class="flex flex-col items-center gap-4" v-else>
+                <p class="p-2 text-center">
+                    Dein Ergebnis wurde eingereicht. <br />Warte auf die Anweisungen des
+                    Spielleiters.
+                </p>
+                <button
+                    @click="resetApply"
+                    class="bg-primary-500 hover:bg-primary-600 cursor-pointer rounded-md p-2 text-white"
+                >
+                    erneut abgeben
+                </button>
+            </div>
         </div>
     </div>
 

@@ -8,6 +8,7 @@
         v-model="sendItems"
         :valid="listIsValid"
         :show-validation="showListValidation"
+        :loading
     >
         <template v-slot:username>
             <div class="flex w-full flex-col gap-1 lg:w-1/2">
@@ -57,6 +58,7 @@ import { AxiosHelper } from '@/AxiosHelper';
 const axiosHelper = new AxiosHelper();
 
 const router = useRouter();
+const loading = ref();
 
 const active = ref();
 const session = ref(undefined);
@@ -83,7 +85,8 @@ const nameIsFree = computed(() => {
 });
 
 const nameValidationMessage = computed(() => {
-    if (!nameIsValid.value) return 'Gib einen Namen (ohne Sonderzeichen) ein';
+    if (!nameIsValid.value)
+        return 'Gib einen Namen (ohne Sonderzeichen, Leerzeichen oder Umlaute) ein';
     if (!nameIsFree.value) return 'Der Name ist bereits vergeben';
     return 'sieht gut aus';
 });
@@ -109,6 +112,7 @@ async function getSingles() {
 }
 
 function submitSolution() {
+    loading.value = true;
     if (nameIsValid.value && nameIsFree.value && listIsValid.value) {
         calculateResult();
         if (session != undefined) {
@@ -129,6 +133,7 @@ function submitSolution() {
         if (!listIsValid.value) showListValidation.value = true;
         window.scrollTo(0, 0);
     }
+    loading.value = false;
 }
 
 function calculateResult() {

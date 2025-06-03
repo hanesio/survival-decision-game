@@ -9,7 +9,11 @@
             <p class="dark:text-gray-400" v-html="description"></p>
         </details>
     </article>
-    <slot name="members"></slot>
+    <div v-if="loading" class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+        <IconSpinner class="text-primary-500 size-10 animate-spin" />
+    </div>
+    <div v-else>
+ <slot name="members"></slot>
     <div class="flex flex-col gap-2 rounded bg-gray-100 dark:bg-gray-800 p-4">
 
             <slot name="singleDecisions">
@@ -73,6 +77,8 @@
         </draggable>
         <slot name="button"></slot>
     </div>
+    </div>
+
 </template>
 
 <script setup lang="ts">
@@ -83,6 +89,7 @@ import IconDragHandle from '@/components/icons/IconDragHandle.vue';
 import ItemPill from '@/components/ItemPill.vue';
 import IconDelete from './icons/IconDelete.vue';
 import { useMediaQuery } from '@vueuse/core'
+import IconSpinner from './icons/IconSpinner.vue';
 
 const isLargeScreen = useMediaQuery('(min-width: 1024px)')
 
@@ -117,6 +124,7 @@ const props = defineProps({
         default: true,
     },
     singleItems:Array<RankItem>,
+    loading:{type: Boolean, default:false}
 
 });
 const emit = defineEmits(['update:modelValue']);
